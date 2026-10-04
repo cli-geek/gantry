@@ -33,6 +33,26 @@ const MAX_BODY_BYTES: usize = 64 * 1024 * 1024;
 
 const MAX_RETRY_WAIT: Duration = Duration::from_secs(60);
 
+/// Sites whose terms prohibit automated access (plan §11.3, §4.1.1). Gantry
+/// never sends them a request, whatever the caller asks; their postings go
+/// through manual paste mode.
+const EXCLUDED_DOMAINS: &[&str] = &[
+    "myworkdayjobs.com",
+    "workday.com",
+    "joinhandshake.com",
+    "linkedin.com",
+    "indeed.com",
+    "glassdoor.com",
+    "ziprecruiter.com",
+    "wellfound.com",
+];
+
+fn is_excluded_host(host: &str) -> bool {
+    EXCLUDED_DOMAINS
+        .iter()
+        .any(|d| host == *d || host.ends_with(&format!(".{d}")))
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HttpRequest {
     pub url: String,
@@ -250,6 +270,9 @@ impl<'a> Fetcher<'a> {
             .host_str()
             .ok_or_else(|| FetchError::InvalidUrl(url.to_owned()))?
             .to_ascii_lowercase();
+        if is_excluded_host(&host) {
+            return Ok(Fetched::Disallowed);
+        }
         let state = self.host(&host);
         let robots = self.robots(&parsed, &state).await;
         let path = match parsed.query() {
@@ -459,6 +482,26 @@ mod tests {
             log[3].2 - log[2].2 >= Duration::from_secs(4),
             "2 s base doubled"
         );
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn excluded_hosts_get_no_request_at_all() {
+        let store = Store::open_in_memory().unwrap();
+        let t = Scripted::new(vec![]);
+        let f = Fetcher::new(&t, &store, Politeness::default(), 0);
+        for url in [
+            "https://nvidia.wd5.myworkdayjobs.com/en-US/careers/job/1",
+            "https://www.workday.com/",
+            "https://app.joinhandshake.com/jobs/1",
+            "https://www.linkedin.com/jobs/view/1",
+        ] {
+            assert!(
+                matches!(f.get(url, false).await.unwrap(), Fetched::Disallowed),
+                "{url}"
+            );
+        }
+        assert!(t.log.lock().unwrap().is_empty());
+        assert!(!is_excluded_host("notworkday.com"));
     }
 
     #[tokio::test(start_paused = true)]
