@@ -1,7 +1,7 @@
 # Architecture
 
-The plan of record is `gantry_plan.md` (outside this repository for now).
-This file describes what exists in the code.
+The plan of record is [`plan.md`](plan.md). This file describes what exists
+in the code.
 
 ## Crates
 
