@@ -1,0 +1,8 @@
+# Early-career technology roles maintained by SimplifyJobs and contributors.
+# Endpoint and terms check: crates/gantry-discovery/src/sources/simplify.rs.
+id = "simplify-new-grad"
+name = "SimplifyJobs New-Grad-Positions"
+format = "simplify_listings"
+url = "https://raw.githubusercontent.com/SimplifyJobs/New-Grad-Positions/dev/.github/scripts/listings.json"
+homepage = "https://github.com/SimplifyJobs/New-Grad-Positions"
+occupations = ["technology"]

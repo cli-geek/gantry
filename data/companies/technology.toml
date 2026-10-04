@@ -1,0 +1,135 @@
+# Seed boards for the technology pack. Polled only when search.toml lists
+# "technology" in `occupations`. Each token was checked against its board
+# API on 2026-10-03. Board-slug probing and feeds extend this list at run
+# time; add a company here by PR when probing cannot find it.
+occupation = "technology"
+
+[[company]]
+name = "Airbnb"
+ats = "greenhouse"
+token = "airbnb"
+
+[[company]]
+name = "Cloudflare"
+ats = "greenhouse"
+token = "cloudflare"
+
+[[company]]
+name = "Coinbase"
+ats = "greenhouse"
+token = "coinbase"
+
+[[company]]
+name = "Databricks"
+ats = "greenhouse"
+token = "databricks"
+
+[[company]]
+name = "Datadog"
+ats = "greenhouse"
+token = "datadog"
+
+[[company]]
+name = "Discord"
+ats = "greenhouse"
+token = "discord"
+
+[[company]]
+name = "Dropbox"
+ats = "greenhouse"
+token = "dropbox"
+
+[[company]]
+name = "Figma"
+ats = "greenhouse"
+token = "figma"
+
+[[company]]
+name = "GitLab"
+ats = "greenhouse"
+token = "gitlab"
+
+[[company]]
+name = "Instacart"
+ats = "greenhouse"
+token = "instacart"
+
+[[company]]
+name = "Pinterest"
+ats = "greenhouse"
+token = "pinterest"
+
+[[company]]
+name = "Reddit"
+ats = "greenhouse"
+token = "reddit"
+
+[[company]]
+name = "Robinhood"
+ats = "greenhouse"
+token = "robinhood"
+
+[[company]]
+name = "Stripe"
+ats = "greenhouse"
+token = "stripe"
+
+[[company]]
+name = "Twilio"
+ats = "greenhouse"
+token = "twilio"
+
+[[company]]
+name = "Match Group"
+ats = "lever"
+token = "matchgroup"
+
+[[company]]
+name = "Mistral AI"
+ats = "lever"
+token = "mistral"
+
+[[company]]
+name = "Palantir"
+ats = "lever"
+token = "palantir"
+
+[[company]]
+name = "Spotify"
+ats = "lever"
+token = "spotify"
+
+[[company]]
+name = "Cohere"
+ats = "ashby"
+token = "cohere"
+
+[[company]]
+name = "Linear"
+ats = "ashby"
+token = "linear"
+
+[[company]]
+name = "Notion"
+ats = "ashby"
+token = "notion"
+
+[[company]]
+name = "OpenAI"
+ats = "ashby"
+token = "openai"
+
+[[company]]
+name = "Ramp"
+ats = "ashby"
+token = "ramp"
+
+[[company]]
+name = "Replit"
+ats = "ashby"
+token = "replit"
+
+[[company]]
+name = "Vercel"
+ats = "ashby"
+token = "vercel"
