@@ -1,0 +1,28 @@
+schema_version = 1
+occupations = ["technology"]
+
+[titles]
+mode = "hard"
+targets = ["Software Engineer", "Software Engineering Intern", "Data Analyst"]
+exclude = ["Senior", "Staff", "Principal", "Manager"]
+
+[job_type]
+mode = "hard"
+types = ["full_time", "internship"]
+
+[experience]
+mode = "hard"
+max_required_years = 2
+
+[location]
+mode = "hard"
+home = "98105"
+max_distance = { value = 30, unit = "mi" }
+work_modes = ["onsite", "hybrid", "remote"]
+remote_eligible = ["US"]
+
+[requirements]
+sponsorship = "hard"
+
+[freshness]
+max_age_days = 30

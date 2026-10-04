@@ -1,0 +1,32 @@
+schema_version = 1
+# No pack exists for this occupation yet; the core must work without one.
+occupations = ["dental hygiene"]
+
+[titles]
+mode = "hard"
+targets = ["Dental Hygienist"]
+synonyms = [{ text = "Hygienist", verified = true }]
+
+[job_type]
+mode = "hard"
+types = ["full_time", "part_time", "per_diem"]
+
+[experience]
+mode = "hard"
+max_required_years = 3
+
+[location]
+mode = "hard"
+home = "78701"
+max_distance = { value = 20, unit = "mi" }
+work_modes = ["onsite"]
+
+[pay]
+mode = "hard"
+minimum = 40
+period = "hour"
+currency = "USD"
+keep_unlisted = false
+
+[requirements]
+licenses = "hard"

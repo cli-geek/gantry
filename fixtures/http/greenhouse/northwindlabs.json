@@ -1,0 +1,187 @@
+{
+  "jobs": [
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/northwindlabs/jobs/5001001",
+      "data_compliance": [],
+      "internal_job_id": 5002001,
+      "location": {
+        "name": "Seattle, WA"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        },
+        {
+          "id": 2,
+          "name": "Workplace Type",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5001001,
+      "updated_at": "2026-09-28T09:00:00-07:00",
+      "requisition_id": "REQ-5001001",
+      "title": "Software Engineer, New Grad",
+      "company_name": "Northwind Labs",
+      "first_published": "2026-09-28T09:00:00-07:00",
+      "language": "en",
+      "content": "&lt;p&gt;Northwind Labs builds scheduling software for regional freight carriers.&lt;/p&gt;&lt;h3&gt;What you will do&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Ship features in Rust and TypeScript&lt;/li&gt;&lt;li&gt;Review code and pair with senior engineers&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;About you&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Bachelor&#x27;s degree or equivalent practical experience&lt;/li&gt;&lt;li&gt;0-2 years of experience writing production software&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The base salary range for this role is $120,000 - $145,000 per year.&lt;/p&gt;&lt;p&gt;Req 5001001.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/northwindlabs/jobs/5001002",
+      "data_compliance": [],
+      "internal_job_id": 5002002,
+      "location": {
+        "name": "Remote - US"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        },
+        {
+          "id": 2,
+          "name": "Workplace Type",
+          "value": "Remote",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5001002,
+      "updated_at": "2026-09-30T08:00:00-07:00",
+      "requisition_id": "REQ-5001002",
+      "title": "Senior Backend Engineer",
+      "company_name": "Northwind Labs",
+      "first_published": "2026-09-30T08:00:00-07:00",
+      "language": "en",
+      "content": "&lt;p&gt;8+ years of experience building distributed systems.&lt;/p&gt;&lt;p&gt;Salary: $190,000 - $230,000 per year.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/northwindlabs/jobs/5001003",
+      "data_compliance": [],
+      "internal_job_id": 5002003,
+      "location": {
+        "name": "New York, NY"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        }
+      ],
+      "id": 5001003,
+      "updated_at": "2026-09-29T08:00:00-07:00",
+      "requisition_id": "REQ-5001003",
+      "title": "Data Analyst",
+      "company_name": "Northwind Labs",
+      "first_published": "2026-09-29T08:00:00-07:00",
+      "language": "en",
+      "content": "&lt;p&gt;Own weekly reporting for our carrier network.&lt;/p&gt;&lt;p&gt;1+ years of experience with SQL.&lt;/p&gt;&lt;p&gt;We are unable to sponsor visas for this role.&lt;/p&gt;&lt;p&gt;Salary: $85,000 - $100,000 per year.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/northwindlabs/jobs/5001004",
+      "data_compliance": [],
+      "internal_job_id": 5002004,
+      "location": {
+        "name": "San Francisco, CA"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        },
+        {
+          "id": 2,
+          "name": "Workplace Type",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5001004,
+      "updated_at": "2026-07-01T09:00:00-07:00",
+      "requisition_id": "REQ-5001004",
+      "title": "Backend Engineer",
+      "company_name": "Northwind Labs",
+      "first_published": "2026-07-01T09:00:00-07:00",
+      "language": "en",
+      "content": "&lt;p&gt;3+ years of experience with backend services.&lt;/p&gt;&lt;p&gt;Salary: $150,000 - $180,000 per year.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/northwindlabs/jobs/5001005",
+      "data_compliance": [],
+      "internal_job_id": 5002005,
+      "location": {
+        "name": "Seattle, WA"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        },
+        {
+          "id": 2,
+          "name": "Workplace Type",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5001005,
+      "updated_at": "2026-10-01T09:00:00-07:00",
+      "requisition_id": "REQ-5001005",
+      "title": "Software Engineer, New Grad",
+      "company_name": "Northwind Labs",
+      "first_published": "2026-10-01T09:00:00-07:00",
+      "language": "en",
+      "content": "&lt;p&gt;Northwind Labs builds scheduling software for regional freight carriers.&lt;/p&gt;&lt;h3&gt;What you will do&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Ship features in Rust and TypeScript&lt;/li&gt;&lt;li&gt;Review code and pair with senior engineers&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;About you&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Bachelor&#x27;s degree or equivalent practical experience&lt;/li&gt;&lt;li&gt;0-2 years of experience writing production software&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The base salary range for this role is $120,000 - $145,000 per year.&lt;/p&gt;&lt;p&gt;Req 5001005.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/northwindlabs/jobs/5001006",
+      "data_compliance": [],
+      "internal_job_id": 5002006,
+      "location": {
+        "name": "Arlington, VA"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        }
+      ],
+      "id": 5001006,
+      "updated_at": "2026-09-27T08:00:00-07:00",
+      "requisition_id": "REQ-5001006",
+      "title": "Solutions Engineer, Federal",
+      "company_name": "Northwind Labs",
+      "first_published": "2026-09-27T08:00:00-07:00",
+      "language": "en",
+      "content": "&lt;p&gt;Support federal customers on site.&lt;/p&gt;&lt;p&gt;Must hold an active TS/SCI clearance with polygraph.&lt;/p&gt;&lt;p&gt;Salary: $140,000 - $170,000 per year.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    }
+  ],
+  "meta": {
+    "total": 6
+  }
+}

@@ -1,0 +1,26 @@
+schema_version = 1
+occupations = ["technology"]
+
+[titles]
+mode = "hard"
+targets = ["Data Analyst", "Data Scientist"]
+exclude = ["Senior", "Lead"]
+
+[experience]
+mode = "hard"
+max_required_years = 2
+
+[location]
+mode = "hard"
+work_modes = ["remote"]
+remote_eligible = ["US-OH"]
+
+[pay]
+mode = "prefer"
+minimum = 70000
+period = "year"
+currency = "USD"
+
+[keywords]
+mode = "hard"
+exclude = ["unpaid"]

@@ -1,0 +1,122 @@
+[
+  {
+    "source": "Simplify",
+    "category": "Software",
+    "company_name": "Northwind Labs",
+    "id": "a0000000-0000-4000-8000-000000000001",
+    "title": "Software Engineer, New Grad",
+    "active": true,
+    "date_updated": 1790611200,
+    "date_posted": 1790611200,
+    "url": "https://job-boards.greenhouse.io/northwindlabs/jobs/5001001?utm_source=Simplify&ref=Simplify",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "company_url": "",
+    "is_visible": true,
+    "sponsorship": "Offers Sponsorship",
+    "degrees": [
+      "Bachelor's"
+    ]
+  },
+  {
+    "source": "Simplify",
+    "category": "Software",
+    "company_name": "Tidewater Analytics",
+    "id": "a0000000-0000-4000-8000-000000000002",
+    "title": "Junior Data Analyst",
+    "active": true,
+    "date_updated": 1790611200,
+    "date_posted": 1790611200,
+    "url": "https://careers.tidewater-analytics.example/jobs/88?utm_source=Simplify&ref=Simplify",
+    "locations": [
+      "Remote in USA"
+    ],
+    "company_url": "",
+    "is_visible": true,
+    "sponsorship": "Other",
+    "degrees": [
+      "Bachelor's"
+    ]
+  },
+  {
+    "source": "Simplify",
+    "category": "Software",
+    "company_name": "Quillstack",
+    "id": "a0000000-0000-4000-8000-000000000003",
+    "title": "Software Engineering Intern, Summer 2027",
+    "active": true,
+    "date_updated": 1790611200,
+    "date_posted": 1790611200,
+    "url": "https://jobs.lever.co/quillstack/1f0e8a7c-0000-4000-8000-000000000102/apply",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "company_url": "",
+    "is_visible": true,
+    "sponsorship": "Other",
+    "degrees": [
+      "Bachelor's"
+    ]
+  },
+  {
+    "source": "Simplify",
+    "category": "Software",
+    "company_name": "Northwind Labs",
+    "id": "a0000000-0000-4000-8000-000000000004",
+    "title": "Old Closed Role",
+    "active": false,
+    "date_updated": 1790611200,
+    "date_posted": 1790611200,
+    "url": "https://job-boards.greenhouse.io/northwindlabs/jobs/4000001",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "company_url": "",
+    "is_visible": true,
+    "sponsorship": "Other",
+    "degrees": [
+      "Bachelor's"
+    ]
+  },
+  {
+    "source": "Simplify",
+    "category": "Software",
+    "company_name": "Pinecrest Robotics",
+    "id": "a0000000-0000-4000-8000-000000000005",
+    "title": "Software Engineer, New Grad",
+    "active": true,
+    "date_updated": 1790611200,
+    "date_posted": 1790611200,
+    "url": "https://job-boards.greenhouse.io/pinecrestrobotics/jobs/9001",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "company_url": "",
+    "is_visible": true,
+    "sponsorship": "Other",
+    "degrees": [
+      "Bachelor's"
+    ]
+  },
+  {
+    "source": "Simplify",
+    "category": "Software",
+    "company_name": "Harborview Health",
+    "id": "a0000000-0000-4000-8000-000000000006",
+    "title": "Software Engineer I",
+    "active": true,
+    "date_updated": 1790611200,
+    "date_posted": 1790611200,
+    "url": "https://careers-harborview.icims.example/jobs/1234/job",
+    "locations": [
+      "Boston, MA"
+    ],
+    "company_url": "",
+    "is_visible": true,
+    "sponsorship": "Does Not Offer Sponsorship",
+    "degrees": [
+      "Bachelor's"
+    ]
+  }
+]

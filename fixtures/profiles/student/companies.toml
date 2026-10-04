@@ -1,0 +1,14 @@
+[[company]]
+name = "Northwind Labs"
+ats = "greenhouse"
+token = "northwindlabs"
+
+[[company]]
+name = "Quillstack"
+ats = "lever"
+token = "quillstack"
+
+[[company]]
+name = "Lumen Forge"
+ats = "ashby"
+token = "lumenforge"

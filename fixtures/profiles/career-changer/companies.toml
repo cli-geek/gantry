@@ -1,0 +1,5 @@
+# Lumen Forge is added with `gantry url add` in the fixture test instead.
+[[company]]
+name = "Northwind Labs"
+ats = "greenhouse"
+token = "northwindlabs"

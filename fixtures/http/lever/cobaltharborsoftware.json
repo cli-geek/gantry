@@ -1,0 +1,33 @@
+[
+  {
+    "additionalPlain": "We are an equal opportunity employer.",
+    "additional": "<div>We are an equal opportunity employer.</div>",
+    "categories": {
+      "commitment": "Full-time",
+      "location": "Remote (US)",
+      "team": "Engineering",
+      "allLocations": [
+        "Remote (US)"
+      ]
+    },
+    "createdAt": 1790780400000,
+    "descriptionPlain": "Cobalt Harbor builds billing tools for marinas. 2+ years of experience with Python.",
+    "description": "<div>Cobalt Harbor builds billing tools for marinas. 2+ years of experience with Python.</div>",
+    "id": "1f0e8a7c-0000-4000-8000-000000000201",
+    "lists": [
+      {
+        "text": "What you bring",
+        "content": "<li>Curiosity</li><li>Clear writing</li>"
+      }
+    ],
+    "text": "Software Engineer, Backend",
+    "country": "US",
+    "workplaceType": "remote",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "",
+    "descriptionBodyPlain": "",
+    "hostedUrl": "https://jobs.lever.co/cobaltharborsoftware/1f0e8a7c-0000-4000-8000-000000000201",
+    "applyUrl": "https://jobs.lever.co/cobaltharborsoftware/1f0e8a7c-0000-4000-8000-000000000201/apply"
+  }
+]

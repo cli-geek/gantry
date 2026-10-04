@@ -1,0 +1,144 @@
+{
+  "apiVersion": "1",
+  "jobs": [
+    {
+      "id": "2c9b3d10-0000-4000-8000-000000000301",
+      "title": "Machine Learning Engineer",
+      "department": "Engineering",
+      "team": "Engineering",
+      "employmentType": "FullTime",
+      "location": "New York City",
+      "shouldDisplayCompensationOnJobPostings": true,
+      "secondaryLocations": [],
+      "publishedAt": "2026-09-30T15:00:00.000+00:00",
+      "isListed": true,
+      "isRemote": true,
+      "workplaceType": "Hybrid",
+      "address": null,
+      "jobUrl": "https://jobs.ashbyhq.com/lumenforge/2c9b3d10-0000-4000-8000-000000000301",
+      "applyUrl": "https://jobs.ashbyhq.com/lumenforge/2c9b3d10-0000-4000-8000-000000000301/application",
+      "descriptionPlain": "Train ranking models. 3+ years experience in ML.",
+      "descriptionHtml": "<p>Train ranking models. 3+ years experience in ML.</p>",
+      "compensation": {
+        "compensationTierSummary": "160000-200000 USD",
+        "scrapeableCompensationSalarySummary": "160000-200000",
+        "compensationTiers": [],
+        "summaryComponents": [
+          {
+            "compensationType": "Salary",
+            "interval": "1 YEAR",
+            "currencyCode": "USD",
+            "minValue": 160000,
+            "maxValue": 200000
+          },
+          {
+            "compensationType": "EquityCashValue",
+            "interval": "1 YEAR",
+            "currencyCode": "USD",
+            "minValue": null,
+            "maxValue": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "2c9b3d10-0000-4000-8000-000000000302",
+      "title": "Data Scientist",
+      "department": "Engineering",
+      "team": "Engineering",
+      "employmentType": "FullTime",
+      "location": "US - Remote",
+      "shouldDisplayCompensationOnJobPostings": true,
+      "secondaryLocations": [],
+      "publishedAt": "2026-09-20T15:00:00.000+00:00",
+      "isListed": true,
+      "isRemote": true,
+      "workplaceType": "Remote",
+      "address": null,
+      "jobUrl": "https://jobs.ashbyhq.com/lumenforge/2c9b3d10-0000-4000-8000-000000000302",
+      "applyUrl": "https://jobs.ashbyhq.com/lumenforge/2c9b3d10-0000-4000-8000-000000000302/application",
+      "descriptionPlain": "Career changers welcome. 1+ years of experience with Python or R.",
+      "descriptionHtml": "<p>Career changers welcome. 1+ years of experience with Python or R.</p>",
+      "compensation": {
+        "compensationTierSummary": "115000-140000 USD",
+        "scrapeableCompensationSalarySummary": "115000-140000",
+        "compensationTiers": [],
+        "summaryComponents": [
+          {
+            "compensationType": "Salary",
+            "interval": "1 YEAR",
+            "currencyCode": "USD",
+            "minValue": 115000,
+            "maxValue": 140000
+          },
+          {
+            "compensationType": "EquityCashValue",
+            "interval": "1 YEAR",
+            "currencyCode": "USD",
+            "minValue": null,
+            "maxValue": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "2c9b3d10-0000-4000-8000-000000000303",
+      "title": "Frontend Engineer",
+      "department": "Engineering",
+      "team": "Engineering",
+      "employmentType": "FullTime",
+      "location": "London, UK",
+      "shouldDisplayCompensationOnJobPostings": true,
+      "secondaryLocations": [],
+      "publishedAt": "2026-10-02T15:00:00.000+00:00",
+      "isListed": true,
+      "isRemote": false,
+      "workplaceType": "OnSite",
+      "address": null,
+      "jobUrl": "https://jobs.ashbyhq.com/lumenforge/2c9b3d10-0000-4000-8000-000000000303",
+      "applyUrl": "https://jobs.ashbyhq.com/lumenforge/2c9b3d10-0000-4000-8000-000000000303/application",
+      "descriptionPlain": "Build our design system.",
+      "descriptionHtml": "<p>Build our design system.</p>",
+      "compensation": {
+        "compensationTierSummary": "70000-85000 GBP",
+        "scrapeableCompensationSalarySummary": "70000-85000",
+        "compensationTiers": [],
+        "summaryComponents": [
+          {
+            "compensationType": "Salary",
+            "interval": "1 YEAR",
+            "currencyCode": "GBP",
+            "minValue": 70000,
+            "maxValue": 85000
+          },
+          {
+            "compensationType": "EquityCashValue",
+            "interval": "1 YEAR",
+            "currencyCode": "GBP",
+            "minValue": null,
+            "maxValue": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "2c9b3d10-0000-4000-8000-000000000304",
+      "title": "Unlisted Role",
+      "department": "Engineering",
+      "team": "Engineering",
+      "employmentType": "FullTime",
+      "location": "Remote",
+      "shouldDisplayCompensationOnJobPostings": false,
+      "secondaryLocations": [],
+      "publishedAt": "2026-10-02T15:00:00.000+00:00",
+      "isListed": false,
+      "isRemote": true,
+      "workplaceType": "Remote",
+      "address": null,
+      "jobUrl": "https://jobs.ashbyhq.com/lumenforge/2c9b3d10-0000-4000-8000-000000000304",
+      "applyUrl": "https://jobs.ashbyhq.com/lumenforge/2c9b3d10-0000-4000-8000-000000000304/application",
+      "descriptionPlain": "Not public.",
+      "descriptionHtml": "<p>Not public.</p>"
+    }
+  ]
+}
