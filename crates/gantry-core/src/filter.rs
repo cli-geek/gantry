@@ -58,14 +58,6 @@ pub struct FilterOutcome {
     pub checks: Vec<Check>,
 }
 
-impl FilterOutcome {
-    pub fn failures(&self) -> impl Iterator<Item = &Check> {
-        self.checks
-            .iter()
-            .filter(|c| c.hard && c.verdict == Verdict::Fail)
-    }
-}
-
 /// Everything about the user a filter may read.
 #[derive(Debug, Clone, Copy)]
 pub struct FilterContext<'a> {

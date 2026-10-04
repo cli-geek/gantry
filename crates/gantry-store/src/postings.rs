@@ -8,7 +8,7 @@ use gantry_core::text::{REPOST_SIMHASH_BITS, fnv1a64, hamming, normalize, simhas
 use gantry_core::{Ats, Posting, PostingKey, WorkMode};
 use rusqlite::{Connection, OptionalExtension, params};
 
-use crate::db::log_event;
+use crate::db::{ats_at, log_event};
 use crate::{Store, StoreError};
 
 /// A board must miss a posting on this many consecutive successful polls
@@ -40,7 +40,6 @@ pub struct StoredPosting {
     pub posting: Posting,
     pub first_seen: i64,
     pub staffing_agency: Option<bool>,
-    pub duplicate_of: Option<i64>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -61,7 +60,6 @@ pub struct PostingRow {
     pub location_raw: String,
     pub published_at: Option<i64>,
     pub first_seen: i64,
-    pub last_seen: i64,
     pub closed_at: Option<i64>,
     pub duplicate_of: Option<i64>,
     /// `None` until the posting has been evaluated.
@@ -105,11 +103,6 @@ fn find_id(conn: &Connection, key: &PostingKey) -> Result<Option<i64>, StoreErro
 }
 
 impl Store {
-    pub fn posting_id(&self, key: &PostingKey) -> Result<Option<i64>, StoreError> {
-        let conn = self.conn()?;
-        find_id(&conn, key)
-    }
-
     /// Inserts or refreshes a posting and records `source` as having seen it.
     pub fn upsert_posting(
         &self,
@@ -304,28 +297,21 @@ impl Store {
     pub fn open_postings(&self) -> Result<Vec<StoredPosting>, StoreError> {
         let conn = self.conn()?;
         let mut stmt = conn.prepare(
-            "SELECT p.id, p.posting_json, p.first_seen, c.staffing_agency, p.duplicate_of
+            "SELECT p.id, p.posting_json, p.first_seen, c.staffing_agency
              FROM postings p LEFT JOIN companies c ON c.id = p.company_id
              WHERE p.closed_at IS NULL ORDER BY p.id",
         )?;
         let rows = stmt.query_map([], |r| {
-            Ok((
-                r.get::<_, i64>(0)?,
-                r.get::<_, String>(1)?,
-                r.get::<_, i64>(2)?,
-                r.get::<_, Option<bool>>(3)?,
-                r.get::<_, Option<i64>>(4)?,
-            ))
+            Ok((r.get(0)?, r.get::<_, String>(1)?, r.get(2)?, r.get(3)?))
         })?;
         let mut out = Vec::new();
         for row in rows {
-            let (id, json, first_seen, staffing_agency, duplicate_of) = row?;
+            let (id, json, first_seen, staffing_agency) = row?;
             out.push(StoredPosting {
                 id,
                 posting: serde_json::from_str(&json)?,
                 first_seen,
                 staffing_agency,
-                duplicate_of,
             });
         }
         Ok(out)
@@ -358,7 +344,7 @@ impl Store {
         let conn = self.conn()?;
         let mut sql = String::from(
             "SELECT p.id, p.ats, p.company_name, p.title, p.url, p.location_raw, p.published_at,
-                    p.first_seen, p.last_seen, p.closed_at, p.duplicate_of, e.filter_result,
+                    p.first_seen, p.closed_at, p.duplicate_of, e.filter_result,
                     e.filter_reasons_json,
                     (SELECT group_concat(source, char(31)) FROM
                         (SELECT source FROM posting_sources WHERE posting_id = p.id ORDER BY source))
@@ -378,57 +364,33 @@ impl Store {
         }
         let mut stmt = conn.prepare(&sql)?;
         let rows = stmt.query_map([], |r| {
-            Ok((
-                (
-                    r.get::<_, i64>(0)?,
-                    r.get::<_, String>(1)?,
-                    r.get::<_, String>(2)?,
-                    r.get::<_, String>(3)?,
-                    r.get::<_, String>(4)?,
-                    r.get::<_, String>(5)?,
-                    r.get::<_, Option<i64>>(6)?,
-                ),
-                (
-                    r.get::<_, i64>(7)?,
-                    r.get::<_, i64>(8)?,
-                    r.get::<_, Option<i64>>(9)?,
-                    r.get::<_, Option<i64>>(10)?,
-                    r.get::<_, Option<String>>(11)?,
-                    r.get::<_, Option<String>>(12)?,
-                    r.get::<_, Option<String>>(13)?,
-                ),
-            ))
+            let row = PostingRow {
+                id: r.get(0)?,
+                ats: ats_at(r, 1)?,
+                company_name: r.get(2)?,
+                title: r.get(3)?,
+                url: r.get(4)?,
+                location_raw: r.get(5)?,
+                published_at: r.get(6)?,
+                first_seen: r.get(7)?,
+                closed_at: r.get(8)?,
+                duplicate_of: r.get(9)?,
+                passed: r.get::<_, Option<String>>(10)?.map(|v| v == "pass"),
+                checks: Vec::new(),
+                sources: r
+                    .get::<_, Option<String>>(12)?
+                    .map(|s| s.split('\u{1f}').map(str::to_owned).collect())
+                    .unwrap_or_default(),
+            };
+            Ok((row, r.get::<_, Option<String>>(11)?))
         })?;
         let mut out = Vec::new();
         for row in rows {
-            let (
-                (id, ats, company_name, title, url, location_raw, published_at),
-                (first_seen, last_seen, closed_at, duplicate_of, result, checks, sources),
-            ) = row?;
-            let Some(ats) = Ats::parse(&ats) else {
-                continue;
-            };
-            out.push(PostingRow {
-                id,
-                ats,
-                company_name,
-                title,
-                url,
-                location_raw,
-                published_at,
-                first_seen,
-                last_seen,
-                closed_at,
-                duplicate_of,
-                passed: result.map(|r| r == "pass"),
-                checks: match checks {
-                    Some(json) => serde_json::from_str(&json)?,
-                    None => Vec::new(),
-                },
-                sources: sources
-                    .map(|s| s.split('\u{1f}').map(str::to_owned).collect())
-                    .unwrap_or_default(),
-            });
+            let (mut row, checks) = row?;
+            if let Some(json) = checks {
+                row.checks = serde_json::from_str(&json)?;
+            }
+            out.push(row);
         }
         Ok(out)
     }

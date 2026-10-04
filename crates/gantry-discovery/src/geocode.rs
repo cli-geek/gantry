@@ -111,7 +111,6 @@ pub struct Gazetteer {
     by_alt: HashMap<String, Vec<usize>>,
     /// Normalized country name, ISO2 or ISO3 → ISO2.
     countries: HashMap<String, String>,
-    continent_of: HashMap<String, String>,
     /// (ISO2, normalized admin-1 name or code) → admin-1 code.
     admin1: HashMap<(String, String), String>,
     /// Normalized admin-1 name → (ISO2, code), for names standing alone.
@@ -136,7 +135,6 @@ impl Gazetteer {
             by_name: HashMap::new(),
             by_alt: HashMap::new(),
             countries: HashMap::new(),
-            continent_of: HashMap::new(),
             admin1: HashMap::new(),
             admin1_names: HashMap::new(),
             postal_us: HashMap::new(),
@@ -144,13 +142,12 @@ impl Gazetteer {
         };
         for line in COUNTRIES.lines() {
             let f: Vec<&str> = line.split('\t').collect();
-            let [iso2, iso3, name, continent] = f[..] else {
+            let [iso2, iso3, name, _continent] = f[..] else {
                 continue;
             };
             g.countries.insert(normalize(iso2), iso2.to_owned());
             g.countries.insert(normalize(iso3), iso2.to_owned());
             g.countries.insert(normalize(name), iso2.to_owned());
-            g.continent_of.insert(iso2.to_owned(), continent.to_owned());
         }
         for (alias, iso2) in COUNTRY_ALIASES {
             g.countries.insert((*alias).to_owned(), (*iso2).to_owned());
@@ -318,10 +315,6 @@ impl Gazetteer {
                 lat: *lat,
                 lon: *lon,
             })
-    }
-
-    pub fn continent_of(&self, country: &str) -> Option<&str> {
-        self.continent_of.get(country).map(String::as_str)
     }
 
     /// Resolves one parsed location entry. A run-together list

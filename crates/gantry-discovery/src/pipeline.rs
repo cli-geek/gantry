@@ -145,9 +145,8 @@ struct Run<'a> {
     store: &'a Store,
     fetcher: Fetcher<'a>,
     inputs: DiscoverInputs<'a>,
-    errors: Mutex<(u32, Vec<RunError>)>,
-    stats: Mutex<PostingStats>,
-    boards_added: Mutex<u32>,
+    /// Filled in as the run goes; tasks on different hosts share it.
+    report: Mutex<DiscoverReport>,
 }
 
 pub async fn discover(
@@ -162,16 +161,13 @@ pub async fn discover(
         store,
         fetcher: Fetcher::new(transport, store, politeness, now),
         inputs,
-        errors: Mutex::new((0, Vec::new())),
-        stats: Mutex::new(PostingStats::default()),
-        boards_added: Mutex::new(0),
+        report: Mutex::new(DiscoverReport {
+            run_id,
+            started_at: now,
+            ..DiscoverReport::default()
+        }),
     };
     let settings = &inputs.snapshot.settings.discovery;
-    let mut report = DiscoverReport {
-        run_id,
-        started_at: now,
-        ..DiscoverReport::default()
-    };
 
     for entry in inputs.seed {
         run.register(entry, "seed")?;
@@ -188,7 +184,7 @@ pub async fn discover(
         .collect();
     for id in &settings.feeds {
         if !inputs.feeds.iter().any(|f| &f.id == id) {
-            report
+            run.tally()
                 .warnings
                 .push(format!("settings.toml enables unknown feed \"{id}\""));
         }
@@ -210,11 +206,16 @@ pub async fn discover(
     };
     let (feeds_result, hn_result) = tokio::join!(feeds_task, hn_task);
     let (statuses, pending) = feeds_result?;
-    report.feeds = statuses;
-    report.hacker_news = hn_result?;
+    let hacker_news = hn_result?;
+    {
+        let mut report = run.tally();
+        report.feeds = statuses;
+        report.hacker_news = hacker_news;
+    }
 
     if settings.slug_probing {
-        report.probes = run.probe().await?;
+        let probes = run.probe().await?;
+        run.tally().probes = probes;
     }
 
     let companies = store.companies()?;
@@ -230,34 +231,17 @@ pub async fn discover(
     let mut polled_ok = HashSet::new();
     for result in [gh, lv, lv_eu, ab] {
         let (stats, ok) = result?;
-        report.boards.add(stats);
+        run.tally().boards.add(stats);
         polled_ok.extend(ok);
     }
 
     run.attach_pending(pending, &polled_ok)?;
-    run.evaluate_all(&mut report)?;
+    run.evaluate_all(&mut run.tally())?;
 
-    let (error_count, errors) = run
-        .errors
+    let mut report = run
+        .report
         .into_inner()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
-    let stats = run
-        .stats
-        .into_inner()
-        .unwrap_or_else(std::sync::PoisonError::into_inner);
-    report.postings = PostingStats {
-        open: report.postings.open,
-        passed: report.postings.passed,
-        filtered_out: report.postings.filtered_out,
-        unresolved_locations: report.postings.unresolved_locations,
-        ..stats
-    };
-    report.boards_added = run
-        .boards_added
-        .into_inner()
-        .unwrap_or_else(std::sync::PoisonError::into_inner);
-    report.error_count = error_count;
-    report.errors = errors;
     report.finished_at = jiff::Timestamp::now().as_second().max(now);
     store.finish_run(
         run_id,
@@ -312,45 +296,47 @@ impl Run<'_> {
         self.inputs.now
     }
 
+    /// The report under construction. A poisoned lock only means another
+    /// task panicked mid-update; the counts are still usable.
+    fn tally(&self) -> std::sync::MutexGuard<'_, DiscoverReport> {
+        self.report
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
     fn error(&self, source: &str, message: impl std::fmt::Display) {
         tracing::warn!(source, %message, "discovery source failed");
-        if let Ok(mut errors) = self.errors.lock() {
-            errors.0 += 1;
-            if errors.1.len() < MAX_REPORTED_ERRORS {
-                errors.1.push(RunError {
-                    source: source.to_owned(),
-                    message: message.to_string(),
-                });
-            }
+        let mut report = self.tally();
+        report.error_count += 1;
+        if report.errors.len() < MAX_REPORTED_ERRORS {
+            report.errors.push(RunError {
+                source: source.to_owned(),
+                message: message.to_string(),
+            });
         }
     }
 
     fn count(&self, outcome: &UpsertOutcome) {
-        if let Ok(mut s) = self.stats.lock() {
-            s.seen += 1;
-            match outcome.status {
-                UpsertStatus::New => s.new += 1,
-                UpsertStatus::Updated => s.updated += 1,
-                UpsertStatus::Reopened => s.reopened += 1,
-                UpsertStatus::Unchanged => {}
-            }
-            if outcome.repost_of.is_some() {
-                s.reposts += 1;
-            }
+        let s = &mut self.tally().postings;
+        s.seen += 1;
+        match outcome.status {
+            UpsertStatus::New => s.new += 1,
+            UpsertStatus::Updated => s.updated += 1,
+            UpsertStatus::Reopened => s.reopened += 1,
+            UpsertStatus::Unchanged => {}
+        }
+        if outcome.repost_of.is_some() {
+            s.reposts += 1;
         }
     }
 
     fn closed(&self, n: u32) {
-        if let Ok(mut s) = self.stats.lock() {
-            s.closed += n;
-        }
+        self.tally().postings.closed += n;
     }
 
     fn register(&self, entry: &CompanyEntry, source: &str) -> Result<i64, StoreError> {
         let (id, added) = self.store.upsert_company(entry, source, self.now())?;
-        if added && let Ok(mut n) = self.boards_added.lock() {
-            *n += 1;
-        }
+        self.tally().boards_added += u32::from(added);
         Ok(id)
     }
 

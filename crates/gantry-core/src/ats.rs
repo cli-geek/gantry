@@ -37,9 +37,6 @@ impl Ats {
             _ => return None,
         })
     }
-
-    /// ATSes whose public board API Gantry polls.
-    pub const BOARD_APIS: [Self; 4] = [Self::Greenhouse, Self::Lever, Self::LeverEu, Self::Ashby];
 }
 
 impl std::fmt::Display for Ats {
