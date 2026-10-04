@@ -1181,7 +1181,7 @@ does not fork the codebase.
 
 ### 15.1 Status and as-built notes (2026-10-04)
 
-M0 is built; its exit criterion waits on the first CI run on three OSes.
+M0 is done: CI passed on Linux, Windows and macOS on 2026-10-04 (`1eb9e99`).
 M1 is built and was checked against the live sources: a first run polled
 413 boards, read 3,040 feed listings and 220 HN comments, stored 47,196
 postings, linked 661 reposts and recorded no source errors in 11 minutes.

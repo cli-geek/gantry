@@ -28,7 +28,7 @@ Each milestone ends with something usable on its own.
 
 | Milestone | Scope | Status |
 |---|---|---|
-| M0 | Workspace, platform layer, CI on Linux, Windows and macOS, TOML and SQLite storage, `gantry doctor` | Done; waiting on the first green CI run |
+| M0 | Workspace, platform layer, CI on Linux, Windows and macOS, TOML and SQLite storage, `gantry doctor` | Done |
 | M1 | Discovery from board APIs, list feeds and HN; dedup, offline geocoding, filters from `search.toml` | Done |
 | M2 | Question bank and technology pack, Tauri app shell, onboarding, resume import with per-item verification | Next |
 | M3 | Model layer: local and API providers, schema-bound extraction, injection defenses, scoring, `gantry eval` | Planned |
