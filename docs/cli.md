@@ -22,7 +22,7 @@ more.
 | `gantry run --discover-only` | One discovery run: boards, feeds, HN, probing, dedup, filters | `run` |
 | `gantry postings list [--filtered-out \| --all] [--include-closed] [--limit N]` | Postings with every filter's verdict and reason | `postings-list` |
 | `gantry url add URL` | Records a posting or board URL; the next run polls its board | `url-add` |
-| `gantry schema [NAME]` | Prints a JSON Schema, or lists the names | — |
+| `gantry schema [NAME]` | Prints a JSON Schema, or lists the names | none |
 
 `gantry run` without `--discover-only` exits 4 until staging lands (M5).
 
