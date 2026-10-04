@@ -1,5 +1,5 @@
 use std::os::unix::fs::PermissionsExt;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::PlatformError;
 
@@ -26,16 +26,4 @@ pub(crate) fn restrict_file(path: &Path) -> Result<(), PlatformError> {
 fn set_mode(path: &Path, mode: u32) -> Result<(), PlatformError> {
     std::fs::set_permissions(path, std::fs::Permissions::from_mode(mode))
         .map_err(|e| PlatformError::io(path, e))
-}
-
-/// Finds `name` in `$PATH` as an executable regular file.
-pub(crate) fn find_in_path(name: &str) -> Option<PathBuf> {
-    let path = std::env::var_os("PATH")?;
-    std::env::split_paths(&path)
-        .map(|dir| dir.join(name))
-        .find(|candidate| {
-            candidate
-                .metadata()
-                .is_ok_and(|m| m.is_file() && m.permissions().mode() & 0o111 != 0)
-        })
 }

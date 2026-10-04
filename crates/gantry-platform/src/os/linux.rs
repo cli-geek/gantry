@@ -1,3 +1,4 @@
+use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
 use std::process::Command;
 use std::sync::Arc;
@@ -29,7 +30,7 @@ const BROWSERS: &[&str] = &[
 
 pub(crate) fn locate_browser() -> Result<Option<BrowserInfo>, PlatformError> {
     Ok(BROWSERS.iter().find_map(|name| {
-        unix::find_in_path(name).map(|path| BrowserInfo {
+        find_in_path(name).map(|path| BrowserInfo {
             name: (*name).to_owned(),
             path,
         })
@@ -73,7 +74,7 @@ pub(crate) fn schedule_status() -> Result<ScheduleStatus, PlatformError> {
     if !unit_dir()?.join(TIMER).exists() {
         return Ok(ScheduleStatus::NotInstalled);
     }
-    if unix::find_in_path("systemctl").is_none() {
+    if find_in_path("systemctl").is_none() {
         return Ok(ScheduleStatus::Unavailable(
             "systemctl not found; the timer unit exists but systemd is not available".into(),
         ));
@@ -151,6 +152,18 @@ fn systemd_quote(word: &str) -> String {
     }
     out.push('"');
     out
+}
+
+/// Finds `name` in `$PATH` as an executable regular file.
+fn find_in_path(name: &str) -> Option<PathBuf> {
+    let path = std::env::var_os("PATH")?;
+    std::env::split_paths(&path)
+        .map(|dir| dir.join(name))
+        .find(|candidate| {
+            candidate
+                .metadata()
+                .is_ok_and(|m| m.is_file() && m.permissions().mode() & 0o111 != 0)
+        })
 }
 
 #[cfg(test)]
