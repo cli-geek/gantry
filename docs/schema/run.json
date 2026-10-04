@@ -199,7 +199,7 @@
           "format": "uint32",
           "minimum": 0
         },
-        "requests_skipped_known": {
+        "names_already_known": {
           "type": "integer",
           "format": "uint32",
           "minimum": 0
@@ -207,7 +207,7 @@
       },
       "required": [
         "names",
-        "requests_skipped_known",
+        "names_already_known",
         "boards_found"
       ]
     },

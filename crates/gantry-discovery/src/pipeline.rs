@@ -87,7 +87,7 @@ impl BoardStats {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, JsonSchema)]
 pub struct ProbeStats {
     pub names: u32,
-    pub requests_skipped_known: u32,
+    pub names_already_known: u32,
     pub boards_found: u32,
 }
 
@@ -139,6 +139,14 @@ struct Pending {
     company_id: i64,
     item: FeedItem,
     source: String,
+}
+
+/// One company name on one board API.
+enum Probe {
+    Hit(String),
+    Miss,
+    /// A request failed; the name is retried next run.
+    Failed,
 }
 
 struct Run<'a> {
@@ -582,7 +590,7 @@ impl Run<'_> {
             stats.names += 1;
             let variants = probe::slug_variants(&name);
             if variants.is_empty() || known.contains(&variants.concat()) {
-                stats.requests_skipped_known += u32::from(!variants.is_empty());
+                stats.names_already_known += u32::from(!variants.is_empty());
                 self.store
                     .finish_probe(&name, !variants.is_empty(), self.now())?;
                 continue;
@@ -596,7 +604,7 @@ impl Run<'_> {
             let mut complete = true;
             for (ats, result) in [(Ats::Greenhouse, gh?), (Ats::Lever, lv?), (Ats::Ashby, ab?)] {
                 match result {
-                    Some(Some(slug)) => {
+                    Probe::Hit(slug) => {
                         let entry = CompanyEntry {
                             name: name.clone(),
                             ats,
@@ -607,8 +615,8 @@ impl Run<'_> {
                         stats.boards_found += 1;
                         found = true;
                     }
-                    Some(None) => {}
-                    None => complete = false,
+                    Probe::Miss => {}
+                    Probe::Failed => complete = false,
                 }
             }
             // A probe that failed on the network is retried next run.
@@ -619,17 +627,15 @@ impl Run<'_> {
         Ok(stats)
     }
 
-    /// `Some(Some(slug))` on a hit, `Some(None)` on a clean miss, `None` if
-    /// a request failed.
     async fn probe_ats(
         &self,
         ats: Ats,
         variants: &[String],
         name: &str,
-    ) -> Result<Option<Option<String>>, StoreError> {
+    ) -> Result<Probe, StoreError> {
         for slug in variants {
             match self.store.cached_probe(slug, ats, self.now())? {
-                Some(true) => return Ok(Some(Some(slug.clone()))),
+                Some(true) => return Ok(Probe::Hit(slug.clone())),
                 Some(false) => continue,
                 None => {}
             }
@@ -637,10 +643,10 @@ impl Run<'_> {
                 Ats::Greenhouse => greenhouse::probe_url(slug),
                 Ats::Lever | Ats::LeverEu => lever::probe_url(slug),
                 Ats::Ashby => ashby::probe_url(slug),
-                Ats::External => return Ok(Some(None)),
+                Ats::External => return Ok(Probe::Miss),
             };
             let hit = match self.get(&format!("probe:{ats}"), &url, false).await? {
-                None => return Ok(None),
+                None => return Ok(Probe::Failed),
                 Some(Fetched::Body { body, .. }) => match ats {
                     // Greenhouse names the board, so a slug shared by an
                     // unrelated company is rejected.
@@ -652,10 +658,10 @@ impl Run<'_> {
             };
             self.store.record_probe(slug, ats, hit, self.now())?;
             if hit {
-                return Ok(Some(Some(slug.clone())));
+                return Ok(Probe::Hit(slug.clone()));
             }
         }
-        Ok(Some(None))
+        Ok(Probe::Miss)
     }
 
     async fn poll_group(
