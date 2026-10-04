@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "UrlAdded",
+  "type": "object",
+  "properties": {
+    "added": {
+      "description": "`false` if this URL was added before.",
+      "type": "boolean"
+    },
+    "next": {
+      "description": "What the next run will do with it.",
+      "type": "string"
+    },
+    "resolved": {
+      "$ref": "#/$defs/Resolved"
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "url",
+    "resolved",
+    "added",
+    "next"
+  ],
+  "$defs": {
+    "Ats": {
+      "description": "Where a posting lives. `External` covers every site without a board API\nadapter; such postings are still discovered and filtered (§4.1.1).",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "greenhouse",
+            "lever",
+            "ashby",
+            "external"
+          ]
+        },
+        {
+          "description": "Lever's EU data region: same product, separate API host.",
+          "type": "string",
+          "const": "lever_eu"
+        }
+      ]
+    },
+    "Resolved": {
+      "oneOf": [
+        {
+          "description": "One posting on a board API.",
+          "type": "object",
+          "properties": {
+            "ats": {
+              "$ref": "#/$defs/Ats"
+            },
+            "board_token": {
+              "type": "string"
+            },
+            "job_id": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "const": "posting"
+            }
+          },
+          "required": [
+            "kind",
+            "ats",
+            "board_token",
+            "job_id"
+          ]
+        },
+        {
+          "description": "A whole board.",
+          "type": "object",
+          "properties": {
+            "ats": {
+              "$ref": "#/$defs/Ats"
+            },
+            "board_token": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "const": "board"
+            }
+          },
+          "required": [
+            "kind",
+            "ats",
+            "board_token"
+          ]
+        },
+        {
+          "description": "A Greenhouse board embedded in a company site (`?gh_jid=`). The board\ntoken is not in the URL; it is found by probing the host's name.",
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string"
+            },
+            "job_id": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "const": "greenhouse_embed"
+            }
+          },
+          "required": [
+            "kind",
+            "host",
+            "job_id"
+          ]
+        },
+        {
+          "description": "Any other site. Discovered and listed, but nothing to poll.",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "external"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "url"
+          ]
+        }
+      ]
+    }
+  }
+}

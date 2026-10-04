@@ -1,0 +1,27 @@
+[package]
+name = "gantry-cmd"
+description = "Gantry command layer: one typed function per operation, shared by the CLI and the app"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+gantry-core.workspace = true
+gantry-discovery.workspace = true
+gantry-platform.workspace = true
+gantry-store.workspace = true
+jiff.workspace = true
+schemars.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+gantry-discovery = { workspace = true, features = ["fixtures"] }
+tempfile.workspace = true
+tokio.workspace = true
+
+[lints]
+workspace = true

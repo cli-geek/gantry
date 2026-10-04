@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Array_of_PostingSummary",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/PostingSummary"
+  },
+  "$defs": {
+    "Ats": {
+      "description": "Where a posting lives. `External` covers every site without a board API\nadapter; such postings are still discovered and filtered (§4.1.1).",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "greenhouse",
+            "lever",
+            "ashby",
+            "external"
+          ]
+        },
+        {
+          "description": "Lever's EU data region: same product, separate API host.",
+          "type": "string",
+          "const": "lever_eu"
+        }
+      ]
+    },
+    "Check": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "type": "string"
+        },
+        "filter": {
+          "$ref": "#/$defs/FilterName"
+        },
+        "hard": {
+          "description": "Whether a `fail` here excludes the posting.",
+          "type": "boolean"
+        },
+        "verdict": {
+          "$ref": "#/$defs/Verdict"
+        }
+      },
+      "required": [
+        "filter",
+        "hard",
+        "verdict",
+        "detail"
+      ]
+    },
+    "FilterName": {
+      "type": "string",
+      "enum": [
+        "title",
+        "seniority",
+        "experience",
+        "job_type",
+        "location",
+        "pay",
+        "freshness",
+        "keywords",
+        "company",
+        "sponsorship",
+        "clearance",
+        "education",
+        "licenses"
+      ]
+    },
+    "PostingStatus": {
+      "type": "string",
+      "enum": [
+        "passed",
+        "filtered_out",
+        "not_evaluated"
+      ]
+    },
+    "PostingSummary": {
+      "description": "One row of the list view (§4.3: filtered-out postings show reasons).",
+      "type": "object",
+      "properties": {
+        "ats": {
+          "$ref": "#/$defs/Ats"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Check"
+          }
+        },
+        "closed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "company": {
+          "type": "string"
+        },
+        "duplicate_of": {
+          "description": "The earlier posting this one reposts.",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "first_seen": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "location": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "sources": {
+          "description": "Every source that listed it: an ATS, `feed:<id>`, `hn`, `manual`.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "$ref": "#/$defs/PostingStatus"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "ats",
+        "company",
+        "title",
+        "url",
+        "location",
+        "first_seen",
+        "status",
+        "checks",
+        "sources"
+      ]
+    },
+    "Verdict": {
+      "type": "string",
+      "enum": [
+        "fail",
+        "unknown",
+        "pass"
+      ]
+    }
+  }
+}

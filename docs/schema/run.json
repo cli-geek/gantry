@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DiscoverReport",
+  "type": "object",
+  "properties": {
+    "boards": {
+      "$ref": "#/$defs/BoardStats"
+    },
+    "boards_added": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0
+    },
+    "error_count": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/RunError"
+      }
+    },
+    "feeds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SourceStatus"
+      }
+    },
+    "finished_at": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "hacker_news": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SourceStatus"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "home": {
+      "description": "The geocoded home location the distance filter used.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "postings": {
+      "$ref": "#/$defs/PostingStats"
+    },
+    "probes": {
+      "$ref": "#/$defs/ProbeStats"
+    },
+    "run_id": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "started_at": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "run_id",
+    "started_at",
+    "finished_at",
+    "boards_added",
+    "feeds",
+    "probes",
+    "boards",
+    "postings",
+    "warnings",
+    "error_count",
+    "errors"
+  ],
+  "$defs": {
+    "BoardStats": {
+      "type": "object",
+      "properties": {
+        "failed": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "not_found": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "polled": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "unchanged": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "polled",
+        "unchanged",
+        "not_found",
+        "failed"
+      ]
+    },
+    "PostingStats": {
+      "type": "object",
+      "properties": {
+        "closed": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "filtered_out": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "new": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "open": {
+          "description": "Open postings after the run.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "passed": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "reopened": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "reposts": {
+          "description": "New postings linked to an earlier one as reposts.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "seen": {
+          "description": "Postings listed by any source this run.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "unresolved_locations": {
+          "description": "Open postings with at least one location that could not be placed.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "updated": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "seen",
+        "new",
+        "updated",
+        "reopened",
+        "closed",
+        "reposts",
+        "open",
+        "passed",
+        "filtered_out",
+        "unresolved_locations"
+      ]
+    },
+    "ProbeStats": {
+      "type": "object",
+      "properties": {
+        "boards_found": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "names": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "requests_skipped_known": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "names",
+        "requests_skipped_known",
+        "boards_found"
+      ]
+    },
+    "RunError": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "message"
+      ]
+    },
+    "SourceOutcome": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "unchanged",
+        "not_found",
+        "disallowed",
+        "failed"
+      ]
+    },
+    "SourceStatus": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "description": "Feed listings or HN comments read.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "outcome": {
+          "$ref": "#/$defs/SourceOutcome"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "outcome",
+        "items"
+      ]
+    }
+  }
+}

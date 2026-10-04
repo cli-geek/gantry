@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ErrorOutput",
+  "description": "What every command prints on stdout with `--json` when it fails.",
+  "type": "object",
+  "properties": {
+    "error": {
+      "$ref": "#/$defs/ErrorBody"
+    }
+  },
+  "required": [
+    "error"
+  ],
+  "$defs": {
+    "ErrorBody": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "description": "`config`, `invalid_input`, `not_available`, `store`, `platform`,\n`network` or `usage`.",
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "message"
+      ]
+    }
+  }
+}

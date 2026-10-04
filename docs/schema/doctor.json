@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DoctorReport",
+  "type": "object",
+  "properties": {
+    "checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DoctorCheck"
+      }
+    },
+    "config_dir": {
+      "type": "string"
+    },
+    "data_dir": {
+      "type": "string"
+    },
+    "ok": {
+      "description": "`false` if any check failed.",
+      "type": "boolean"
+    },
+    "os": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "os",
+    "config_dir",
+    "data_dir",
+    "ok",
+    "checks"
+  ],
+  "$defs": {
+    "CheckStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ok"
+          ]
+        },
+        {
+          "description": "Works, but something needs attention or a later feature will fail.",
+          "type": "string",
+          "const": "warn"
+        },
+        {
+          "description": "Gantry cannot work until this is fixed.",
+          "type": "string",
+          "const": "fail"
+        },
+        {
+          "description": "Not applicable yet on this OS or at this milestone.",
+          "type": "string",
+          "const": "skip"
+        }
+      ]
+    },
+    "DoctorCheck": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/CheckStatus"
+        }
+      },
+      "required": [
+        "name",
+        "status",
+        "detail"
+      ]
+    }
+  }
+}
