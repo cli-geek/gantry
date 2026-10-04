@@ -22,6 +22,29 @@ Nothing is staged or submitted yet. There is no GUI yet; onboarding
 
 Linux is supported. Windows and macOS build in CI and are ported later.
 
+## Roadmap
+
+Each milestone ends with something usable on its own.
+
+| Milestone | Scope | Status |
+|---|---|---|
+| M0 | Workspace, platform layer, CI on Linux, Windows and macOS, TOML and SQLite storage, `gantry doctor` | Done; waiting on the first green CI run |
+| M1 | Discovery from board APIs, list feeds and HN; dedup, offline geocoding, filters from `search.toml` | Done |
+| M2 | Question bank and technology pack, Tauri app shell, onboarding, resume import with per-item verification | Next |
+| M3 | Model layer: local and API providers, schema-bound extraction, injection defenses, scoring, `gantry eval` | Planned |
+| M4 | Resume rendering with Typst, one-page fitting, text read-back check | Planned |
+| M5 | Staging: answers from the verified bank, cited drafts, review flags, nightly cap and per-company cooldown | Planned |
+| M6 | Review queue and browser: fill on open, read-back diff, one click to submit; Greenhouse, then Lever, then Ashby | Planned |
+| M7 | Scheduled nightly runs, desktop notification, saving review answers back to the bank | Planned |
+| M7b | More sources: other ATS boards, remote-job APIs, USAJOBS, big-tech career sites | Planned |
+| M8 | Linux packages (AppImage, deb, rpm, AUR), signed releases, 0.1.0 | Planned |
+| M9 | Windows and macOS ports and installers | Planned |
+| M10 | Workday, after a terms check | Planned |
+| M11+ | Occupation packs: finance, healthcare, retail and hospitality, then trades, education, logistics, government | Planned |
+
+Version 1.0 is M9 finished with the technology pack stable. Packs without
+a reviewer from that field ship marked "unreviewed".
+
 ## Build
 
 Requires Rust 1.95 or newer and a C compiler (for the bundled SQLite).
