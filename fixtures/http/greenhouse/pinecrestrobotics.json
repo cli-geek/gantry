@@ -1,0 +1,33 @@
+{
+  "jobs": [
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/pinecrestrobotics/jobs/9001",
+      "data_compliance": [],
+      "internal_job_id": 10001,
+      "location": {
+        "name": "Seattle, WA"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        }
+      ],
+      "id": 9001,
+      "updated_at": "2026-09-30T08:00:00-07:00",
+      "requisition_id": "REQ-9001",
+      "title": "Software Engineer, New Grad",
+      "company_name": "Pinecrest Robotics",
+      "first_published": "2026-09-30T08:00:00-07:00",
+      "language": "en",
+      "content": "&lt;p&gt;Write control software for warehouse robots.&lt;/p&gt;&lt;p&gt;Salary: $115,000 - $135,000 per year.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    }
+  ],
+  "meta": {
+    "total": 1
+  }
+}

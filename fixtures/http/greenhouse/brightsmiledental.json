@@ -1,0 +1,167 @@
+{
+  "jobs": [
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/brightsmiledental/jobs/7001",
+      "data_compliance": [],
+      "internal_job_id": 8001,
+      "location": {
+        "name": "Austin, TX"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        },
+        {
+          "id": 3,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 7001,
+      "updated_at": "2026-09-26T08:00:00-05:00",
+      "requisition_id": "REQ-7001",
+      "title": "Registered Dental Hygienist",
+      "company_name": "BrightSmile Dental Group",
+      "first_published": "2026-09-26T08:00:00-05:00",
+      "language": "en",
+      "content": "&lt;p&gt;Provide preventive care and patient education at our downtown clinic.&lt;/p&gt;&lt;p&gt;Active Texas RDH license required. 1 year of clinical experience preferred.&lt;/p&gt;&lt;p&gt;Pay: $45 - $55 per hour.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/brightsmiledental/jobs/7002",
+      "data_compliance": [],
+      "internal_job_id": 8002,
+      "location": {
+        "name": "Round Rock, TX"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        }
+      ],
+      "id": 7002,
+      "updated_at": "2026-09-30T08:00:00-05:00",
+      "requisition_id": "REQ-7002",
+      "title": "Dental Hygienist (Part-Time)",
+      "company_name": "BrightSmile Dental Group",
+      "first_published": "2026-09-30T08:00:00-05:00",
+      "language": "en",
+      "content": "&lt;p&gt;Three days a week at our Round Rock office.&lt;/p&gt;&lt;p&gt;Pay: $42 to $50 per hour.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/brightsmiledental/jobs/7003",
+      "data_compliance": [],
+      "internal_job_id": 8003,
+      "location": {
+        "name": "Houston, TX"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        },
+        {
+          "id": 3,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 7003,
+      "updated_at": "2026-09-30T08:00:00-05:00",
+      "requisition_id": "REQ-7003",
+      "title": "Registered Dental Hygienist",
+      "company_name": "BrightSmile Dental Group",
+      "first_published": "2026-09-30T08:00:00-05:00",
+      "language": "en",
+      "content": "&lt;p&gt;Join our Houston team.&lt;/p&gt;&lt;p&gt;Pay: $40 - $48 per hour.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/brightsmiledental/jobs/7004",
+      "data_compliance": [],
+      "internal_job_id": 8004,
+      "location": {
+        "name": "Austin, TX"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        },
+        {
+          "id": 2,
+          "name": "Workplace Type",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        },
+        {
+          "id": 3,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 7004,
+      "updated_at": "2026-09-30T08:00:00-05:00",
+      "requisition_id": "REQ-7004",
+      "title": "Software Engineer, Patient Scheduling",
+      "company_name": "BrightSmile Dental Group",
+      "first_published": "2026-09-30T08:00:00-05:00",
+      "language": "en",
+      "content": "&lt;p&gt;Build our booking system.&lt;/p&gt;&lt;p&gt;Salary: $120,000 - $140,000 per year.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/brightsmiledental/jobs/7005",
+      "data_compliance": [],
+      "internal_job_id": 8005,
+      "location": {
+        "name": "Austin, TX"
+      },
+      "metadata": [
+        {
+          "id": 1,
+          "name": "Is this job part of ACC?",
+          "value": false,
+          "value_type": "yes_no"
+        },
+        {
+          "id": 3,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 7005,
+      "updated_at": "2026-09-30T08:00:00-05:00",
+      "requisition_id": "REQ-7005",
+      "title": "Dental Assistant",
+      "company_name": "BrightSmile Dental Group",
+      "first_published": "2026-09-30T08:00:00-05:00",
+      "language": "en",
+      "content": "&lt;p&gt;Chairside assistance.&lt;/p&gt;&lt;p&gt;Pay: $20 - $24 per hour.&lt;/p&gt;",
+      "departments": [],
+      "offices": []
+    }
+  ],
+  "meta": {
+    "total": 5
+  }
+}

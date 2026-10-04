@@ -1,0 +1,107 @@
+[
+  {
+    "additionalPlain": "We are an equal opportunity employer.",
+    "additional": "<div>We are an equal opportunity employer.</div>",
+    "categories": {
+      "commitment": "Full-time",
+      "location": "Remote - US",
+      "team": "Engineering",
+      "allLocations": [
+        "Remote - US"
+      ]
+    },
+    "createdAt": 1790352000000,
+    "descriptionPlain": "Quillstack runs document pipelines for law firms. 2+ years of experience with Go or Rust.",
+    "description": "<div>Quillstack runs document pipelines for law firms. 2+ years of experience with Go or Rust.</div>",
+    "id": "1f0e8a7c-0000-4000-8000-000000000101",
+    "lists": [
+      {
+        "text": "What you bring",
+        "content": "<li>Curiosity</li><li>Clear writing</li>"
+      }
+    ],
+    "text": "Backend Engineer",
+    "country": "US",
+    "workplaceType": "remote",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "",
+    "descriptionBodyPlain": "",
+    "hostedUrl": "https://jobs.lever.co/quillstack/1f0e8a7c-0000-4000-8000-000000000101",
+    "applyUrl": "https://jobs.lever.co/quillstack/1f0e8a7c-0000-4000-8000-000000000101/apply",
+    "salaryRange": {
+      "currency": "USD",
+      "interval": "per-year-salary",
+      "min": 130000,
+      "max": 160000
+    }
+  },
+  {
+    "additionalPlain": "We are an equal opportunity employer.",
+    "additional": "<div>We are an equal opportunity employer.</div>",
+    "categories": {
+      "commitment": "Internship",
+      "location": "Seattle, WA",
+      "team": "Engineering",
+      "allLocations": [
+        "Seattle, WA"
+      ]
+    },
+    "createdAt": 1790352000000,
+    "descriptionPlain": "A 12-week internship on our ingestion team.",
+    "description": "<div>A 12-week internship on our ingestion team.</div>",
+    "id": "1f0e8a7c-0000-4000-8000-000000000102",
+    "lists": [
+      {
+        "text": "What you bring",
+        "content": "<li>Curiosity</li><li>Clear writing</li>"
+      }
+    ],
+    "text": "Software Engineering Intern, Summer 2027",
+    "country": "US",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "",
+    "descriptionBodyPlain": "",
+    "hostedUrl": "https://jobs.lever.co/quillstack/1f0e8a7c-0000-4000-8000-000000000102",
+    "applyUrl": "https://jobs.lever.co/quillstack/1f0e8a7c-0000-4000-8000-000000000102/apply",
+    "salaryRange": {
+      "currency": "USD",
+      "interval": "per-hour-wage",
+      "min": 40,
+      "max": 50
+    }
+  },
+  {
+    "additionalPlain": "We are an equal opportunity employer.",
+    "additional": "<div>We are an equal opportunity employer.</div>",
+    "categories": {
+      "commitment": "Contractor",
+      "location": "Toronto, ON",
+      "team": "Engineering",
+      "allLocations": [
+        "Toronto, ON"
+      ]
+    },
+    "createdAt": 1790352000000,
+    "descriptionPlain": "Six-month contract on our Kubernetes platform.",
+    "description": "<div>Six-month contract on our Kubernetes platform.</div>",
+    "id": "1f0e8a7c-0000-4000-8000-000000000103",
+    "lists": [
+      {
+        "text": "What you bring",
+        "content": "<li>Curiosity</li><li>Clear writing</li>"
+      }
+    ],
+    "text": "Platform Engineer",
+    "country": "US",
+    "workplaceType": "hybrid",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "",
+    "descriptionBodyPlain": "",
+    "hostedUrl": "https://jobs.lever.co/quillstack/1f0e8a7c-0000-4000-8000-000000000103",
+    "applyUrl": "https://jobs.lever.co/quillstack/1f0e8a7c-0000-4000-8000-000000000103/apply"
+  }
+]

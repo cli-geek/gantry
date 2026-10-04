@@ -1,0 +1,90 @@
+# Saved responses served by gantry_discovery::fixture::FixtureTransport.
+# Every company and posting is fictional; shapes match the live APIs as
+# checked on 2026-10-03 (see each adapter's doc comment). Unlisted URLs,
+# including every robots.txt not listed here, answer 404.
+
+[[route]]
+url = "https://hacker-news.firebaseio.com/robots.txt"
+body = "User-agent: *\nAllow: /*.json$\nAllow: /*.json?*$\nDisallow: /\n"
+
+[[route]]
+url = "https://boards-api.greenhouse.io/robots.txt"
+body = "User-agent: *\nDisallow: /embed/\n"
+
+[[route]]
+url = "https://api.lever.co/robots.txt"
+body = "User-agent: *\nAllow: /\nCrawl-delay: 1\n"
+
+# Boards
+
+[[route]]
+url = "https://boards-api.greenhouse.io/v1/boards/northwindlabs/jobs?content=true"
+file = "greenhouse/northwindlabs.json"
+etag = 'W/"nw-1"'
+
+[[route]]
+url = "https://boards-api.greenhouse.io/v1/boards/brightsmiledental/jobs?content=true"
+file = "greenhouse/brightsmiledental.json"
+etag = 'W/"bs-1"'
+
+[[route]]
+url = "https://boards-api.greenhouse.io/v1/boards/pinecrestrobotics/jobs?content=true"
+file = "greenhouse/pinecrestrobotics.json"
+
+[[route]]
+url = "https://api.lever.co/v0/postings/quillstack?mode=json"
+file = "lever/quillstack.json"
+etag = 'W/"qs-1"'
+
+[[route]]
+url = "https://api.lever.co/v0/postings/cobaltharborsoftware?mode=json"
+file = "lever/cobaltharborsoftware.json"
+
+[[route]]
+url = "https://api.ashbyhq.com/posting-api/job-board/lumenforge?includeCompensation=true"
+file = "ashby/lumenforge.json"
+
+# Slug probes. Cobalt Harbor Software has a Lever board. A Greenhouse
+# board named "Tidewater Marine Supply" sits at the slug Tidewater
+# Analytics would use, and must be rejected.
+
+[[route]]
+url = "https://api.lever.co/v0/postings/cobaltharborsoftware?mode=json&limit=1"
+body = "[]"
+
+[[route]]
+url = "https://boards-api.greenhouse.io/v1/boards/tidewateranalytics"
+file = "greenhouse/tidewateranalytics-board.json"
+
+# Feeds
+
+[[route]]
+url = "https://raw.githubusercontent.com/SimplifyJobs/New-Grad-Positions/dev/.github/scripts/listings.json"
+file = "feeds/simplify-new-grad.json"
+etag = '"sg-1"'
+
+# Hacker News
+
+[[route]]
+url = "https://hacker-news.firebaseio.com/v0/user/whoishiring.json"
+file = "hn/whoishiring.json"
+
+[[route]]
+url = "https://hacker-news.firebaseio.com/v0/item/90003.json"
+file = "hn/90003.json"
+
+[[route]]
+url = "https://hacker-news.firebaseio.com/v0/item/90002.json"
+file = "hn/90002.json"
+
+[[route]]
+url = "https://hacker-news.firebaseio.com/v0/item/91001.json"
+file = "hn/91001.json"
+
+[[route]]
+url = "https://hacker-news.firebaseio.com/v0/item/91002.json"
+file = "hn/91002.json"
+
+[[route]]
+url = "https://hacker-news.firebaseio.com/v0/item/91003.json"
+file = "hn/91003.json"

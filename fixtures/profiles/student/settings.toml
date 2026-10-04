@@ -1,0 +1,3 @@
+[discovery]
+feeds = ["simplify-new-grad"]
+hacker_news = false

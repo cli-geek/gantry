@@ -1,0 +1,34 @@
+[authorization.require_sponsorship_now]
+id = "c-sponsor-now"
+value = false
+verified = true
+created_at = "2026-09-01T00:00:00Z"
+updated_at = "2026-09-01T00:00:00Z"
+
+[authorization.require_sponsorship_future]
+id = "c-sponsor-future"
+value = false
+verified = true
+created_at = "2026-09-01T00:00:00Z"
+updated_at = "2026-09-01T00:00:00Z"
+
+[authorization.us_citizen]
+id = "c-us-citizen"
+value = true
+verified = true
+created_at = "2026-09-01T00:00:00Z"
+updated_at = "2026-09-01T00:00:00Z"
+
+[clearance.level]
+id = "d-level"
+value = "none"
+verified = true
+created_at = "2026-09-01T00:00:00Z"
+updated_at = "2026-09-01T00:00:00Z"
+
+[clearance.willing_to_obtain]
+id = "d-willing"
+value = false
+verified = true
+created_at = "2026-09-01T00:00:00Z"
+updated_at = "2026-09-01T00:00:00Z"
