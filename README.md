@@ -39,11 +39,19 @@ Each milestone ends with something usable on its own.
 | M7b | More sources: other ATS boards, remote-job APIs, USAJOBS, big-tech career sites | Planned |
 | M8 | Linux packages (AppImage, deb, rpm, AUR), signed releases, 0.1.0 | Planned |
 | M9 | Windows and macOS ports and installers | Planned |
-| M10 | Workday, after a terms check | Planned |
+| M10 | The next ATS by observed posting share, after a terms check | Planned |
 | M11+ | Occupation packs: finance, healthcare, retail and hospitality, then trades, education, logistics, government | Planned |
 
 Version 1.0 is M9 finished with the technology pack stable. Packs without
 a reviewer from that field ship marked "unreviewed".
+
+Some sites' terms prohibit automated access: Workday, Handshake, LinkedIn,
+Indeed, Glassdoor, ZipRecruiter and Wellfound. Gantry never sends them a
+request. Their postings get every answer prepared for you to paste in
+yourself (manual paste mode, M6).
+
+The full plan, with decisions and the reasons for them, is in
+[`docs/plan.md`](docs/plan.md).
 
 ## Build
 
@@ -76,6 +84,7 @@ the machine. Profile files and the database are readable only by your user.
 
 ## Documentation
 
+- [`docs/plan.md`](docs/plan.md): plan of record, milestones, decisions
 - [`docs/cli.md`](docs/cli.md): commands, JSON output, exit codes
 - [`docs/architecture.md`](docs/architecture.md): crates and the discovery run
 - [`fixtures/profiles/README.md`](fixtures/profiles/README.md): fictional test profiles
