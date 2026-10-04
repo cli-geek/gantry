@@ -37,8 +37,6 @@ pub struct CompanyRow {
     pub ats: Ats,
     pub token: String,
     pub source: String,
-    pub staffing_agency: Option<bool>,
-    pub last_polled_at: Option<i64>,
 }
 
 impl Store {
@@ -167,40 +165,18 @@ impl Store {
 
     pub fn companies(&self) -> Result<Vec<CompanyRow>, StoreError> {
         let conn = self.conn()?;
-        let mut stmt = conn.prepare(
-            "SELECT id, name, ats, board_token, source, staffing_agency, last_polled_at
-             FROM companies ORDER BY id",
-        )?;
+        let mut stmt =
+            conn.prepare("SELECT id, name, ats, board_token, source FROM companies ORDER BY id")?;
         let rows = stmt.query_map([], |r| {
-            Ok((
-                r.get::<_, i64>(0)?,
-                r.get::<_, String>(1)?,
-                r.get::<_, String>(2)?,
-                r.get::<_, String>(3)?,
-                r.get::<_, String>(4)?,
-                r.get::<_, Option<bool>>(5)?,
-                r.get::<_, Option<i64>>(6)?,
-            ))
+            Ok(CompanyRow {
+                id: r.get(0)?,
+                name: r.get(1)?,
+                ats: ats_at(r, 2)?,
+                token: r.get(3)?,
+                source: r.get(4)?,
+            })
         })?;
-        let mut out = Vec::new();
-        for row in rows {
-            let (id, name, ats, token, source, staffing_agency, last_polled_at) = row?;
-            // Rows are written only through `upsert_company`, so an
-            // unparseable ATS means a newer Gantry wrote it; skip it.
-            let Some(ats) = Ats::parse(&ats) else {
-                continue;
-            };
-            out.push(CompanyRow {
-                id,
-                name,
-                ats,
-                token,
-                source,
-                staffing_agency,
-                last_polled_at,
-            });
-        }
-        Ok(out)
+        Ok(rows.collect::<Result<_, _>>()?)
     }
 
     pub fn record_poll(
@@ -358,6 +334,18 @@ impl Store {
         let rows = stmt.query_map([], |r| Ok((r.get(0)?, r.get(1)?)))?;
         Ok(rows.collect::<Result<_, _>>()?)
     }
+}
+
+/// Reads an `ats` column; rows are written only from `Ats::as_str`.
+pub(crate) fn ats_at(r: &rusqlite::Row<'_>, i: usize) -> rusqlite::Result<Ats> {
+    let text: String = r.get(i)?;
+    Ats::parse(&text).ok_or_else(|| {
+        rusqlite::Error::FromSqlConversionFailure(
+            i,
+            rusqlite::types::Type::Text,
+            Box::new(std::io::Error::other(format!("unknown ats \"{text}\""))),
+        )
+    })
 }
 
 pub(crate) fn log_event(

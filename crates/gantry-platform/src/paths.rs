@@ -47,14 +47,9 @@ impl Paths {
         self.data_dir.join("gantry.db")
     }
 
-    /// Creates the data directory with user-only permissions. The config
-    /// directory is created only by commands that write TOML.
+    /// Creates the data directory with user-only permissions.
     pub fn ensure_data_dir(&self) -> Result<(), PlatformError> {
         create_private_dir(&self.data_dir)
-    }
-
-    pub fn ensure_config_dir(&self) -> Result<(), PlatformError> {
-        create_private_dir(&self.config_dir)
     }
 }
 
