@@ -1,0 +1,39 @@
+# cargo-deny: advisories, licenses, bans, sources (§12). Run in CI.
+
+[graph]
+all-features = true
+
+[advisories]
+version = 2
+
+[licenses]
+version = 2
+confidence-threshold = 0.9
+# MPL-2.0 is file-level copyleft (scraper's CSS selector crates, option-ext);
+# using it unmodified in an MIT binary is fine. CDLA-Permissive-2.0 covers
+# the Mozilla root certificate list.
+allow = [
+    "0BSD",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-3-Clause",
+    "CC0-1.0",
+    "CDLA-Permissive-2.0",
+    "ISC",
+    "MIT",
+    "MIT-0",
+    "MPL-2.0",
+    "Unicode-3.0",
+    "Unlicense",
+    "Zlib",
+]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+# Workspace crates are path dependencies and never published.
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
