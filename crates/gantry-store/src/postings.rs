@@ -135,9 +135,14 @@ impl Store {
 
         let mut conn = self.conn()?;
         let tx = conn.transaction()?;
-        let existing: Option<(i64, String, Option<i64>, String)> = tx
+        // Only a feed-sourced sponsorship fact is read back, not the whole
+        // stored posting.
+        let existing: Option<(i64, String, Option<i64>, Option<String>)> = tx
             .query_row(
-                "SELECT id, content_hash, closed_at, posting_json FROM postings
+                "SELECT id, content_hash, closed_at,
+                    CASE WHEN json_extract(posting_json, '$.facts.sponsorship.source') = 'feed'
+                         THEN json_extract(posting_json, '$.facts.sponsorship') END
+                 FROM postings
                  WHERE ats = ?1 AND board_token = ?2 AND ats_job_id = ?3",
                 params![key.ats.as_str(), key.board_token, key.job_id],
                 |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
@@ -147,10 +152,9 @@ impl Store {
         // keep the feed's fact until a structured source says otherwise.
         let mut posting = std::borrow::Cow::Borrowed(posting);
         if posting.facts.sponsorship.is_none()
-            && let Some((.., old_json)) = &existing
-            && let Some(kept) = feed_sponsorship(old_json)?
+            && let Some((.., Some(kept))) = &existing
         {
-            posting.to_mut().facts.sponsorship = Some(kept);
+            posting.to_mut().facts.sponsorship = Some(serde_json::from_str(kept)?);
         }
         let json = serde_json::to_string(&*posting)?;
 
@@ -339,12 +343,13 @@ impl Store {
         Ok(rows.collect::<Result<_, _>>()?)
     }
 
-    /// Records a feed's sponsorship statement on a posting another source
-    /// owns, unless a structured ATS field already set one.
+    /// Records a feed's sponsorship statement (`None`: the feed no longer
+    /// states one) on a posting another source owns, unless a structured
+    /// ATS field already set one.
     pub fn set_feed_sponsorship(
         &self,
         posting_id: i64,
-        fact: &Fact<Sponsorship>,
+        fact: Option<&Fact<Sponsorship>>,
     ) -> Result<(), StoreError> {
         let conn = self.conn()?;
         let json: String = conn.query_row(
@@ -361,7 +366,10 @@ impl Store {
         {
             return Ok(());
         }
-        posting.facts.sponsorship = Some(fact.clone());
+        if posting.facts.sponsorship.as_ref() == fact {
+            return Ok(());
+        }
+        posting.facts.sponsorship = fact.cloned();
         conn.execute(
             "UPDATE postings SET posting_json = ?2 WHERE id = ?1",
             params![posting_id, serde_json::to_string(&posting)?],
@@ -494,15 +502,6 @@ fn settle(
         }
     }
     Ok(closed)
-}
-
-/// A feed-sourced sponsorship fact in a stored posting's JSON.
-fn feed_sponsorship(posting_json: &str) -> Result<Option<Fact<Sponsorship>>, StoreError> {
-    let old: Posting = serde_json::from_str(posting_json)?;
-    Ok(old
-        .facts
-        .sponsorship
-        .filter(|f| f.source == FactSource::Feed))
 }
 
 /// Increments a posting's miss count, closing it at the threshold.
@@ -779,11 +778,20 @@ mod tests {
             source: FactSource::Feed,
             evidence: "Does Not Offer Sponsorship".into(),
         };
-        store.set_feed_sponsorship(id, &fact).unwrap();
+        store.set_feed_sponsorship(id, Some(&fact)).unwrap();
         store
             .upsert_posting(&p, None, "greenhouse", "u", 20)
             .unwrap();
         let open = store.open_postings().unwrap();
         assert_eq!(open[0].posting.facts.sponsorship, Some(fact));
+        store.set_feed_sponsorship(id, None).unwrap();
+        store
+            .upsert_posting(&p, None, "greenhouse", "u", 30)
+            .unwrap();
+        let open = store.open_postings().unwrap();
+        assert_eq!(
+            open[0].posting.facts.sponsorship, None,
+            "feed stopped saying it"
+        );
     }
 }

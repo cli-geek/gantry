@@ -825,9 +825,8 @@ impl Run<'_> {
                 self.store
                     .add_source_if_exists(&p.key, &p.source, &p.item.url, self.now())?
             {
-                if let Some(fact) = &p.item.sponsorship {
-                    self.store.set_feed_sponsorship(id, fact)?;
-                }
+                self.store
+                    .set_feed_sponsorship(id, p.item.sponsorship.as_ref())?;
                 continue;
             }
             if polled_ok.contains(&(p.key.ats, p.key.board_token.clone())) {
