@@ -123,18 +123,19 @@ impl Store {
         source: &str,
         now: i64,
     ) -> Result<(i64, bool), StoreError> {
+        let token = entry.ats.canonical_token(&entry.token);
         let conn = self.conn()?;
         let existing: Option<(i64, String)> = conn
             .query_row(
                 "SELECT id, name FROM companies WHERE ats = ?1 AND board_token = ?2",
-                params![entry.ats.as_str(), entry.token],
+                params![entry.ats.as_str(), token],
                 |r| Ok((r.get(0)?, r.get(1)?)),
             )
             .optional()?;
         if let Some((id, name)) = existing {
             // A board added from a bare URL is named by its token until a
             // source that knows the company's name lists it.
-            if name == entry.token && entry.name != entry.token {
+            if name.eq_ignore_ascii_case(&token) && !entry.name.eq_ignore_ascii_case(&token) {
                 conn.execute(
                     "UPDATE companies SET name = ?2 WHERE id = ?1",
                     params![id, entry.name],
@@ -154,13 +155,42 @@ impl Store {
             params![
                 entry.name,
                 entry.ats.as_str(),
-                entry.token,
+                token,
                 source,
                 entry.staffing_agency,
                 now
             ],
         )?;
         Ok((conn.last_insert_rowid(), true))
+    }
+
+    /// Stops polling a board: its open postings close now, and the
+    /// company row goes. Returns how many postings closed.
+    pub fn retire_company(&self, company: &CompanyRow, now: i64) -> Result<u32, StoreError> {
+        let mut conn = self.conn()?;
+        let tx = conn.transaction()?;
+        let open: Vec<i64> = {
+            let mut stmt = tx.prepare(
+                "SELECT id FROM postings WHERE ats = ?1 AND board_token = ?2 AND closed_at IS NULL",
+            )?;
+            let rows =
+                stmt.query_map(params![company.ats.as_str(), company.token], |r| r.get(0))?;
+            rows.collect::<Result<_, _>>()?
+        };
+        for id in &open {
+            tx.execute(
+                "UPDATE postings SET closed_at = ?2 WHERE id = ?1",
+                params![id, now],
+            )?;
+            log_event(&tx, "posting", *id, Some("open"), "closed", now)?;
+        }
+        tx.execute(
+            "UPDATE postings SET company_id = NULL WHERE company_id = ?1",
+            [company.id],
+        )?;
+        tx.execute("DELETE FROM companies WHERE id = ?1", [company.id])?;
+        tx.commit()?;
+        Ok(u32::try_from(open.len()).unwrap_or(u32::MAX))
     }
 
     pub fn companies(&self) -> Result<Vec<CompanyRow>, StoreError> {
@@ -394,6 +424,42 @@ mod tests {
             store.schema_version().unwrap(),
             Store::LATEST_SCHEMA_VERSION
         );
+    }
+
+    #[test]
+    fn greenhouse_token_case_is_one_board_and_retiring_closes_postings() {
+        let store = Store::open_in_memory().unwrap();
+        let (id, _) = store
+            .upsert_company(&entry("Northwind"), "seed", 1)
+            .unwrap();
+        let (again, added) = store.upsert_company(&entry("northwind"), "hn", 2).unwrap();
+        assert_eq!((again, added), (id, false));
+        let company = &store.companies().unwrap()[0];
+        assert_eq!(company.token, "northwind");
+
+        let posting = gantry_core::Posting {
+            key: gantry_core::PostingKey {
+                ats: Ats::Greenhouse,
+                board_token: "northwind".into(),
+                job_id: "1".into(),
+            },
+            company_name: "Northwind Labs".into(),
+            title: "Engineer".into(),
+            url: "u".into(),
+            locations_raw: vec![],
+            locations: vec![],
+            work_mode: None,
+            job_type: None,
+            published_at: None,
+            description: String::new(),
+            facts: gantry_core::facts::PostingFacts::default(),
+        };
+        store
+            .upsert_posting(&posting, Some(id), "greenhouse", "u", 3)
+            .unwrap();
+        assert_eq!(store.retire_company(company, 4).unwrap(), 1);
+        assert!(store.companies().unwrap().is_empty());
+        assert!(store.open_postings().unwrap().is_empty());
     }
 
     #[test]
