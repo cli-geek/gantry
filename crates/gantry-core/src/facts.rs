@@ -162,21 +162,32 @@ static CITIZENSHIP: LazyLock<Regex> = LazyLock::new(|| {
 static NEGATED: LazyLock<Regex> =
     LazyLock::new(|| pattern(r"(?i)(?:\b(?:not|no|never)|n't)\s+(?:\w+\s+){0,2}$"));
 
-/// "U.S. citizen or permanent resident": citizenship is one option of
-/// several, so it is not a requirement.
-static CITIZEN_OR: LazyLock<Regex> =
-    LazyLock::new(|| pattern(r"(?i)^s?\s*(?:,|/|\bor\b|\band/or\b)"));
+/// "U.S. citizen or permanent resident": citizenship is one of several
+/// statuses accepted, none of which needs sponsorship. A comma alone
+/// ("citizen, per ITAR") does not start such a list.
+static CITIZEN_OR: LazyLock<Regex> = LazyLock::new(|| {
+    pattern(
+        r"(?i)^s?\s*(?:/|,?\s*\bor\b|\band/or\b|,\s*(?:permanent|green|lawful|national|asylee|refugee))",
+    )
+});
 
 /// "with or without sponsorship needs" welcomes both.
-static WITH_OR: LazyLock<Regex> = LazyLock::new(|| pattern(r"(?i)\bwith\s+or\s+$"));
+static WITH_OR: LazyLock<Regex> = LazyLock::new(|| pattern(r"(?i)\bwith\s+(?:or|and)\s+$"));
 
 pub fn detect_sponsorship(text: &str) -> Option<Fact<Sponsorship>> {
-    let citizenship = CITIZENSHIP.find_iter(text).find(|m| {
-        !NEGATED.is_match(lead_in(text, m.start())) && !CITIZEN_OR.is_match(&text[m.end()..])
-    });
-    if let Some(m) = citizenship {
+    let (either_or, strict): (Vec<_>, Vec<_>) = CITIZENSHIP
+        .find_iter(text)
+        .filter(|m| !NEGATED.is_match(lead_in(text, m.start())))
+        .partition(|m| CITIZEN_OR.is_match(&text[m.end()..]));
+    if let Some(m) = strict.first() {
         return Some(fact(
             Sponsorship::CitizenshipRequired,
+            sentence_around(text, m.start(), m.end()),
+        ));
+    }
+    if let Some(m) = either_or.first() {
+        return Some(fact(
+            Sponsorship::NotOffered,
             sentence_around(text, m.start(), m.end()),
         ));
     }
@@ -203,21 +214,31 @@ static CLEARANCE: LazyLock<Regex> = LazyLock::new(|| {
 static CLEARANCE_OBTAINABLE: LazyLock<Regex> = LazyLock::new(|| {
     pattern(concat!(
         r"(?i)\b(?:(?:ability|able|eligible|eligibility|willing(?:ness)?)\s+to\s+(?:obtain|acquire|get|attain)",
-        r"|(?:eligible|eligibility)\s+for|obtainable)\b",
+        r"|obtainable)\b",
     ))
 });
 
 static CLEARANCE_NOT_REQUIRED: LazyLock<Regex> = LazyLock::new(|| {
     pattern(
-        r"(?i)(?:\b(?:not\s+required|no\s+(?:security\s+)?clearance|is\s+a\s+plus|preferred|nice\s+to\s+have)|(?:\bnot|n't)\s+(?:require[sd]?|need))\b",
+        r"(?i)\b(?:not\s+required|no\s+(?:security\s+)?clearance|is\s+a\s+plus|preferred|nice\s+to\s+have)\b",
     )
 });
+
+/// Read just before the clearance, so a negation or "eligible for"
+/// elsewhere in the sentence ("…which does not require relocation", "…and
+/// be eligible for a polygraph") does not apply to it.
+static CLEARANCE_NOT_NEEDED_BEFORE: LazyLock<Regex> =
+    LazyLock::new(|| pattern(r"(?i)(?:\bnot|n't)\s+(?:require[sd]?|need)\s+(?:\w+\s+){0,3}$"));
+static CLEARANCE_ELIGIBLE_BEFORE: LazyLock<Regex> =
+    LazyLock::new(|| pattern(r"(?i)\b(?:eligible|eligibility)\s+for\s+(?:\w+\s+){0,3}$"));
 
 pub fn detect_clearance(text: &str) -> Option<Fact<ClearanceRequirement>> {
     CLEARANCE.captures_iter(text).find_map(|caps| {
         let whole = caps.get(0)?;
         let sentence = sentence_around(text, whole.start(), whole.end());
-        if CLEARANCE_NOT_REQUIRED.is_match(sentence) {
+        let before = lead_in(text, whole.start());
+        if CLEARANCE_NOT_REQUIRED.is_match(sentence) || CLEARANCE_NOT_NEEDED_BEFORE.is_match(before)
+        {
             return None;
         }
         let level_text = caps.get(2).or_else(|| caps.get(3))?.as_str().to_lowercase();
@@ -233,7 +254,9 @@ pub fn detect_clearance(text: &str) -> Option<Fact<ClearanceRequirement>> {
         } else {
             ClearanceLevel::Confidential
         };
-        let active_required = caps.get(1).is_some() || !CLEARANCE_OBTAINABLE.is_match(sentence);
+        let obtainable =
+            CLEARANCE_OBTAINABLE.is_match(sentence) || CLEARANCE_ELIGIBLE_BEFORE.is_match(before);
+        let active_required = caps.get(1).is_some() || !obtainable;
         Some(fact(
             ClearanceRequirement {
                 level,
@@ -255,13 +278,21 @@ static YEARS: LazyLock<Regex> = LazyLock::new(|| {
 static AGE: LazyLock<Regex> =
     LazyLock::new(|| pattern(r"(?i)\b(?:years?|yrs?)\s+(?:old|of\s+age)\b"));
 
-/// "With over 25 years of experience serving customers": the company's
-/// history, not a requirement.
+/// The company's history, not a requirement: "With 25 years of
+/// experience serving customers, we…", "Our 30 years…", "We bring 20+
+/// years…", "For over 30 years…". A sentence opening with "With" is read
+/// as history; "candidates with 3+ years" is not.
 static COMPANY_HISTORY: LazyLock<Regex> = LazyLock::new(|| {
-    pattern(
-        r"(?i)(?:\bour|\bwe\s+have|\bwe've|\bwith\s+(?:over|more\s+than|nearly|almost))\s+(?:over\s+|more\s+than\s+|nearly\s+|almost\s+)?$",
-    )
+    pattern(concat!(
+        r"(?i)(?:\bour|\bwe(?:'ve|\s+have|\s+bring|\s+boast)|^\s*with",
+        r"|\bfor\s+(?:over|more\s+than|nearly|almost))",
+        r"\s+(?:over\s+|more\s+than\s+|nearly\s+|almost\s+)?$",
+    ))
 });
+
+/// "50 years of combined experience" is a team's total.
+static COMBINED: LazyLock<Regex> =
+    LazyLock::new(|| pattern(r"(?i)\b(?:combined|collective|cumulative)\b"));
 
 static PREFERRED: LazyLock<Regex> = LazyLock::new(|| {
     pattern(r"(?i)\b(?:preferred|nice to have|a plus|bonus|ideally|desired|desirable)\b")
@@ -275,6 +306,7 @@ pub fn detect_min_years(text: &str) -> Option<Fact<YearsRequirement>> {
         .filter_map(|caps| {
             let whole = caps.get(0)?;
             if AGE.is_match(whole.as_str())
+                || COMBINED.is_match(whole.as_str())
                 || COMPANY_HISTORY.is_match(lead_in(text, whole.start()))
             {
                 return None;
@@ -300,11 +332,24 @@ static PAY: LazyLock<Regex> = LazyLock::new(|| {
     ))
 });
 
-/// A range in a sentence about a stipend or budget is not the salary,
-/// unless the sentence also says it is.
-static NOT_SALARY: LazyLock<Regex> = LazyLock::new(|| {
-    pattern(r"(?i)\b(?:stipend|budget|allowance|reimburse\w*|bonus|per\s+diem|relocation)\b")
-});
+/// A range named a stipend or budget in the words around it is not the
+/// salary, unless the words just before it say salary. Bonus and
+/// relocation are left out: "$150k - $180k + bonus" is a salary.
+static NOT_SALARY: LazyLock<Regex> =
+    LazyLock::new(|| pattern(r"(?i)\b(?:stipend|budget|allowance|reimburse\w*|per\s+diem)\b"));
+
+/// The last few words before `start` and the first few after `end`.
+fn words_around(text: &str, start: usize, end: usize) -> (String, String) {
+    const WORDS: usize = 6;
+    let before: Vec<&str> = lead_in(text, start).split_whitespace().collect();
+    let before = before[before.len().saturating_sub(WORDS)..].join(" ");
+    let after = text[end..]
+        .split_whitespace()
+        .take(WORDS)
+        .collect::<Vec<_>>()
+        .join(" ");
+    (before, after)
+}
 static SALARY: LazyLock<Regex> =
     LazyLock::new(|| pattern(r"(?i)\b(?:salary|pay|compensation|wages?|base|rate|earn\w*|ote)\b"));
 
@@ -333,8 +378,10 @@ pub fn detect_pay(text: &str) -> Option<Fact<Pay>> {
         {
             return None;
         }
-        let sentence = sentence_around(text, whole.start(), whole.end());
-        if NOT_SALARY.is_match(sentence) && !SALARY.is_match(sentence) {
+        let (before, after) = words_around(text, whole.start(), whole.end());
+        if (NOT_SALARY.is_match(&before) || NOT_SALARY.is_match(&after))
+            && !SALARY.is_match(&before)
+        {
             return None;
         }
         let symbol = caps.get(1)?.as_str().to_uppercase();
@@ -481,9 +528,6 @@ mod tests {
     fn review_false_hits_stay_unknown() {
         for text in [
             "This role does not require U.S. citizenship.",
-            "Must be a U.S. citizen or permanent resident.",
-            "Must be a US citizen or green card holder.",
-            "Applicants must be U.S. citizens, permanent residents, or asylees.",
             "We welcome applicants with or without sponsorship needs.",
         ] {
             assert_eq!(detect_sponsorship(text), None, "{text}");
@@ -539,6 +583,82 @@ mod tests {
             detect_pay("$45.50 - $55.25 per hour").unwrap().value.max,
             Some(55.25)
         );
+    }
+
+    #[test]
+    fn second_review_cases() {
+        for text in [
+            "With 25 years of experience serving customers, we lead the market.",
+            "Our team has 50 years of combined experience.",
+            "We bring 20+ years of experience in logistics.",
+            "For over 30 years of experience, we've served the region.",
+        ] {
+            assert_eq!(detect_min_years(text), None, "{text}");
+        }
+        for (text, years) in [
+            ("Candidates with 3+ years of experience in Go.", 3),
+            ("We require 4+ years of experience with Kubernetes.", 4),
+            ("Our ideal candidate has 2+ years of experience.", 2),
+        ] {
+            assert_eq!(
+                detect_min_years(text).map(|f| f.value.years),
+                Some(years),
+                "{text}"
+            );
+        }
+
+        assert!(
+            detect_pay(
+                "We provide a $500 - $1,000 per month home office stipend on top of base salary."
+            )
+            .is_none()
+        );
+        for text in [
+            "The range for this role is $150,000 - $180,000 + bonus + equity.",
+            "$140,000 - $170,000 plus relocation assistance.",
+            "Base salary $100,000 - $120,000 plus a learning stipend.",
+        ] {
+            assert!(
+                detect_pay(text).is_some_and(|f| f.value.min >= Some(100_000.0)),
+                "{text}"
+            );
+        }
+
+        assert_eq!(
+            detect_sponsorship("We consider candidates with and without sponsorship needs."),
+            None
+        );
+        for text in [
+            "U.S. citizenship is required, as this role supports federal contracts.",
+            "Must be a U.S. citizen, per ITAR regulations.",
+        ] {
+            assert_eq!(
+                detect_sponsorship(text).map(|f| f.value),
+                Some(Sponsorship::CitizenshipRequired),
+                "{text}"
+            );
+        }
+        for text in [
+            "Must be a U.S. citizen or permanent resident.",
+            "Applicants must be U.S. citizens, permanent residents, or asylees.",
+        ] {
+            assert_eq!(
+                detect_sponsorship(text).map(|f| f.value),
+                Some(Sponsorship::NotOffered),
+                "{text}"
+            );
+        }
+
+        let f = detect_clearance(
+            "Active Secret clearance required for this role, which does not require relocation.",
+        )
+        .unwrap();
+        assert!(f.value.active_required);
+        let f = detect_clearance(
+            "Must currently hold a Secret clearance and be eligible for a polygraph.",
+        )
+        .unwrap();
+        assert!(f.value.active_required);
     }
 
     #[test]
