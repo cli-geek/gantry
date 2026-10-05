@@ -41,18 +41,24 @@ gantry-cli ──► gantry-cmd ──► gantry-discovery ──► gantry-stor
 One request per second per host (more if `Crawl-delay` says so),
 `robots.txt` fetched and honored for every host, conditional GET with
 stored `ETag`/`Last-Modified`, exponential backoff with `Retry-After` on
-429 and 5xx, and a `User-Agent` naming Gantry. An unreachable or 5xx
-`robots.txt` blocks the host for the run.
+429 and 5xx (a `Retry-After` over 60 s ends retries for the run), and a
+`User-Agent` naming Gantry and its repository. Requests go only to the six
+allowlisted hosts in the README, and redirects are not followed. An
+unreachable or 5xx `robots.txt` blocks the host for the run.
 
 ## Dedup and closing
 
 - Primary key `(ats, board_token, ats_job_id)`; the same job from several
   sources is one row with several `posting_sources`.
 - A new posting with the same company, title and location as an earlier
-  one, and a description within 3 SimHash bits, gets `duplicate_of` set to
-  the earliest such posting.
+  one, and a non-empty description within 3 SimHash bits, gets
+  `duplicate_of` set to the earliest such posting.
 - A posting missing from two consecutive successful polls of its board
-  (or feed, for external postings) is closed. It reopens if it reappears.
+  (or feed, for postings only a feed lists) is closed. It reopens if it
+  reappears. A `304` repeats the last body, so a posting it already lacked
+  takes another miss; a board `404` is a poll that lists nothing. Postings
+  from a disabled feed take misses, and seed or user boards removed from
+  both lists are retired with their open postings closed.
 
 ## Filters
 

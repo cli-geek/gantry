@@ -242,7 +242,10 @@ discovery (local only; a user can share counts manually).
 
 Politeness: at most 1 request/s per host, honor `ETag`/`Last-Modified`,
 exponential backoff on 429/5xx, honor `robots.txt` for every crawled host,
-and a descriptive `User-Agent` that includes the project URL.
+a descriptive `User-Agent` that includes the project URL, requests only to
+the hosts listed in the README, and no redirects followed (a 3xx is an
+error, so a redirect cannot reach a host the rules above have not
+cleared).
 
 #### 4.1.1 Source catalog (tech first, widest net)
 
@@ -262,7 +265,7 @@ adapter is written; the confirmation goes in the adapter's doc comment.
 | 2 | USAJOBS (federal tech roles) | official API, free key | M7b |
 | 3 | Big-tech career sites (Amazon, Google, Microsoft, Apple, Meta, Netflix, …) | one adapter per site, discovery only, after a robots.txt and terms check per site | M7b |
 | 3 | Enterprise career sites (Oracle Recruiting Cloud/Taleo, SuccessFactors, iCIMS, Eightfold, Phenom) | per-site check | M10 onward |
-| excluded | LinkedIn, Indeed, Glassdoor, ZipRecruiter, Wellfound, Handshake, Workday (`*.myworkdayjobs.com`) | excluded: terms prohibit automated collection. Manual paste mode only | none |
+| excluded | LinkedIn, Indeed, Glassdoor, ZipRecruiter, Wellfound, Handshake, Workday (`*.myworkdayjobs.com`, `*.myworkdaysite.com`) | excluded: terms prohibit automated collection. Manual paste mode only | none |
 
 **Board-slug probing.** For every company name Gantry sees in any source
 (list feeds, HN posts, user input, the seed list), try a few slug variants
@@ -1030,7 +1033,8 @@ scraping; reverse engineering or circumventing access limits; "develop or use
 any applications that interact with our Sites without our prior written
 consent"; and ignoring robots.txt.
 
-Employer career sites run on `*.myworkdayjobs.com` and present Workday's
+Employer career sites run on `*.myworkdayjobs.com` and
+`*.myworkdaysite.com` and present Workday's
 application flow, so Gantry treats them as Workday's Sites. Automated
 filling, crawling and API calls are what the terms prohibit, and an
 application submitted through an agent is non-human traffic of exactly the
@@ -1209,8 +1213,18 @@ Where the code differs from the plan above:
 - Locations and pattern-detected facts are derived each run from the
   stored text, so geocoder and detector fixes reach unchanged postings.
 - Slug probing handles at most 200 company names a run; the rest wait.
-- The fetcher refuses Workday-hosted and other excluded hosts outright
-  (§11.3), whatever the caller asks for.
+- The fetcher sends requests only to an allowlist of the six hosts
+  discovery uses and never follows redirects, so Workday-hosted and other
+  excluded sites (§11.3) get no request whatever the caller asks for.
+- A location with no stated work mode is judged under all three modes and
+  decides only when they agree; otherwise it is `unknown`.
+- A bare place name that several sizable places share ("Portland",
+  "Cambridge", "Georgia") is unresolved rather than guessed.
+- Closed detection: a 304 counts as the last body again, so a posting
+  already missed once takes its second miss. A board 404 is an empty poll.
+  Feeds close the postings only they list; disabled feeds and seed or user
+  boards removed from both lists retire their postings.
+- One discovery run at a time (`run.lock`; exit code 6).
 
 ## 16. Open questions
 
@@ -1349,7 +1363,7 @@ would be crippleware:
 ## 18. Kickoff prompt for Claude Code
 
 ```text
-Read gantry_plan.md. Implement Milestone 0 and Milestone 1 only.
+Read docs/plan.md. Implement Milestone 0 and Milestone 1 only.
 
 - Cargo workspace per §3.1. Start with gantry-core, gantry-platform,
   gantry-store, gantry-discovery, gantry-cmd, gantry-cli; leave other

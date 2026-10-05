@@ -1,10 +1,11 @@
 # Technology internships maintained by SimplifyJobs and contributors.
-# The repository is renamed each season (Summer2026 → Summer2027); update
-# `url` and `homepage` when the new one goes live.
+# The repository is renamed each season (Summer2026 became Summer2027 by
+# 2026-10-04); update `url` and `homepage` when it is renamed again. The
+# fetcher does not follow GitHub's rename redirect.
 # Endpoint and terms check: crates/gantry-discovery/src/sources/simplify.rs.
 id = "simplify-internships"
-name = "SimplifyJobs Summer 2026 Internships"
+name = "SimplifyJobs Summer 2027 Internships"
 format = "simplify_listings"
-url = "https://raw.githubusercontent.com/SimplifyJobs/Summer2026-Internships/dev/.github/scripts/listings.json"
-homepage = "https://github.com/SimplifyJobs/Summer2026-Internships"
+url = "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/.github/scripts/listings.json"
+homepage = "https://github.com/SimplifyJobs/Summer2027-Internships"
 occupations = ["technology"]
