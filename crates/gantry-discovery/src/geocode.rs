@@ -22,9 +22,11 @@ const COUNTRIES: &str = include_str!("../../../data/geo/countries.tsv");
 /// only above this population ("New York" the city, "California" the state).
 const CITY_OVER_REGION_POPULATION: u32 = 1_000_000;
 
-/// A region sharing its name with a city at least this big is ambiguous
-/// standing alone ("Washington": the state or the capital).
-const CITY_RIVALS_REGION_POPULATION: u32 = 100_000;
+/// A region sharing its name with a city at least this big elsewhere is
+/// ambiguous ("Washington": the state or the capital). Smaller namesakes
+/// (Ontario, California) and cities inside the region itself (Zurich,
+/// Quebec) leave the region standing.
+const CITY_RIVALS_REGION_POPULATION: u32 = 500_000;
 
 /// A bare city name is taken as its biggest namesake only when that one is
 /// this many times bigger than any namesake in another region ("London"
@@ -89,6 +91,7 @@ const PLACE_ALIASES: &[(&str, &str, &str)] = &[
     ("sf bay area", "San Francisco", "CA"),
     ("san francisco bay area", "San Francisco", "CA"),
     ("silicon valley", "San Jose", "CA"),
+    ("la", "Los Angeles", "CA"),
     ("dc", "Washington", "DC"),
     ("washington dc", "Washington", "DC"),
     ("washington d c", "Washington", "DC"),
@@ -314,6 +317,25 @@ impl Gazetteer {
         candidates.max_by_key(|i| self.cities[*i].population)
     }
 
+    /// Whether a city elsewhere is big enough to make a region name
+    /// ambiguous (see [`CITY_RIVALS_REGION_POPULATION`]).
+    fn city_rivals_region(&self, biggest_city: Option<usize>, country: &str, code: &str) -> bool {
+        biggest_city.is_some_and(|c| {
+            let city = &self.cities[c];
+            (CITY_RIVALS_REGION_POPULATION..CITY_OVER_REGION_POPULATION).contains(&city.population)
+                && (city.country != country || city.admin1 != code)
+        })
+    }
+
+    /// The US region an informal qualifier names: "LA" in "Burbank, LA".
+    fn alias_region(q: &str) -> Option<&'static str> {
+        let n = normalize(q);
+        PLACE_ALIASES
+            .iter()
+            .find(|(alias, ..)| *alias == n)
+            .map(|(.., admin1)| *admin1)
+    }
+
     /// The biggest candidate, if it dwarfs every namesake in another region.
     fn dominant(&self, candidates: &[usize]) -> Option<usize> {
         let top_idx = self.biggest(candidates.iter().copied())?;
@@ -438,6 +460,11 @@ impl Gazetteer {
         }
 
         let candidates = self.city_candidates(part);
+        let biggest_city = self.biggest(candidates.iter().copied());
+        let region = self.lone_admin1(part);
+        let rivaled_region = region
+            .as_ref()
+            .filter(|(country, code)| self.city_rivals_region(biggest_city, country, code));
         // "City, Region, Country" and "City, Region|Country".
         if let Some(q1) = next {
             let with_admin: Vec<usize> = candidates
@@ -446,6 +473,8 @@ impl Gazetteer {
                 .filter(|c| {
                     let city = &self.cities[*c];
                     self.admin1_in(&city.country, q1) == Some(city.admin1.as_str())
+                        || (city.country == "US"
+                            && Self::alias_region(q1) == Some(city.admin1.as_str()))
                 })
                 .collect();
             if !with_admin.is_empty() {
@@ -476,6 +505,10 @@ impl Gazetteer {
                 return (2, Some(place), None);
             }
             if let Some(country) = self.country(q1) {
+                // "Washington, USA": the state or the capital, both in it.
+                if rivaled_region.is_some_and(|(c, _)| c == country) {
+                    return (0, None, None);
+                }
                 let in_country = candidates
                     .iter()
                     .copied()
@@ -486,8 +519,6 @@ impl Gazetteer {
             }
         }
 
-        let biggest_city = self.biggest(candidates.iter().copied());
-        let region = self.lone_admin1(part);
         // "Georgia, USA": the next part settles a region name.
         if let Some((country, code)) = &region
             && next.is_some_and(|q| self.country(q) == Some(country.as_str()))
@@ -520,13 +551,11 @@ impl Gazetteer {
                 );
             }
         }
+        if rivaled_region.is_some() {
+            return (0, None, None);
+        }
         if let Some((country, code)) = region {
             let city_population = biggest_city.map_or(0, |c| self.cities[c].population);
-            if (CITY_RIVALS_REGION_POPULATION..CITY_OVER_REGION_POPULATION)
-                .contains(&city_population)
-            {
-                return (0, None, None);
-            }
             if city_population < CITY_OVER_REGION_POPULATION {
                 return (
                     1,
@@ -768,6 +797,31 @@ mod tests {
         );
         assert_eq!(place("Seattle").admin1.as_deref(), Some("WA"));
         assert_eq!(place("Paris").country, "FR");
+    }
+
+    #[test]
+    fn regions_named_like_their_own_cities_still_resolve() {
+        let area = |raw: &str| one(raw).area;
+        let admin = |c: &str, a: &str| {
+            Some(Area::Admin1 {
+                country: c.into(),
+                admin1: a.into(),
+            })
+        };
+        assert_eq!(area("Ontario"), admin("CA", "08"));
+        assert_eq!(area("Remote - Ontario"), admin("CA", "08"));
+        assert_eq!(area("Oklahoma"), admin("US", "OK"));
+        for raw in ["Zurich", "Quebec", "Lisbon"] {
+            let l = one(raw);
+            assert!(l.place.is_some() || l.area.is_some(), "{raw}: {l:#?}");
+        }
+        let burbank = place("Burbank, LA");
+        assert_eq!(
+            (burbank.country.as_str(), burbank.admin1.as_deref()),
+            ("US", Some("CA"))
+        );
+        let l = one("Remote - Washington, USA");
+        assert!(l.place.is_none(), "state or capital: {l:#?}");
     }
 
     #[test]
