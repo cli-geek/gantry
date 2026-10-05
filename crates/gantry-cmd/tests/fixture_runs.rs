@@ -290,3 +290,29 @@ async fn nontech_guard_runs_with_no_technology_defaults() {
     );
     assert_eq!(report.boards.polled, 1);
 }
+
+#[tokio::test]
+async fn a_second_run_waits_for_the_lock_holder() {
+    let f = Fixture::new("student");
+    f.run().await;
+    let lock = std::fs::File::open(f.ctx.paths.data_dir().join("run.lock")).unwrap();
+    lock.lock().unwrap();
+    let err = run_discover_with(&f.ctx, &f.transport, fast(), NOW)
+        .await
+        .unwrap_err();
+    assert_eq!(err.exit_code(), gantry_cmd::ExitCode::Busy);
+}
+
+#[test]
+fn limit_beyond_sqlite_range_is_a_usage_error() {
+    let f = Fixture::new("student");
+    let err = list_postings(
+        &f.ctx,
+        PostingsQuery {
+            limit: Some(usize::MAX),
+            ..PostingsQuery::default()
+        },
+    )
+    .unwrap_err();
+    assert_eq!(err.exit_code(), gantry_cmd::ExitCode::Usage);
+}

@@ -38,6 +38,7 @@ Stable; scripts and agents may rely on them.
 | 3 | `doctor` found at least one failing check. |
 | 4 | The operation belongs to a later milestone. |
 | 5 | A config file does not parse or has an unknown key. |
+| 6 | Another `gantry run` is in progress (it holds `run.lock` in the data directory). Nothing was changed. |
 
 With `--json`, a failure prints `{"error": {"kind": ..., "message": ...}}`
 (schema `error`). `kind` is one of `usage`, `invalid_input`, `config`,

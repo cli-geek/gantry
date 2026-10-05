@@ -137,6 +137,21 @@ fn config_files(ctx: &Context) -> DoctorCheck {
         .filter(|(_, s)| *s == FileState::Valid)
         .filter_map(|(p, _)| p.file_name().map(|n| n.to_string_lossy().into_owned()))
         .collect();
+    let exposed: Vec<String> = states
+        .iter()
+        .filter(|(p, s)| *s == FileState::Valid && readable_by_others(p))
+        .map(|(p, _)| p.display().to_string())
+        .collect();
+    if !exposed.is_empty() {
+        return check(
+            "config files",
+            CheckStatus::Warn,
+            format!(
+                "other users can read: {}; run `chmod 600` on them",
+                exposed.join(", ")
+            ),
+        );
+    }
     let search_missing = states
         .iter()
         .any(|(p, s)| *s == FileState::Missing && p.ends_with("search.toml"));
@@ -153,6 +168,19 @@ fn config_files(ctx: &Context) -> DoctorCheck {
             format!("valid: {}", present.join(", ")),
         )
     }
+}
+
+/// Files Gantry writes are user-only; files the user wrote may not be.
+#[cfg(unix)]
+fn readable_by_others(path: &std::path::Path) -> bool {
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::metadata(path).is_ok_and(|m| m.permissions().mode() & 0o077 != 0)
+}
+
+/// Windows profile directories are private to the user by default.
+#[cfg(not(unix))]
+fn readable_by_others(_path: &std::path::Path) -> bool {
+    false
 }
 
 fn search_profile(ctx: &Context) -> DoctorCheck {

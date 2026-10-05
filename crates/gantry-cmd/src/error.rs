@@ -17,6 +17,8 @@ pub enum ExitCode {
     NotAvailable = 4,
     /// A config file is missing a required value or does not parse.
     Config = 5,
+    /// Another discovery run holds the run lock; nothing was changed.
+    Busy = 6,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -36,6 +38,8 @@ pub enum CmdError {
     Platform(#[from] gantry_platform::PlatformError),
     #[error("{0}")]
     Network(String),
+    #[error("another discovery run is in progress")]
+    Busy,
 }
 
 impl CmdError {
@@ -48,6 +52,7 @@ impl CmdError {
             Self::Store(_) => "store",
             Self::Platform(_) => "platform",
             Self::Network(_) => "network",
+            Self::Busy => "busy",
         }
     }
 
@@ -57,6 +62,7 @@ impl CmdError {
             Self::InvalidInput(_) => ExitCode::Usage,
             Self::NotAvailable { .. } => ExitCode::NotAvailable,
             Self::Store(_) | Self::Platform(_) | Self::Network(_) => ExitCode::Error,
+            Self::Busy => ExitCode::Busy,
         }
     }
 
@@ -79,7 +85,7 @@ pub struct ErrorOutput {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, JsonSchema)]
 pub struct ErrorBody {
     /// `config`, `invalid_input`, `not_available`, `store`, `platform`,
-    /// `network` or `usage`.
+    /// `network`, `busy` or `usage`.
     pub kind: String,
     pub message: String,
 }

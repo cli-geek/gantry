@@ -16,7 +16,7 @@
       "type": "object",
       "properties": {
         "kind": {
-          "description": "`config`, `invalid_input`, `not_available`, `store`, `platform`,\n`network` or `usage`.",
+          "description": "`config`, `invalid_input`, `not_available`, `store`, `platform`,\n`network`, `busy` or `usage`.",
           "type": "string"
         },
         "message": {
