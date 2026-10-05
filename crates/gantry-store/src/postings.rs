@@ -312,7 +312,7 @@ impl Store {
     ) -> Result<u32, StoreError> {
         let mut conn = self.conn()?;
         let tx = conn.transaction()?;
-        let open: Vec<(i64, i64, bool)> = {
+        let open: Vec<Option<(i64, i64, bool)>> = {
             let mut stmt = tx.prepare(
                 "SELECT p.id, p.missed_polls, p.ats, p.board_token, p.ats_job_id
                  FROM postings p JOIN posting_sources s ON s.posting_id = p.id AND s.source = ?1
@@ -325,13 +325,45 @@ impl Store {
                     board_token: r.get(3)?,
                     job_id: r.get(4)?,
                 };
-                Ok((r.get(0)?, r.get(1)?, seen.is_some_and(|s| s.contains(&key))))
+                let listed = seen.is_some_and(|s| s.contains(&key));
+                // A stand-in for a board posting is the board's to keep
+                // alive: the pipeline marks it seen only when the board
+                // could not be polled. The feed only counts its omissions.
+                let feed_owned = key.ats == Ats::External || (seen.is_some() && !listed);
+                Ok(feed_owned.then_some((r.get(0)?, r.get(1)?, listed)))
             })?;
             rows.collect::<Result<_, _>>()?
         };
-        let closed = settle(&tx, open, seen.is_none(), now)?;
+        let closed = settle(
+            &tx,
+            open.into_iter().flatten().collect(),
+            seen.is_none(),
+            now,
+        )?;
         tx.commit()?;
         Ok(closed)
+    }
+
+    /// A source still lists a posting that nothing refreshed this run:
+    /// clears its misses and reopens it if it had closed. Returns whether it
+    /// reopened.
+    pub fn mark_seen(&self, posting_id: i64, now: i64) -> Result<bool, StoreError> {
+        let conn = self.conn()?;
+        let was_closed = conn
+            .query_row(
+                "SELECT closed_at FROM postings WHERE id = ?1",
+                [posting_id],
+                |r| r.get::<_, Option<i64>>(0),
+            )?
+            .is_some();
+        conn.execute(
+            "UPDATE postings SET last_seen = ?2, missed_polls = 0, closed_at = NULL WHERE id = ?1",
+            params![posting_id, now],
+        )?;
+        if was_closed {
+            log_event(&conn, "posting", posting_id, Some("closed"), "open", now)?;
+        }
+        Ok(was_closed)
     }
 
     /// Every source that has listed a posting, e.g. `feed:<id>`.
@@ -740,9 +772,10 @@ mod tests {
     }
 
     #[test]
-    fn listing_again_resets_misses_for_postings_never_reupserted() {
+    fn listing_again_resets_misses_for_feed_postings() {
         let store = Store::open_in_memory().unwrap();
-        let stand_in = posting("nw", "1", "Backend Engineer", "");
+        let mut stand_in = posting("nw", "1", "Backend Engineer", "");
+        stand_in.key.ats = Ats::External;
         store
             .upsert_posting(&stand_in, None, "feed:x", "u", 10)
             .unwrap();
