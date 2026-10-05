@@ -162,12 +162,19 @@ static CITIZENSHIP: LazyLock<Regex> = LazyLock::new(|| {
 static NEGATED: LazyLock<Regex> =
     LazyLock::new(|| pattern(r"(?i)(?:\b(?:not|no|never)|n't)\s+(?:\w+\s+){0,2}$"));
 
-/// "U.S. citizen or permanent resident": citizenship is one of several
-/// statuses accepted, none of which needs sponsorship. A comma alone
-/// ("citizen, per ITAR") does not start such a list.
+/// "U.S. citizen or …", "U.S. citizens, nationals, or …": citizenship is
+/// one of several accepted statuses. A comma starts such a list only when
+/// an "or" follows within a few words ("citizen, per ITAR" is strict).
 static CITIZEN_OR: LazyLock<Regex> = LazyLock::new(|| {
+    pattern(r"(?i)^s?\s*(?:/|,?\s*\bor\b|\band/or\b|,\s*(?:[\w.,\-]+\s+){0,4}?(?:or|and/or)\b)")
+});
+
+/// The first alternative is a status that needs no visa, so sponsorship
+/// is not offered. Any other alternative ("or H-1B visa holder", "or
+/// otherwise authorized") says nothing either way.
+static NO_VISA_ALT: LazyLock<Regex> = LazyLock::new(|| {
     pattern(
-        r"(?i)^s?\s*(?:/|,?\s*\bor\b|\band/or\b|,\s*(?:permanent|green|lawful|national|asylee|refugee))",
+        r"(?i)^s?\s*(?:/|,|\bor\b|\band/or\b)\s*(?:(?:a|an|u\.?s\.?|lawful)\s+)*(?:permanent|green|lpr\b|national|asylee|refugee)",
     )
 });
 
@@ -185,7 +192,10 @@ pub fn detect_sponsorship(text: &str) -> Option<Fact<Sponsorship>> {
             sentence_around(text, m.start(), m.end()),
         ));
     }
-    if let Some(m) = either_or.first() {
+    if let Some(m) = either_or
+        .iter()
+        .find(|m| NO_VISA_ALT.is_match(&text[m.end()..]))
+    {
         return Some(fact(
             Sponsorship::NotOffered,
             sentence_around(text, m.start(), m.end()),
@@ -228,9 +238,9 @@ static CLEARANCE_NOT_REQUIRED: LazyLock<Regex> = LazyLock::new(|| {
 /// elsewhere in the sentence ("…which does not require relocation", "…and
 /// be eligible for a polygraph") does not apply to it.
 static CLEARANCE_NOT_NEEDED_BEFORE: LazyLock<Regex> =
-    LazyLock::new(|| pattern(r"(?i)(?:\bnot|n't)\s+(?:require[sd]?|need)\s+(?:\w+\s+){0,3}$"));
+    LazyLock::new(|| pattern(r"(?i)(?:\bnot|n't)\s+(?:require[sd]?|need)\b[^,;]*$"));
 static CLEARANCE_ELIGIBLE_BEFORE: LazyLock<Regex> =
-    LazyLock::new(|| pattern(r"(?i)\b(?:eligible|eligibility)\s+for\s+(?:\w+\s+){0,3}$"));
+    LazyLock::new(|| pattern(r"(?i)\b(?:eligible|eligibility)\s+for\b[^;]*$"));
 
 pub fn detect_clearance(text: &str) -> Option<Fact<ClearanceRequirement>> {
     CLEARANCE.captures_iter(text).find_map(|caps| {
@@ -332,18 +342,22 @@ static PAY: LazyLock<Regex> = LazyLock::new(|| {
     ))
 });
 
-/// A range named a stipend or budget in the words around it is not the
-/// salary, unless the words just before it say salary. Bonus and
-/// relocation are left out: "$150k - $180k + bonus" is a salary.
+/// A range in a clause about a stipend or budget (anywhere before it in
+/// the sentence, or just after it) is not the salary, unless the words
+/// just before it say salary. Bonus and relocation are left out: "$150k -
+/// $180k + bonus" is a salary.
 static NOT_SALARY: LazyLock<Regex> =
     LazyLock::new(|| pattern(r"(?i)\b(?:stipend|budget|allowance|reimburse\w*|per\s+diem)\b"));
 
-/// The last few words before `start` and the first few after `end`.
+/// The last few words before `start`, and the first few after `end` up to
+/// the end of the sentence.
 fn words_around(text: &str, start: usize, end: usize) -> (String, String) {
     const WORDS: usize = 6;
     let before: Vec<&str> = lead_in(text, start).split_whitespace().collect();
     let before = before[before.len().saturating_sub(WORDS)..].join(" ");
-    let after = text[end..]
+    let rest = &text[end..];
+    let sentence_end = rest.find(['.', '\n', '!', '?', ';']).unwrap_or(rest.len());
+    let after = rest[..sentence_end]
         .split_whitespace()
         .take(WORDS)
         .collect::<Vec<_>>()
@@ -379,7 +393,7 @@ pub fn detect_pay(text: &str) -> Option<Fact<Pay>> {
             return None;
         }
         let (before, after) = words_around(text, whole.start(), whole.end());
-        if (NOT_SALARY.is_match(&before) || NOT_SALARY.is_match(&after))
+        if (NOT_SALARY.is_match(lead_in(text, whole.start())) || NOT_SALARY.is_match(&after))
             && !SALARY.is_match(&before)
         {
             return None;
@@ -659,6 +673,59 @@ mod tests {
         )
         .unwrap();
         assert!(f.value.active_required);
+    }
+
+    #[test]
+    fn third_review_cases() {
+        for text in [
+            "Applicants must be U.S. citizens, U.S. nationals, or lawful permanent residents.",
+            "Must be a U.S. citizen, a permanent resident, or an asylee.",
+            "Must be a U.S. citizen, LPR, or refugee.",
+        ] {
+            assert_eq!(
+                detect_sponsorship(text).map(|f| f.value),
+                Some(Sponsorship::NotOffered),
+                "{text}"
+            );
+        }
+        for text in [
+            "Must be a U.S. citizen or H-1B visa holder; we sponsor transfers.",
+            "Must be a US citizen or have a valid work visa. We are happy to sponsor.",
+            "Must be a U.S. citizen or otherwise authorized to work in the US.",
+        ] {
+            assert_eq!(detect_sponsorship(text), None, "{text}");
+        }
+
+        for text in [
+            "We do not require candidates to already hold a Secret clearance.",
+            "You do not need to currently hold an active Secret clearance.",
+            "This position does not require that you hold a Secret clearance.",
+        ] {
+            assert!(detect_clearance(text).is_none(), "{text}");
+        }
+        for text in [
+            "Must be eligible for and able to maintain a Secret clearance.",
+            "Candidates must be eligible for an interim or final Secret clearance.",
+        ] {
+            assert!(
+                !detect_clearance(text).unwrap().value.active_required,
+                "{text}"
+            );
+        }
+
+        for text in [
+            "We provide a stipend that covers your coworking membership, up to $300 - $500 per month.",
+            "Remote employees receive a home office budget which can be spent over the first year: $1,000 - $2,000 per year.",
+        ] {
+            assert!(detect_pay(text).is_none(), "{text}");
+        }
+        assert_eq!(
+            detect_pay("Our hiring range is $120k - $150k; plus an annual learning budget.")
+                .unwrap()
+                .value
+                .min,
+            Some(120_000.0)
+        );
     }
 
     #[test]
