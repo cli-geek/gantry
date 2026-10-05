@@ -22,11 +22,14 @@ const COUNTRIES: &str = include_str!("../../../data/geo/countries.tsv");
 /// only above this population ("New York" the city, "California" the state).
 const CITY_OVER_REGION_POPULATION: u32 = 1_000_000;
 
-/// A region sharing its name with a city at least this big elsewhere is
-/// ambiguous ("Washington": the state or the capital). Smaller namesakes
-/// (Ontario, California) and cities inside the region itself (Zurich,
-/// Quebec) leave the region standing.
-const CITY_RIVALS_REGION_POPULATION: u32 = 500_000;
+/// A region name is ambiguous when a city of that name outside it has at
+/// least this population and the region's own listed cities do not total
+/// [`REGION_OUTWEIGHS_CITY_FACTOR`] times as many people ("Washington":
+/// the state or the capital; "Savannah": a Ghanaian region or the Georgia
+/// city). Ontario outweighs Ontario, California; cities inside the region
+/// (Zurich, Quebec) are no rivals.
+const CITY_RIVALS_REGION_POPULATION: u32 = 100_000;
+const REGION_OUTWEIGHS_CITY_FACTOR: u64 = 10;
 
 /// A bare city name is taken as its biggest namesake only when that one is
 /// this many times bigger than any namesake in another region ("London"
@@ -127,6 +130,8 @@ pub struct Gazetteer {
     admin1: HashMap<(String, String), String>,
     /// Normalized admin-1 name → (ISO2, code), for names standing alone.
     admin1_names: HashMap<String, Vec<(String, String)>>,
+    /// (ISO2, admin-1 code) → total population of its listed cities.
+    admin1_population: HashMap<(String, String), u64>,
     /// US ZIP → (place name, state, lat, lon).
     postal_us: HashMap<String, (String, String, f64, f64)>,
     /// (state, normalized place name) → ZIP, for US places below the
@@ -149,6 +154,7 @@ impl Gazetteer {
             countries: HashMap::new(),
             admin1: HashMap::new(),
             admin1_names: HashMap::new(),
+            admin1_population: HashMap::new(),
             postal_us: HashMap::new(),
             postal_places: HashMap::new(),
         };
@@ -197,6 +203,9 @@ impl Gazetteer {
                 continue;
             };
             let idx = g.cities.len();
+            *g.admin1_population
+                .entry((country.to_owned(), admin1.to_owned()))
+                .or_default() += population.parse::<u64>().unwrap_or(0);
             g.cities.push(City {
                 name: name.to_owned(),
                 country: country.to_owned(),
@@ -317,14 +326,23 @@ impl Gazetteer {
         candidates.max_by_key(|i| self.cities[*i].population)
     }
 
-    /// Whether a city elsewhere is big enough to make a region name
+    /// Whether a namesake city outside the region makes the region name
     /// ambiguous (see [`CITY_RIVALS_REGION_POPULATION`]).
-    fn city_rivals_region(&self, biggest_city: Option<usize>, country: &str, code: &str) -> bool {
-        biggest_city.is_some_and(|c| {
-            let city = &self.cities[c];
-            (CITY_RIVALS_REGION_POPULATION..CITY_OVER_REGION_POPULATION).contains(&city.population)
-                && (city.country != country || city.admin1 != code)
-        })
+    fn city_rivals_region(&self, candidates: &[usize], country: &str, code: &str) -> bool {
+        let rival = candidates
+            .iter()
+            .map(|c| &self.cities[*c])
+            .filter(|c| c.country != country || c.admin1 != code)
+            .map(|c| c.population)
+            .max()
+            .unwrap_or(0);
+        let region = self
+            .admin1_population
+            .get(&(country.to_owned(), code.to_owned()))
+            .copied()
+            .unwrap_or(0);
+        (CITY_RIVALS_REGION_POPULATION..CITY_OVER_REGION_POPULATION).contains(&rival)
+            && region < REGION_OUTWEIGHS_CITY_FACTOR * u64::from(rival)
     }
 
     /// The US region an informal qualifier names: "LA" in "Burbank, LA".
@@ -464,19 +482,34 @@ impl Gazetteer {
         let region = self.lone_admin1(part);
         let rivaled_region = region
             .as_ref()
-            .filter(|(country, code)| self.city_rivals_region(biggest_city, country, code));
+            .filter(|(country, code)| self.city_rivals_region(&candidates, country, code));
         // "City, Region, Country" and "City, Region|Country".
         if let Some(q1) = next {
-            let with_admin: Vec<usize> = candidates
+            let mut with_admin: Vec<usize> = candidates
                 .iter()
                 .copied()
                 .filter(|c| {
                     let city = &self.cities[*c];
                     self.admin1_in(&city.country, q1) == Some(city.admin1.as_str())
-                        || (city.country == "US"
-                            && Self::alias_region(q1) == Some(city.admin1.as_str()))
                 })
                 .collect();
+            // "Burbank, LA": an informal area, tried only when the
+            // qualifier is not a region holding the place, listed or by
+            // ZIP data ("Oakdale, LA" and "Delhi, LA" are in Louisiana).
+            let in_us_region = self
+                .admin1_in("US", q1)
+                .and_then(|state| self.postal_place(part, state))
+                .is_some();
+            if with_admin.is_empty() && !in_us_region {
+                with_admin = candidates
+                    .iter()
+                    .copied()
+                    .filter(|c| {
+                        let city = &self.cities[*c];
+                        city.country == "US" && Self::alias_region(q1) == Some(city.admin1.as_str())
+                    })
+                    .collect();
+            }
             if !with_admin.is_empty() {
                 let in_country: Vec<usize> = match after.and_then(|q2| self.country(q2)) {
                     Some(country) => with_admin
@@ -822,6 +855,29 @@ mod tests {
         );
         let l = one("Remote - Washington, USA");
         assert!(l.place.is_none(), "state or capital: {l:#?}");
+    }
+
+    #[test]
+    fn small_foreign_regions_do_not_take_city_names() {
+        for raw in [
+            "Savannah",
+            "Remote - Savannah",
+            "Southampton",
+            "Bari",
+            "Salinas",
+            "San Sebastian",
+            "Concepcion",
+            "George Town",
+        ] {
+            let l = one(raw);
+            assert!(
+                !matches!(&l.area, Some(Area::Admin1 { .. } | Area::Country { .. })),
+                "{raw}: {l:#?}"
+            );
+        }
+        for raw in ["Oakdale, LA", "Patterson, LA", "Delhi, LA"] {
+            assert_eq!(place(raw).admin1.as_deref(), Some("LA"), "{raw}");
+        }
     }
 
     #[test]
