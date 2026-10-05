@@ -66,14 +66,51 @@ pub fn names_match(board_name: &str, company: &str) -> bool {
     !a.is_empty() && a == name_words(company).concat()
 }
 
-/// Whether a board response mentions the company, for board APIs that do
-/// not return its name. Postings shorten names ("Cobalt Harbor Software"
-/// writes "Cobalt Harbor"), so the first two words are enough. An empty
-/// board cannot be checked and does not count.
-pub fn mentions_company(body: &[u8], company: &str) -> bool {
+/// Whether posting descriptions mention the company, for board APIs that
+/// do not return its name. Only description text counts: posting URLs
+/// contain the slug, which was built from the name. Postings shorten names
+/// ("Cobalt Harbor Software" writes "Cobalt Harbor"), so the first two
+/// words are enough. A one-word name must appear as the source spelled it
+/// ("Ramp", not "ramp up"). An empty board cannot be checked and does not
+/// count.
+pub fn mentions_company<'a>(
+    descriptions: impl IntoIterator<Item = &'a str>,
+    company: &str,
+) -> bool {
     let words = name_words(company);
-    let name = words[..words.len().min(2)].join(" ");
-    contains_phrase(&normalize(&String::from_utf8_lossy(body)), &name)
+    match words.as_slice() {
+        [] => false,
+        [word] => {
+            let Some(spelled) = company
+                .split(|c: char| !c.is_alphanumeric())
+                .find(|w| normalize(w) == *word)
+            else {
+                return false;
+            };
+            descriptions
+                .into_iter()
+                .any(|d| names_mid_sentence(d, spelled))
+        }
+        [first, second, ..] => {
+            let name = format!("{first} {second}");
+            descriptions
+                .into_iter()
+                .any(|d| contains_phrase(&normalize(d), &name))
+        }
+    }
+}
+
+/// Whether `word` appears whole and not first in a sentence, where any
+/// word is capitalized ("Ramp up fast" is not the company Ramp).
+fn names_mid_sentence(text: &str, word: &str) -> bool {
+    text.match_indices(word).any(|(i, _)| {
+        let before = text[..i].trim_end();
+        let after = text[i + word.len()..].chars().next();
+        !before.is_empty()
+            && !before.ends_with(['.', '!', '?', '\n', ':'])
+            && !text[..i].ends_with(char::is_alphanumeric)
+            && !after.is_some_and(char::is_alphanumeric)
+    })
 }
 
 /// A company-name guess from a careers-site host:
@@ -124,10 +161,14 @@ mod tests {
     }
 
     #[test]
-    fn mention_check_uses_the_first_two_words() {
-        let body = br#"[{"descriptionPlain":"Cobalt Harbor builds billing tools."}]"#;
-        assert!(mentions_company(body, "Cobalt Harbor Software, Inc."));
-        assert!(!mentions_company(body, "Cobalt Robotics"));
-        assert!(!mentions_company(b"[]", "Cobalt Harbor"));
+    fn mention_check_reads_descriptions_only() {
+        let text = ["Cobalt Harbor builds billing tools. Ramp up fast."];
+        assert!(mentions_company(text, "Cobalt Harbor Software, Inc."));
+        assert!(!mentions_company(text, "Cobalt Robotics"));
+        assert!(!mentions_company(text, "Ramp"), "the word, not the name");
+        assert!(mentions_company(["Join Plaid in Utah."], "Plaid"));
+        assert!(mentions_company(["Work. At Ramp, we build cards."], "Ramp"));
+        assert!(!mentions_company(["Rampant growth at Acme."], "Ramp"));
+        assert!(!mentions_company([], "Cobalt Harbor"));
     }
 }
