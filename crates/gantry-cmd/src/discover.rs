@@ -28,7 +28,15 @@ pub async fn run_discover_with(
         path: lock_path.clone(),
         source,
     };
-    let lock = std::fs::File::create(&lock_path).map_err(io_error)?;
+    // Not truncated: on Windows, truncating a file another process has
+    // locked fails, which would read as an error instead of "busy".
+    let lock = std::fs::OpenOptions::new()
+        .create(true)
+        .write(true)
+        .truncate(false)
+        .open(&lock_path)
+        .map_err(io_error)?;
+    gantry_platform::restrict_file(&lock_path)?;
     lock.try_lock().map_err(|e| match e {
         TryLockError::WouldBlock => CmdError::Busy,
         TryLockError::Error(source) => io_error(source).into(),

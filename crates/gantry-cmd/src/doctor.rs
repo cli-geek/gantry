@@ -137,36 +137,32 @@ fn config_files(ctx: &Context) -> DoctorCheck {
         .filter(|(_, s)| *s == FileState::Valid)
         .filter_map(|(p, _)| p.file_name().map(|n| n.to_string_lossy().into_owned()))
         .collect();
+    let mut warnings = Vec::new();
+    if states
+        .iter()
+        .any(|(p, s)| *s == FileState::Missing && p.ends_with("search.toml"))
+    {
+        warnings.push("search.toml is missing, so every posting passes the filters".to_owned());
+    }
     let exposed: Vec<String> = states
         .iter()
         .filter(|(p, s)| *s == FileState::Valid && readable_by_others(p))
         .map(|(p, _)| p.display().to_string())
         .collect();
     if !exposed.is_empty() {
-        return check(
-            "config files",
-            CheckStatus::Warn,
-            format!(
-                "other users can read: {}; run `chmod 600` on them",
-                exposed.join(", ")
-            ),
-        );
+        warnings.push(format!(
+            "other users can read: {}; run `chmod 600` on them",
+            exposed.join(", ")
+        ));
     }
-    let search_missing = states
-        .iter()
-        .any(|(p, s)| *s == FileState::Missing && p.ends_with("search.toml"));
-    if search_missing {
-        check(
-            "config files",
-            CheckStatus::Warn,
-            "search.toml is missing, so every posting passes the filters",
-        )
-    } else {
+    if warnings.is_empty() {
         check(
             "config files",
             CheckStatus::Ok,
             format!("valid: {}", present.join(", ")),
         )
+    } else {
+        check("config files", CheckStatus::Warn, warnings.join("\n"))
     }
 }
 
@@ -241,6 +237,16 @@ fn data_dir(ctx: &Context) -> DoctorCheck {
                 .map_err(|e| format!("{}: {e}", dir.display()))
         });
     match result {
+        // Gantry restricts only a directory it creates; one the user
+        // pointed it at keeps its permissions.
+        Ok(()) if readable_by_others(dir) => check(
+            "data directory",
+            CheckStatus::Warn,
+            format!(
+                "{} is writable, but other users can access it; run `chmod 700` on it",
+                dir.display()
+            ),
+        ),
         Ok(()) => check(
             "data directory",
             CheckStatus::Ok,
