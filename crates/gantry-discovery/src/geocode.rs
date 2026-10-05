@@ -522,8 +522,8 @@ impl Gazetteer {
         }
         if let Some((country, code)) = region {
             let city_population = biggest_city.map_or(0, |c| self.cities[c].population);
-            if city_population >= CITY_RIVALS_REGION_POPULATION
-                && city_population < CITY_OVER_REGION_POPULATION
+            if (CITY_RIVALS_REGION_POPULATION..CITY_OVER_REGION_POPULATION)
+                .contains(&city_population)
             {
                 return (0, None, None);
             }
