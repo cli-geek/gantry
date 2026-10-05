@@ -821,15 +821,21 @@ impl Run<'_> {
         polled_ok: &HashSet<(Ats, String)>,
     ) -> Result<(), StoreError> {
         for p in pending {
+            let polled = polled_ok.contains(&(p.key.ats, p.key.board_token.clone()));
             if let Some(id) =
                 self.store
                     .add_source_if_exists(&p.key, &p.source, &p.item.url, self.now())?
             {
                 self.store
                     .set_feed_sponsorship(id, p.item.sponsorship.as_ref())?;
+                // The board could not say; the feed's listing keeps the
+                // posting alive (and reopens a stand-in it had closed).
+                if !polled && self.store.mark_seen(id, self.now())? {
+                    self.tally().postings.reopened += 1;
+                }
                 continue;
             }
-            if polled_ok.contains(&(p.key.ats, p.key.board_token.clone())) {
+            if polled {
                 continue;
             }
             let posting = feed_posting(p.key, &p.item);
@@ -941,10 +947,17 @@ mod tests {
 
     const BOARD: &str =
         "https://boards-api.greenhouse.io/v1/boards/pinecrestrobotics/jobs?content=true";
-    const ETAG: &str = "\"v1\"";
+    const FEED: &str = "https://raw.githubusercontent.com/test/feed.json";
+    const BOARD_BODY: &[u8] =
+        include_bytes!("../../../fixtures/http/greenhouse/pinecrestrobotics.json");
+    /// One listing for a Pinecrest job the board itself does not list.
+    const FEED_BODY: &str = r#"[{"id": "s1", "company_name": "Pinecrest Robotics",
+        "title": "Robotics Intern", "locations": ["Seattle, WA"], "active": true,
+        "url": "https://job-boards.greenhouse.io/pinecrestrobotics/jobs/9999"}]"#;
 
-    /// A server whose board answers `status`; a 200 carries an ETag and
-    /// becomes a 304 when the request sends that ETag back.
+    /// Answers each URL with its configured status. A board 200 carries an
+    /// ETag and becomes a 304 when that ETag comes back; the feed sends
+    /// none, like a list that changes every run.
     #[derive(Debug, Default)]
     struct Server {
         status: Mutex<HashMap<String, u16>>,
@@ -963,11 +976,17 @@ mod tests {
             } else {
                 self.status.lock().unwrap()[&request.url]
             };
+            let is_feed = request.url == FEED;
+            let body = if is_feed {
+                FEED_BODY.as_bytes()
+            } else {
+                BOARD_BODY
+            };
+            let etag = format!("\"{}\"", body.len());
             let revalidated = request
                 .headers
                 .iter()
-                .any(|(k, v)| k == "if-none-match" && v == ETAG);
-            let body = include_bytes!("../../../fixtures/http/greenhouse/pinecrestrobotics.json");
+                .any(|(k, v)| k == "if-none-match" && *v == etag);
             Box::pin(async move {
                 Ok(match status {
                     200 if revalidated => HttpResponse {
@@ -977,7 +996,11 @@ mod tests {
                     },
                     200 => HttpResponse {
                         status,
-                        headers: vec![("etag".into(), ETAG.into())],
+                        headers: if is_feed {
+                            vec![]
+                        } else {
+                            vec![("etag".into(), etag)]
+                        },
                         body: body.to_vec(),
                     },
                     _ => HttpResponse {
@@ -999,21 +1022,52 @@ mod tests {
         }]
     }
 
-    async fn run(store: &Store, server: &Server, seed: &[CompanyEntry], now: i64) -> u32 {
-        let snapshot = ConfigSnapshot::default();
+    fn feed() -> FeedDef {
+        FeedDef {
+            id: "test".into(),
+            name: "Test feed".into(),
+            format: FeedFormat::SimplifyListings,
+            url: FEED.into(),
+            homepage: None,
+            occupations: vec![],
+        }
+    }
+
+    async fn run_with(
+        store: &Store,
+        server: &Server,
+        seed: &[CompanyEntry],
+        feed_enabled: bool,
+        now: i64,
+    ) -> Vec<String> {
+        let mut snapshot = ConfigSnapshot::default();
+        snapshot.settings.discovery.slug_probing = false;
+        if feed_enabled {
+            snapshot.settings.discovery.feeds = vec!["test".into()];
+        }
         let fast = Politeness {
             min_interval: Duration::ZERO,
             retry_base: Duration::ZERO,
             max_attempts: 1,
         };
+        let feeds = [feed()];
         let inputs = DiscoverInputs {
             snapshot: &snapshot,
             seed,
-            feeds: &[],
+            feeds: &feeds,
             now,
         };
         discover(store, server, fast, inputs).await.unwrap();
-        u32::try_from(store.open_postings().unwrap().len()).unwrap()
+        store
+            .open_postings()
+            .unwrap()
+            .into_iter()
+            .map(|p| p.posting.key.job_id)
+            .collect()
+    }
+
+    async fn run(store: &Store, server: &Server, seed: &[CompanyEntry], now: i64) -> usize {
+        run_with(store, server, seed, false, now).await.len()
     }
 
     #[tokio::test]
@@ -1037,5 +1091,44 @@ mod tests {
         let open = run(&store, &server, &seed(), 1).await;
         assert_eq!(run(&store, &server, &[], 2).await, 0, "retired");
         assert_eq!(run(&store, &server, &seed(), 3).await, open);
+    }
+
+    #[tokio::test]
+    async fn stand_in_closes_once_its_board_polls_without_it() {
+        let store = Store::open_in_memory().unwrap();
+        let server = Server::default();
+        server.set(FEED, 200);
+        server.set(BOARD, 500);
+        let open = run_with(&store, &server, &seed(), true, 1).await;
+        assert!(
+            open.contains(&"9999".to_owned()),
+            "stand-in while board is down"
+        );
+        server.set(BOARD, 200);
+        for now in [2, 3] {
+            run_with(&store, &server, &seed(), true, now).await;
+        }
+        let open = run_with(&store, &server, &seed(), true, 4).await;
+        assert!(
+            !open.contains(&"9999".to_owned()),
+            "board polled twice without it"
+        );
+    }
+
+    #[tokio::test]
+    async fn stand_in_reopens_when_its_feed_lists_it_again() {
+        let store = Store::open_in_memory().unwrap();
+        let server = Server::default();
+        server.set(FEED, 200);
+        server.set(BOARD, 500);
+        run_with(&store, &server, &seed(), true, 1).await;
+        run_with(&store, &server, &seed(), false, 2).await;
+        let open = run_with(&store, &server, &seed(), false, 3).await;
+        assert!(!open.contains(&"9999".to_owned()), "feed disabled twice");
+        let open = run_with(&store, &server, &seed(), true, 4).await;
+        assert!(
+            open.contains(&"9999".to_owned()),
+            "listed again, board still down"
+        );
     }
 }
