@@ -70,9 +70,10 @@ pub fn names_match(board_name: &str, company: &str) -> bool {
 /// do not return its name. Only description text counts: posting URLs
 /// contain the slug, which was built from the name. Postings shorten names
 /// ("Cobalt Harbor Software" writes "Cobalt Harbor"), so the first two
-/// words are enough. A one-word name must appear as the source spelled it
-/// ("Ramp", not "ramp up"). An empty board cannot be checked and does not
-/// count.
+/// words are enough. A one-word name must appear capitalized and not just
+/// as the first word of a sentence or list item ("Ramp up fast" is not
+/// the company Ramp), unless it reads as a subject ("Plaid is hiring").
+/// An empty board cannot be checked and does not count.
 pub fn mentions_company<'a>(
     descriptions: impl IntoIterator<Item = &'a str>,
     company: &str,
@@ -80,17 +81,7 @@ pub fn mentions_company<'a>(
     let words = name_words(company);
     match words.as_slice() {
         [] => false,
-        [word] => {
-            let Some(spelled) = company
-                .split(|c: char| !c.is_alphanumeric())
-                .find(|w| normalize(w) == *word)
-            else {
-                return false;
-            };
-            descriptions
-                .into_iter()
-                .any(|d| names_mid_sentence(d, spelled))
-        }
+        [word] => descriptions.into_iter().any(|d| names_company(d, word)),
         [first, second, ..] => {
             let name = format!("{first} {second}");
             descriptions
@@ -100,16 +91,28 @@ pub fn mentions_company<'a>(
     }
 }
 
-/// Whether `word` appears whole and not first in a sentence, where any
-/// word is capitalized ("Ramp up fast" is not the company Ramp).
-fn names_mid_sentence(text: &str, word: &str) -> bool {
-    text.match_indices(word).any(|(i, _)| {
-        let before = text[..i].trim_end();
-        let after = text[i + word.len()..].chars().next();
-        !before.is_empty()
-            && !before.ends_with(['.', '!', '?', '\n', ':'])
-            && !text[..i].ends_with(char::is_alphanumeric)
-            && !after.is_some_and(char::is_alphanumeric)
+/// Whether `word` (lowercase ASCII, as from [`name_words`]) appears as a
+/// capitalized whole word that is not merely sentence- or item-initial.
+fn names_company(text: &str, word: &str) -> bool {
+    text.char_indices().any(|(i, c)| {
+        let Some(found) = text.get(i..i + word.len()) else {
+            return false;
+        };
+        let rest = &text[i + word.len()..];
+        if !c.is_uppercase()
+            || !found.eq_ignore_ascii_case(word)
+            || text[..i].ends_with(char::is_alphanumeric)
+            || rest.starts_with(char::is_alphanumeric)
+        {
+            return false;
+        }
+        let before = text[..i].trim_end_matches([' ', '\t']);
+        let starts_sentence =
+            before.is_empty() || before.ends_with(['.', '!', '?', '\n', ':', '•', '-', '*']);
+        !starts_sentence
+            || [" is ", " was ", "'s ", "’s "]
+                .iter()
+                .any(|v| rest.starts_with(v))
     })
 }
 
@@ -170,5 +173,19 @@ mod tests {
         assert!(mentions_company(["Work. At Ramp, we build cards."], "Ramp"));
         assert!(!mentions_company(["Rampant growth at Acme."], "Ramp"));
         assert!(!mentions_company([], "Cobalt Harbor"));
+        for text in [
+            "Responsibilities\nRamp up quickly on the codebase.",
+            "• Ramp up on Rust",
+            "help customers - Ramp up adoption",
+            "You will ramp up quickly.",
+        ] {
+            assert!(!mentions_company([text], "Ramp"), "{text}");
+            assert!(!mentions_company([text], "ramp"), "{text}");
+        }
+        assert!(mentions_company(
+            ["Plaid is hiring. Plaid builds APIs."],
+            "Plaid"
+        ));
+        assert!(mentions_company(["We are hiring at Plaid."], "PLAID"));
     }
 }
