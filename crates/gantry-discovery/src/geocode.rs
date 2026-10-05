@@ -22,6 +22,15 @@ const COUNTRIES: &str = include_str!("../../../data/geo/countries.tsv");
 /// only above this population ("New York" the city, "California" the state).
 const CITY_OVER_REGION_POPULATION: u32 = 1_000_000;
 
+/// A region sharing its name with a city at least this big is ambiguous
+/// standing alone ("Washington": the state or the capital).
+const CITY_RIVALS_REGION_POPULATION: u32 = 100_000;
+
+/// A bare city name is taken as its biggest namesake only when that one is
+/// this many times bigger than any namesake in another region ("London"
+/// is London, GB; "Portland" and "Cambridge" stay unresolved).
+const DOMINANT_CITY_FACTOR: u64 = 10;
+
 /// Country names used in postings that GeoNames spells differently.
 const COUNTRY_ALIASES: &[(&str, &str)] = &[
     ("usa", "US"),
@@ -305,6 +314,20 @@ impl Gazetteer {
         candidates.max_by_key(|i| self.cities[*i].population)
     }
 
+    /// The biggest candidate, if it dwarfs every namesake in another region.
+    fn dominant(&self, candidates: &[usize]) -> Option<usize> {
+        let top_idx = self.biggest(candidates.iter().copied())?;
+        let top = &self.cities[top_idx];
+        let rival = candidates
+            .iter()
+            .map(|c| &self.cities[*c])
+            .filter(|c| c.country != top.country || c.admin1 != top.admin1)
+            .map(|c| c.population)
+            .max()
+            .unwrap_or(0);
+        (u64::from(top.population) >= DOMINANT_CITY_FACTOR * u64::from(rival)).then_some(top_idx)
+    }
+
     pub fn postal_us(&self, zip: &str) -> Option<Place> {
         self.postal_us
             .get(zip)
@@ -464,7 +487,25 @@ impl Gazetteer {
         }
 
         let biggest_city = self.biggest(candidates.iter().copied());
+        let region = self.lone_admin1(part);
+        // "Georgia, USA": the next part settles a region name.
+        if let Some((country, code)) = &region
+            && next.is_some_and(|q| self.country(q) == Some(country.as_str()))
+        {
+            return (
+                2,
+                None,
+                Some(Area::Admin1 {
+                    country: country.clone(),
+                    admin1: code.clone(),
+                }),
+            );
+        }
         if let Some(country) = self.country(part) {
+            // "Georgia" alone: the country or the US state.
+            if region.as_ref().is_some_and(|(c, _)| c != country) {
+                return (0, None, None);
+            }
             let city_wins = biggest_city.is_some_and(|c| {
                 let city = &self.cities[c];
                 city.country == country || city.population >= CITY_OVER_REGION_POPULATION
@@ -479,17 +520,16 @@ impl Gazetteer {
                 );
             }
         }
-        if let Some((country, code)) = self.lone_admin1(part) {
-            let city_wins = biggest_city
-                .is_some_and(|c| self.cities[c].population >= CITY_OVER_REGION_POPULATION);
-            if !city_wins {
-                let used = if next.is_some_and(|q| self.country(q) == Some(country.as_str())) {
-                    2
-                } else {
-                    1
-                };
+        if let Some((country, code)) = region {
+            let city_population = biggest_city.map_or(0, |c| self.cities[c].population);
+            if city_population >= CITY_RIVALS_REGION_POPULATION
+                && city_population < CITY_OVER_REGION_POPULATION
+            {
+                return (0, None, None);
+            }
+            if city_population < CITY_OVER_REGION_POPULATION {
                 return (
-                    used,
+                    1,
                     None,
                     Some(Area::Admin1 {
                         country,
@@ -498,7 +538,7 @@ impl Gazetteer {
                 );
             }
         }
-        if let Some(c) = biggest_city {
+        if let Some(c) = self.dominant(&candidates) {
             return (1, Some(self.place(c)), None);
         }
         // A region code standing alone: "TX", "ON".
@@ -694,6 +734,40 @@ mod tests {
             })
         );
         assert!(l.place.is_none());
+    }
+
+    #[test]
+    fn ambiguous_bare_names_are_unresolved() {
+        for raw in [
+            "Cambridge",
+            "Birmingham",
+            "Portland",
+            "Georgia",
+            "Washington",
+        ] {
+            let l = one(raw);
+            assert_eq!(
+                (l.place.is_none(), l.area.is_none()),
+                (true, true),
+                "{raw}: {l:#?}"
+            );
+        }
+        assert_eq!(place("Cambridge, MA").admin1.as_deref(), Some("MA"));
+        assert_eq!(place("Cambridge, United Kingdom").country, "GB");
+        assert_eq!(
+            one("Georgia, USA").area,
+            Some(Area::Admin1 {
+                country: "US".into(),
+                admin1: "GA".into()
+            })
+        );
+        assert_eq!(
+            one("Remote - Washington").area,
+            None,
+            "the state or the capital"
+        );
+        assert_eq!(place("Seattle").admin1.as_deref(), Some("WA"));
+        assert_eq!(place("Paris").country, "FR");
     }
 
     #[test]
