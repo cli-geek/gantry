@@ -712,7 +712,14 @@ impl Run<'_> {
                 Some(Fetched::Body { body, .. }) => match ats {
                     Ats::Greenhouse => greenhouse::parse_board_name(&body)
                         .is_some_and(|board| probe::names_match(&board, name)),
-                    _ => probe::mentions_company(&body, name),
+                    Ats::Lever | Ats::LeverEu => lever::parse_board(ats, slug, name, &body)
+                        .is_ok_and(|ps| {
+                            probe::mentions_company(ps.iter().map(|p| p.description.as_str()), name)
+                        }),
+                    Ats::Ashby => ashby::parse_board(slug, name, &body).is_ok_and(|ps| {
+                        probe::mentions_company(ps.iter().map(|p| p.description.as_str()), name)
+                    }),
+                    Ats::External => false,
                 },
                 Some(Fetched::NotFound | Fetched::NotModified) => false,
             };
