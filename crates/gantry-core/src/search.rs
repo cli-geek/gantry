@@ -151,7 +151,8 @@ pub struct PayPrefs {
     pub mode: Mode,
     pub minimum: Option<f64>,
     pub period: Option<PayPeriod>,
-    /// ISO 4217. A posting in another currency is not compared.
+    /// ISO 4217; unset means USD. A posting in another currency is not
+    /// compared.
     pub currency: Option<String>,
     pub keep_unlisted: bool,
     pub exclude_commission_only: bool,

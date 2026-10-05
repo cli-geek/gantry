@@ -182,6 +182,9 @@ async fn early_career_profile() {
         set(&[
             ("Cobalt Harbor Software", "Software Engineer, Backend"),
             ("Quillstack", "Backend Engineer"),
+            // A feed listing in Seattle with no work mode: it may be remote,
+            // so the location check is unknown and does not exclude it.
+            ("Harborview Health", "Software Engineer I"),
         ])
     );
 
