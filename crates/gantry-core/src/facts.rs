@@ -119,6 +119,14 @@ fn sentence_around(text: &str, start: usize, end: usize) -> &str {
     text[s..e].trim()
 }
 
+/// The part of `text`'s sentence that comes before `start`.
+fn lead_in(text: &str, start: usize) -> &str {
+    let s = text[..start]
+        .rfind(['.', '\n', '!', '?', ';'])
+        .map_or(0, |i| i + 1);
+    &text[s..start]
+}
+
 fn fact<T>(value: T, evidence: &str) -> Fact<T> {
     Fact {
         value,
@@ -150,19 +158,37 @@ static CITIZENSHIP: LazyLock<Regex> = LazyLock::new(|| {
     ))
 });
 
+/// "does not require U.S. citizenship": a negation shortly before.
+static NEGATED: LazyLock<Regex> =
+    LazyLock::new(|| pattern(r"(?i)(?:\b(?:not|no|never)|n't)\s+(?:\w+\s+){0,2}$"));
+
+/// "U.S. citizen or permanent resident": citizenship is one option of
+/// several, so it is not a requirement.
+static CITIZEN_OR: LazyLock<Regex> =
+    LazyLock::new(|| pattern(r"(?i)^s?\s*(?:,|/|\bor\b|\band/or\b)"));
+
+/// "with or without sponsorship needs" welcomes both.
+static WITH_OR: LazyLock<Regex> = LazyLock::new(|| pattern(r"(?i)\bwith\s+or\s+$"));
+
 pub fn detect_sponsorship(text: &str) -> Option<Fact<Sponsorship>> {
-    if let Some(m) = CITIZENSHIP.find(text) {
+    let citizenship = CITIZENSHIP.find_iter(text).find(|m| {
+        !NEGATED.is_match(lead_in(text, m.start())) && !CITIZEN_OR.is_match(&text[m.end()..])
+    });
+    if let Some(m) = citizenship {
         return Some(fact(
             Sponsorship::CitizenshipRequired,
             sentence_around(text, m.start(), m.end()),
         ));
     }
-    NO_SPONSOR.find(text).map(|m| {
-        fact(
-            Sponsorship::NotOffered,
-            sentence_around(text, m.start(), m.end()),
-        )
-    })
+    NO_SPONSOR
+        .find_iter(text)
+        .find(|m| !WITH_OR.is_match(lead_in(text, m.start())))
+        .map(|m| {
+            fact(
+                Sponsorship::NotOffered,
+                sentence_around(text, m.start(), m.end()),
+            )
+        })
 }
 
 static CLEARANCE: LazyLock<Regex> = LazyLock::new(|| {
@@ -175,12 +201,15 @@ static CLEARANCE: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 static CLEARANCE_OBTAINABLE: LazyLock<Regex> = LazyLock::new(|| {
-    pattern(r"(?i)\b(?:ability|able|eligible|eligibility|willing(?:ness)?)\s+to\s+obtain")
+    pattern(concat!(
+        r"(?i)\b(?:(?:ability|able|eligible|eligibility|willing(?:ness)?)\s+to\s+(?:obtain|acquire|get|attain)",
+        r"|(?:eligible|eligibility)\s+for|obtainable)\b",
+    ))
 });
 
 static CLEARANCE_NOT_REQUIRED: LazyLock<Regex> = LazyLock::new(|| {
     pattern(
-        r"(?i)\b(?:not\s+required|no\s+(?:security\s+)?clearance|is\s+a\s+plus|preferred|nice\s+to\s+have)\b",
+        r"(?i)(?:\b(?:not\s+required|no\s+(?:security\s+)?clearance|is\s+a\s+plus|preferred|nice\s+to\s+have)|(?:\bnot|n't)\s+(?:require[sd]?|need))\b",
     )
 });
 
@@ -222,6 +251,18 @@ static YEARS: LazyLock<Regex> = LazyLock::new(|| {
     ))
 });
 
+/// "at least 18 years old", "21 years of age".
+static AGE: LazyLock<Regex> =
+    LazyLock::new(|| pattern(r"(?i)\b(?:years?|yrs?)\s+(?:old|of\s+age)\b"));
+
+/// "With over 25 years of experience serving customers": the company's
+/// history, not a requirement.
+static COMPANY_HISTORY: LazyLock<Regex> = LazyLock::new(|| {
+    pattern(
+        r"(?i)(?:\bour|\bwe\s+have|\bwe've|\bwith\s+(?:over|more\s+than|nearly|almost))\s+(?:over\s+|more\s+than\s+|nearly\s+|almost\s+)?$",
+    )
+});
+
 static PREFERRED: LazyLock<Regex> = LazyLock::new(|| {
     pattern(r"(?i)\b(?:preferred|nice to have|a plus|bonus|ideally|desired|desirable)\b")
 });
@@ -233,6 +274,11 @@ pub fn detect_min_years(text: &str) -> Option<Fact<YearsRequirement>> {
         .captures_iter(text)
         .filter_map(|caps| {
             let whole = caps.get(0)?;
+            if AGE.is_match(whole.as_str())
+                || COMPANY_HISTORY.is_match(lead_in(text, whole.start()))
+            {
+                return None;
+            }
             let years: u8 = caps.get(1)?.as_str().parse().ok()?;
             let sentence = sentence_around(text, whole.start(), whole.end());
             Some(fact(
@@ -254,8 +300,23 @@ static PAY: LazyLock<Regex> = LazyLock::new(|| {
     ))
 });
 
+/// A range in a sentence about a stipend or budget is not the salary,
+/// unless the sentence also says it is.
+static NOT_SALARY: LazyLock<Regex> = LazyLock::new(|| {
+    pattern(r"(?i)\b(?:stipend|budget|allowance|reimburse\w*|bonus|per\s+diem|relocation)\b")
+});
+static SALARY: LazyLock<Regex> =
+    LazyLock::new(|| pattern(r"(?i)\b(?:salary|pay|compensation|wages?|base|rate|earn\w*|ote)\b"));
+
 fn amount(digits: &str, thousands: bool) -> Option<f64> {
-    let v: f64 = digits.replace(',', "").parse().ok()?;
+    // "50.000" is fifty thousand where a dot groups thousands; a decimal
+    // part has one or two digits.
+    let plain = if digits.contains('.') && digits.split('.').skip(1).all(|g| g.len() == 3) {
+        digits.replace(['.', ','], "")
+    } else {
+        digits.replace(',', "")
+    };
+    let v: f64 = plain.parse().ok()?;
     Some(if thousands { v * 1000.0 } else { v })
 }
 
@@ -270,6 +331,10 @@ pub fn detect_pay(text: &str) -> Option<Fact<Pay>> {
             .iter()
             .any(|w| rest.starts_with(w))
         {
+            return None;
+        }
+        let sentence = sentence_around(text, whole.start(), whole.end());
+        if NOT_SALARY.is_match(sentence) && !SALARY.is_match(sentence) {
             return None;
         }
         let symbol = caps.get(1)?.as_str().to_uppercase();
@@ -410,6 +475,70 @@ mod tests {
         assert!(detect_pay("We raised $40 - $50 million in funding").is_none());
         assert!(detect_pay("We have 500 - 900 employees").is_none());
         assert!(detect_pay("$2,000 - $3,000 signing bonus").is_none());
+    }
+
+    #[test]
+    fn review_false_hits_stay_unknown() {
+        for text in [
+            "This role does not require U.S. citizenship.",
+            "Must be a U.S. citizen or permanent resident.",
+            "Must be a US citizen or green card holder.",
+            "Applicants must be U.S. citizens, permanent residents, or asylees.",
+            "We welcome applicants with or without sponsorship needs.",
+        ] {
+            assert_eq!(detect_sponsorship(text), None, "{text}");
+        }
+        assert_eq!(
+            detect_sponsorship("We do not sponsor. Must be a U.S. citizen.")
+                .unwrap()
+                .value,
+            Sponsorship::CitizenshipRequired
+        );
+
+        assert!(detect_clearance("This role does not require a Secret clearance.").is_none());
+        assert!(detect_clearance("This role doesn't require a TS/SCI clearance.").is_none());
+        for text in [
+            "Must be eligible for a Secret clearance.",
+            "Must be able to acquire a Top Secret clearance.",
+        ] {
+            assert!(
+                !detect_clearance(text).unwrap().value.active_required,
+                "{text}"
+            );
+        }
+
+        for text in [
+            "With over 25 years of experience serving customers, we lead the market.",
+            "Our 30 years of experience in logistics set us apart.",
+            "Must be at least 18 years old. Customer service experience a plus.",
+            "Must be 21 years of age; bartending experience required.",
+        ] {
+            assert_eq!(detect_min_years(text), None, "{text}");
+        }
+        assert_eq!(
+            detect_min_years("Must be 18 years old. 3+ years of experience in sales.")
+                .unwrap()
+                .value
+                .years,
+            3
+        );
+
+        assert!(detect_pay("Enjoy a $500 - $1,000 annual learning stipend.").is_none());
+        assert!(detect_pay("Home office budget: $300 to $600.").is_none());
+        let f = detect_pay(
+            "We offer a $500 - $1,000 learning budget. Salary: $120,000 - $140,000 per year.",
+        )
+        .unwrap();
+        assert_eq!(f.value.min, Some(120_000.0));
+        let f = detect_pay("Gehalt: €50.000 - €60.000 pro Jahr").unwrap();
+        assert_eq!(
+            (f.value.min, f.value.max, f.value.currency.as_str()),
+            (Some(50_000.0), Some(60_000.0), "EUR")
+        );
+        assert_eq!(
+            detect_pay("$45.50 - $55.25 per hour").unwrap().value.max,
+            Some(55.25)
+        );
     }
 
     #[test]

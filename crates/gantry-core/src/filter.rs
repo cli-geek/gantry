@@ -279,12 +279,21 @@ fn location(s: &Subject<'_>, ctx: &FilterContext<'_>) -> Option<Check> {
             loc.modes.clone()
         } else if let Some(m) = posting.work_mode {
             vec![m]
-        } else if loc.place.is_some() || loc.unresolved.is_some() || loc.area.is_some() {
-            // A physical location with no workplace type is on-site, the
-            // way job boards treat it.
-            vec![WorkMode::Onsite]
         } else {
-            results.push((Verdict::Unknown, format!("\"{}\": no work mode", loc.raw)));
+            // Work mode not stated: decide only if every mode gives the
+            // same verdict, so a remote or hybrid job listed under a city
+            // is not judged as on-site.
+            let judged = [WorkMode::Onsite, WorkMode::Hybrid, WorkMode::Remote]
+                .map(|m| judge_location(Some(loc), m, ctx));
+            if judged.iter().all(|(v, _)| *v == judged[0].0) {
+                let [onsite, ..] = judged;
+                results.push(onsite);
+            } else {
+                results.push((
+                    Verdict::Unknown,
+                    format!("\"{}\": work mode not stated", loc.raw),
+                ));
+            }
             continue;
         };
         for mode in modes {
@@ -474,9 +483,8 @@ fn pay(s: &Subject<'_>, ctx: &FilterContext<'_>) -> Option<Check> {
         });
     };
     let pay = &fact.value;
-    if let Some(cur) = &pref.currency
-        && !cur.eq_ignore_ascii_case(&pay.currency)
-    {
+    let currency = pref.currency.as_deref().unwrap_or("USD");
+    if !currency.eq_ignore_ascii_case(&pay.currency) {
         return Some(check(
             FilterName::Pay,
             pref.mode,

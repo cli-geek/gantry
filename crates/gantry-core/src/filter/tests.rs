@@ -198,7 +198,7 @@ fn location_distance_modes_and_relocation() {
     let mut f = Fixture::new(search);
 
     let mut near = posting("Job");
-    near.locations = vec![at(bellevue(), &[])];
+    near.locations = vec![at(bellevue(), &[WorkMode::Onsite])];
     let out = f.run(&near);
     assert!(out.passed, "{out:#?}");
     assert!(
@@ -234,9 +234,33 @@ fn structured_work_mode_applies_to_locations_without_one() {
     let f = Fixture::new(search);
     let mut p = posting("Job");
     p.locations = vec![at(portland(), &[])];
-    assert!(!f.run(&p).passed, "no mode stated → assumed on-site");
+    let out = f.run(&p);
+    assert!(out.passed, "no mode stated is unknown, not on-site");
+    assert_eq!(only(&out, FilterName::Location).verdict, Verdict::Unknown);
     p.work_mode = Some(WorkMode::Remote);
     assert!(f.run(&p).passed);
+}
+
+#[test]
+fn unstated_work_mode_decides_only_when_every_mode_agrees() {
+    let mut search = SearchProfile::default();
+    search.location.mode = Mode::Hard;
+    search.location.max_distance = Some(Distance {
+        value: 25.0,
+        unit: DistanceUnit::Mi,
+    });
+    search.location.work_modes = vec![WorkMode::Onsite];
+    let f = Fixture::new(search);
+    let mut p = posting("Job");
+    p.locations = vec![at(portland(), &[])];
+    assert!(
+        !f.run(&p).passed,
+        "too far for on-site, remote not accepted"
+    );
+    p.locations = vec![at(bellevue(), &[])];
+    let out = f.run(&p);
+    assert!(out.passed);
+    assert_eq!(only(&out, FilterName::Location).verdict, Verdict::Unknown);
 }
 
 #[test]
@@ -313,6 +337,13 @@ fn pay_floor_normalizes_periods_and_keeps_unlisted() {
     assert!(!f.run(&p).passed);
     p.facts.pay = pay(30.0, 38.0, PayPeriod::Hour, "CAD");
     assert_eq!(only(&f.run(&p), FilterName::Pay).verdict, Verdict::Unknown);
+    f.search.pay.currency = None;
+    assert_eq!(
+        only(&f.run(&p), FilterName::Pay).verdict,
+        Verdict::Unknown,
+        "unset currency means USD"
+    );
+    f.search.pay.currency = Some("USD".into());
 
     p.facts.pay = None;
     assert!(f.run(&p).passed);
