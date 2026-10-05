@@ -398,6 +398,9 @@ impl Run<'_> {
             if matches!(c.source.as_str(), "seed" | "user")
                 && !listed.contains(&(c.ats, c.token.clone()))
             {
+                if let Some(url) = board_url(c.ats, &c.token) {
+                    self.fetcher.forget(&url)?;
+                }
                 let closed = self.store.retire_company(&c, self.now())?;
                 self.closed(closed);
             }
@@ -411,6 +414,9 @@ impl Run<'_> {
         let enabled: HashSet<String> = enabled.iter().map(|f| f.source()).collect();
         for source in self.store.posting_source_names()? {
             if source.starts_with("feed:") && !enabled.contains(&source) {
+                if let Some(feed) = self.inputs.feeds.iter().find(|f| f.source() == source) {
+                    self.fetcher.forget(&feed.url)?;
+                }
                 let closed =
                     self.store
                         .reconcile_feed(&source, Some(&HashSet::new()), self.now())?;
@@ -584,18 +590,17 @@ impl Run<'_> {
                 continue;
             }
             // A failed request is retried next run; an item the API answers
-            // `null` for (deleted) is done.
-            let Some(Fetched::Body { body, .. }) =
-                self.get(SOURCE, &hn::item_url(*kid), false).await?
-            else {
-                continue;
-            };
-            let item = match hn::parse_item(&body) {
-                Ok(item) => item,
-                Err(e) => {
-                    self.error(SOURCE, e);
-                    continue;
-                }
+            // 404 or `null` for (deleted) is done.
+            let item = match self.get(SOURCE, &hn::item_url(*kid), false).await? {
+                Some(Fetched::Body { body, .. }) => match hn::parse_item(&body) {
+                    Ok(item) => item,
+                    Err(e) => {
+                        self.error(SOURCE, e);
+                        continue;
+                    }
+                },
+                Some(Fetched::NotFound) => None,
+                _ => continue,
             };
             if let Some(lead) = item.as_ref().and_then(hn::parse_comment) {
                 if let Some(company) = &lead.company {
@@ -751,6 +756,7 @@ impl Run<'_> {
                         self.now(),
                     )?;
                     self.closed(closed);
+                    self.fetcher.forget(&url)?;
                     self.store
                         .record_poll(c.id, self.now(), Some("board not found"))?;
                     ok.insert((c.ats, c.token.clone()));
@@ -914,5 +920,116 @@ fn describe_place(p: &Place) -> String {
             format!("{}, {a}, {}", p.name, p.country)
         }
         _ => format!("{}, {}", p.name, p.country),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+    use std::time::Duration;
+
+    use gantry_store::CompanyEntry;
+
+    use super::*;
+    use crate::http::{HttpRequest, HttpResponse, TransportFuture};
+
+    const BOARD: &str =
+        "https://boards-api.greenhouse.io/v1/boards/pinecrestrobotics/jobs?content=true";
+    const ETAG: &str = "\"v1\"";
+
+    /// A server whose board answers `status`; a 200 carries an ETag and
+    /// becomes a 304 when the request sends that ETag back.
+    #[derive(Debug, Default)]
+    struct Server {
+        status: Mutex<HashMap<String, u16>>,
+    }
+
+    impl Server {
+        fn set(&self, url: &str, status: u16) {
+            self.status.lock().unwrap().insert(url.to_owned(), status);
+        }
+    }
+
+    impl Transport for Server {
+        fn get(&self, request: HttpRequest) -> TransportFuture<'_> {
+            let status = if request.url.ends_with("/robots.txt") {
+                404
+            } else {
+                self.status.lock().unwrap()[&request.url]
+            };
+            let revalidated = request
+                .headers
+                .iter()
+                .any(|(k, v)| k == "if-none-match" && v == ETAG);
+            let body = include_bytes!("../../../fixtures/http/greenhouse/pinecrestrobotics.json");
+            Box::pin(async move {
+                Ok(match status {
+                    200 if revalidated => HttpResponse {
+                        status: 304,
+                        headers: vec![],
+                        body: vec![],
+                    },
+                    200 => HttpResponse {
+                        status,
+                        headers: vec![("etag".into(), ETAG.into())],
+                        body: body.to_vec(),
+                    },
+                    _ => HttpResponse {
+                        status,
+                        headers: vec![],
+                        body: vec![],
+                    },
+                })
+            })
+        }
+    }
+
+    fn seed() -> Vec<CompanyEntry> {
+        vec![CompanyEntry {
+            name: "Pinecrest Robotics".into(),
+            ats: Ats::Greenhouse,
+            token: "pinecrestrobotics".into(),
+            staffing_agency: None,
+        }]
+    }
+
+    async fn run(store: &Store, server: &Server, seed: &[CompanyEntry], now: i64) -> u32 {
+        let snapshot = ConfigSnapshot::default();
+        let fast = Politeness {
+            min_interval: Duration::ZERO,
+            retry_base: Duration::ZERO,
+            max_attempts: 1,
+        };
+        let inputs = DiscoverInputs {
+            snapshot: &snapshot,
+            seed,
+            feeds: &[],
+            now,
+        };
+        discover(store, server, fast, inputs).await.unwrap();
+        u32::try_from(store.open_postings().unwrap().len()).unwrap()
+    }
+
+    #[tokio::test]
+    async fn board_back_unchanged_after_a_404_keeps_its_postings() {
+        let store = Store::open_in_memory().unwrap();
+        let server = Server::default();
+        server.set(BOARD, 200);
+        let open = run(&store, &server, &seed(), 1).await;
+        assert!(open > 0);
+        server.set(BOARD, 404);
+        run(&store, &server, &seed(), 2).await;
+        server.set(BOARD, 200);
+        assert_eq!(run(&store, &server, &seed(), 3).await, open);
+    }
+
+    #[tokio::test]
+    async fn retired_board_added_back_reopens_its_postings() {
+        let store = Store::open_in_memory().unwrap();
+        let server = Server::default();
+        server.set(BOARD, 200);
+        let open = run(&store, &server, &seed(), 1).await;
+        assert_eq!(run(&store, &server, &[], 2).await, 0, "retired");
+        assert_eq!(run(&store, &server, &seed(), 3).await, open);
     }
 }
