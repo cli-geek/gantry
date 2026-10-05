@@ -472,10 +472,10 @@ impl Store {
 }
 
 /// Applies one poll to open postings `(id, missed_polls, listed)`. A
-/// listed posting was already refreshed by the upsert; an unlisted one
-/// takes a miss. With `unchanged` (a 304), the body is the one that was
-/// last processed: postings it listed are seen again, and postings it had
-/// already missed are still missing.
+/// listed posting is seen (feed stand-ins are not re-upserted, so the miss
+/// count is reset here); an unlisted one takes a miss. With `unchanged` (a
+/// 304), the body is the one that was last processed: postings it listed
+/// are seen again, and postings it had already missed are still missing.
 fn settle(
     conn: &Connection,
     open: Vec<(i64, i64, bool)>,
@@ -484,12 +484,12 @@ fn settle(
 ) -> Result<u32, StoreError> {
     let mut closed = 0;
     for (id, missed, listed) in open {
-        if unchanged && missed == 0 {
+        if listed || (unchanged && missed == 0) {
             conn.execute(
-                "UPDATE postings SET last_seen = ?2 WHERE id = ?1",
+                "UPDATE postings SET last_seen = ?2, missed_polls = 0 WHERE id = ?1",
                 params![id, now],
             )?;
-        } else if !listed {
+        } else {
             closed += u32::from(take_miss(conn, id, missed, now)?);
         }
     }
@@ -738,6 +738,22 @@ mod tests {
         let open = store.open_postings().unwrap();
         assert_eq!(open.len(), 1);
         assert_eq!(open[0].posting.key.job_id, "2");
+    }
+
+    #[test]
+    fn listing_again_resets_misses_for_postings_never_reupserted() {
+        let store = Store::open_in_memory().unwrap();
+        let stand_in = posting("nw", "1", "Backend Engineer", "");
+        store
+            .upsert_posting(&stand_in, None, "feed:x", "u", 10)
+            .unwrap();
+        let listed = HashSet::from([stand_in.key.clone()]);
+        let empty = HashSet::new();
+        store.reconcile_feed("feed:x", Some(&empty), 20).unwrap();
+        store.reconcile_feed("feed:x", Some(&listed), 30).unwrap();
+        assert_eq!(store.reconcile_feed("feed:x", None, 40).unwrap(), 0);
+        assert_eq!(store.reconcile_feed("feed:x", Some(&empty), 50).unwrap(), 0);
+        assert_eq!(store.open_postings().unwrap().len(), 1);
     }
 
     #[test]

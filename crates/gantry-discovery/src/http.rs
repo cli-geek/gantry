@@ -342,6 +342,14 @@ impl<'a> Fetcher<'a> {
         })
     }
 
+    /// Drops the stored validators, so the next GET returns a full body.
+    /// Needed whenever postings take a miss without a body being processed
+    /// (a 404, a retired board): a later 304 would otherwise vouch for a
+    /// body that no longer matches the stored state.
+    pub fn forget(&self, url: &str) -> Result<(), StoreError> {
+        self.store.save_http_validators(url, None, None, self.now)
+    }
+
     /// Stores the validators of a processed response for the next run.
     pub fn commit(&self, url: &str, validators: &HttpValidators) -> Result<(), StoreError> {
         self.store.save_http_validators(
