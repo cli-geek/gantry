@@ -53,7 +53,38 @@ impl Paths {
     }
 }
 
+/// Restricts the directory only if Gantry creates it: `--data-dir ~` must
+/// not change the permissions of a directory the user already has.
 fn create_private_dir(dir: &Path) -> Result<(), PlatformError> {
+    if dir.exists() {
+        return Ok(());
+    }
     std::fs::create_dir_all(dir).map_err(|e| PlatformError::io(dir, e))?;
     restrict_dir(dir)
+}
+
+#[cfg(test)]
+#[cfg(unix)]
+mod tests {
+    use std::os::unix::fs::PermissionsExt;
+
+    use super::*;
+
+    fn mode(path: &Path) -> u32 {
+        std::fs::metadata(path).unwrap().permissions().mode() & 0o777
+    }
+
+    #[test]
+    fn only_a_directory_gantry_creates_is_restricted() {
+        let home = tempfile::tempdir().unwrap();
+        std::fs::set_permissions(home.path(), std::fs::Permissions::from_mode(0o755)).unwrap();
+        Paths::new(home.path(), home.path())
+            .ensure_data_dir()
+            .unwrap();
+        assert_eq!(mode(home.path()), 0o755, "existing directory left alone");
+
+        let fresh = home.path().join("gantry");
+        Paths::new(&fresh, &fresh).ensure_data_dir().unwrap();
+        assert_eq!(mode(&fresh), 0o700);
+    }
 }

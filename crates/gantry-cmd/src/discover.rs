@@ -1,5 +1,8 @@
+use std::fs::TryLockError;
+
 use gantry_discovery::http::{Politeness, ReqwestTransport, Transport};
 use gantry_discovery::{DiscoverInputs, DiscoverReport, bundled, discover};
+use gantry_platform::PlatformError;
 
 use crate::{CmdError, Context};
 
@@ -18,6 +21,18 @@ pub async fn run_discover_with(
 ) -> Result<DiscoverReport, CmdError> {
     let snapshot = ctx.snapshot()?;
     let store = ctx.open_store()?;
+    // Two overlapping runs would double the request rate and count one
+    // omission as two misses. The OS releases the lock if the process dies.
+    let lock_path = ctx.paths.data_dir().join("run.lock");
+    let io_error = |source| PlatformError::Io {
+        path: lock_path.clone(),
+        source,
+    };
+    let lock = std::fs::File::create(&lock_path).map_err(io_error)?;
+    lock.try_lock().map_err(|e| match e {
+        TryLockError::WouldBlock => CmdError::Busy,
+        TryLockError::Error(source) => io_error(source).into(),
+    })?;
     let seed = bundled::seed_companies(&snapshot.search.occupations)?;
     let feeds = bundled::feeds()?;
     let inputs = DiscoverInputs {

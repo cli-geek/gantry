@@ -80,7 +80,9 @@ Gantry has no telemetry. In M1 it contacts only:
 - `hacker-news.firebaseio.com` (only if `hacker_news = true`).
 
 Your home location is geocoded offline from bundled data; it never leaves
-the machine. Profile files and the database are readable only by your user.
+the machine. Files Gantry writes, including the database, are readable
+only by your user; `gantry doctor` warns about profile files you created
+that other users can read.
 
 ## Documentation
 

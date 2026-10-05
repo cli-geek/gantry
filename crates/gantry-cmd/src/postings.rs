@@ -50,6 +50,12 @@ pub struct PostingSummary {
 }
 
 pub fn list_postings(ctx: &Context, query: PostingsQuery) -> Result<Vec<PostingSummary>, CmdError> {
+    if query.limit.is_some_and(|n| i64::try_from(n).is_err()) {
+        return Err(CmdError::InvalidInput(format!(
+            "--limit must be at most {}",
+            i64::MAX
+        )));
+    }
     let store = ctx.open_store()?;
     let rows = store.list_postings(&ListFilter {
         passed: match query.status {

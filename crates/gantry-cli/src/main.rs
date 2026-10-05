@@ -158,7 +158,9 @@ fn run(cli: &Cli) -> Result<Code, CmdError> {
     match &cli.command {
         Command::Schema { name } => {
             match name {
-                None => println!("{}", gantry_cmd::schema::names().join("\n")),
+                None => emit(cli, &gantry_cmd::schema::names(), |names| {
+                    format!("{}\n", names.join("\n"))
+                }),
                 Some(n) => {
                     let schema = gantry_cmd::schema::get(n).ok_or_else(|| {
                         CmdError::InvalidInput(format!(
