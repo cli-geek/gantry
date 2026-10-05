@@ -41,7 +41,8 @@ gantry-cli ──► gantry-cmd ──► gantry-discovery ──► gantry-stor
 One request per second per host (more if `Crawl-delay` says so),
 `robots.txt` fetched and honored for every host, conditional GET with
 stored `ETag`/`Last-Modified`, exponential backoff with `Retry-After` on
-429 and 5xx (a `Retry-After` over 60 s ends retries for the run), and a
+429 and 5xx (a `Retry-After` over 60 s stops all requests to that host
+for the rest of the run), and a
 `User-Agent` naming Gantry and its repository. Requests go only to the six
 allowlisted hosts in the README, and redirects are not followed. An
 unreachable or 5xx `robots.txt` blocks the host for the run.

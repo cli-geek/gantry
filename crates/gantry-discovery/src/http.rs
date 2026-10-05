@@ -6,6 +6,7 @@
 use std::collections::HashMap;
 use std::future::Future;
 use std::pin::Pin;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
@@ -30,7 +31,8 @@ const ROBOTS_AGENT: &str = "gantry";
 /// (2026-10) is about 15 MB.
 const MAX_BODY_BYTES: usize = 64 * 1024 * 1024;
 
-/// A server asking for a longer pause than this is not retried this run.
+/// A server asking for a longer pause than this gets no more requests
+/// this run.
 const MAX_RETRY_WAIT: Duration = Duration::from_secs(60);
 
 /// The only hosts Gantry sends requests to (README "Privacy"). An allowlist
@@ -179,6 +181,8 @@ pub enum FetchError {
 struct HostState {
     next_slot: tokio::sync::Mutex<Option<Instant>>,
     robots: OnceCell<Robots>,
+    /// The host sent a `Retry-After` longer than [`MAX_RETRY_WAIT`].
+    backed_off: AtomicBool,
 }
 
 #[derive(Debug)]
@@ -271,6 +275,12 @@ impl<'a> Fetcher<'a> {
             return Ok(Fetched::Disallowed);
         }
         let state = self.host(&host);
+        if state.backed_off.load(Ordering::Relaxed) {
+            return Err(FetchError::Transport {
+                url: url.to_owned(),
+                message: format!("{host} asked to wait; no more requests this run"),
+            });
+        }
         let robots = self.robots(&parsed, &state).await;
         let path = match parsed.query() {
             Some(q) => format!("{}?{q}", parsed.path()),
@@ -319,6 +329,7 @@ impl<'a> Fetcher<'a> {
                         last_error = format!("HTTP {}", resp.status);
                         let wait = resp.header("retry-after").and_then(retry_after);
                         if wait.is_some_and(|w| w > MAX_RETRY_WAIT) {
+                            state.backed_off.store(true, Ordering::Relaxed);
                             break;
                         }
                         wait
@@ -361,13 +372,25 @@ impl<'a> Fetcher<'a> {
     }
 }
 
-/// `Retry-After` as delay seconds or an HTTP date (RFC 9110 §10.2.3).
+/// `Retry-After` as delay seconds or an HTTP date (RFC 9110 §10.2.3),
+/// including the obsolete RFC 850 and asctime date forms.
 fn retry_after(value: &str) -> Option<Duration> {
     let value = value.trim();
     if let Ok(secs) = value.parse::<u64>() {
         return Some(Duration::from_secs(secs));
     }
-    let at = jiff::fmt::rfc2822::parse(value).ok()?.timestamp();
+    let utc = |format: &str, text: &str| {
+        jiff::fmt::strtime::parse(format, text)
+            .and_then(|t| t.to_datetime())
+            .and_then(|dt| dt.to_zoned(jiff::tz::TimeZone::UTC))
+            .map(|z| z.timestamp())
+            .ok()
+    };
+    let at = jiff::fmt::rfc2822::parse(value)
+        .map(|z| z.timestamp())
+        .ok()
+        .or_else(|| utc("%A, %d-%b-%y %H:%M:%S GMT", value))
+        .or_else(|| utc("%a %b %e %H:%M:%S %Y", value))?;
     // A date in the past means retry now.
     Some(Duration::try_from(at.duration_since(jiff::Timestamp::now())).unwrap_or_default())
 }
@@ -585,6 +608,11 @@ mod tests {
             Err(FetchError::Transport { .. })
         ));
         assert_eq!(t.log.lock().unwrap().len(), 2);
+        assert!(
+            f.get("https://api.lever.co/y", false).await.is_err(),
+            "the rest of the host is skipped"
+        );
+        assert_eq!(t.log.lock().unwrap().len(), 2);
     }
 
     #[test]
@@ -600,6 +628,14 @@ mod tests {
             .unwrap();
         assert!(retry_after(&http_date).unwrap() > MAX_RETRY_WAIT);
         assert_eq!(retry_after("soon"), None);
+        assert_eq!(
+            retry_after("Sunday, 06-Nov-94 08:49:37 GMT"),
+            Some(Duration::ZERO)
+        );
+        assert_eq!(
+            retry_after("Sun Nov  6 08:49:37 1994"),
+            Some(Duration::ZERO)
+        );
     }
 
     #[tokio::test(start_paused = true)]
