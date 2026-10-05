@@ -16,12 +16,11 @@ use url::Url;
 
 use crate::robots::Robots;
 
-/// Identifies Gantry to every host. The project URL is added once the
-/// repository is public.
+/// Identifies Gantry to every host.
 pub const USER_AGENT: &str = concat!(
     "Gantry/",
     env!("CARGO_PKG_VERSION"),
-    " (open-source job search assistant; one user, polite polling)"
+    " (+https://github.com/cli-geek/gantry; open-source job search assistant; one user, polite polling)"
 );
 
 /// Product token matched against robots.txt `User-agent` lines.
@@ -31,27 +30,22 @@ const ROBOTS_AGENT: &str = "gantry";
 /// (2026-10) is about 15 MB.
 const MAX_BODY_BYTES: usize = 64 * 1024 * 1024;
 
+/// A server asking for a longer pause than this is not retried this run.
 const MAX_RETRY_WAIT: Duration = Duration::from_secs(60);
 
-/// Sites whose terms prohibit automated access (plan §11.3, §4.1.1). Gantry
-/// never sends them a request, whatever the caller asks; their postings go
-/// through manual paste mode.
-const EXCLUDED_DOMAINS: &[&str] = &[
-    "myworkdayjobs.com",
-    "workday.com",
-    "joinhandshake.com",
-    "linkedin.com",
-    "indeed.com",
-    "glassdoor.com",
-    "ziprecruiter.com",
-    "wellfound.com",
+/// The only hosts Gantry sends requests to (README "Privacy"). An allowlist
+/// rather than a block list, because sites whose terms prohibit automated
+/// access (plan §11.3, §4.1.1: Workday, Handshake, LinkedIn, Indeed,
+/// Glassdoor, ZipRecruiter, Wellfound) have too many domains and aliases to
+/// enumerate. Matched exactly, so `host.` and subdomains are refused too.
+const ALLOWED_HOSTS: &[&str] = &[
+    "boards-api.greenhouse.io",
+    "api.lever.co",
+    "api.eu.lever.co",
+    "api.ashbyhq.com",
+    "raw.githubusercontent.com",
+    "hacker-news.firebaseio.com",
 ];
-
-fn is_excluded_host(host: &str) -> bool {
-    EXCLUDED_DOMAINS
-        .iter()
-        .any(|d| host == *d || host.ends_with(&format!(".{d}")))
-}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HttpRequest {
@@ -96,6 +90,9 @@ impl ReqwestTransport {
             .user_agent(USER_AGENT)
             .timeout(Duration::from_secs(60))
             .connect_timeout(Duration::from_secs(15))
+            // A redirect would skip the host allowlist, robots.txt and
+            // spacing; a 3xx is reported as an error instead.
+            .redirect(reqwest::redirect::Policy::none())
             .build()
             .map_err(|e| e.to_string())?;
         Ok(Self { client })
@@ -270,7 +267,7 @@ impl<'a> Fetcher<'a> {
             .host_str()
             .ok_or_else(|| FetchError::InvalidUrl(url.to_owned()))?
             .to_ascii_lowercase();
-        if is_excluded_host(&host) {
+        if parsed.scheme() != "https" || !ALLOWED_HOSTS.contains(&host.as_str()) {
             return Ok(Fetched::Disallowed);
         }
         let state = self.host(&host);
@@ -320,9 +317,11 @@ impl<'a> Fetcher<'a> {
                     404 | 410 => return Ok(Fetched::NotFound),
                     429 | 500..=599 => {
                         last_error = format!("HTTP {}", resp.status);
-                        resp.header("retry-after")
-                            .and_then(|s| s.trim().parse::<u64>().ok())
-                            .map(Duration::from_secs)
+                        let wait = resp.header("retry-after").and_then(retry_after);
+                        if wait.is_some_and(|w| w > MAX_RETRY_WAIT) {
+                            break;
+                        }
+                        wait
                     }
                     status => {
                         return Err(FetchError::Status {
@@ -352,6 +351,17 @@ impl<'a> Fetcher<'a> {
             self.now,
         )
     }
+}
+
+/// `Retry-After` as delay seconds or an HTTP date (RFC 9110 §10.2.3).
+fn retry_after(value: &str) -> Option<Duration> {
+    let value = value.trim();
+    if let Ok(secs) = value.parse::<u64>() {
+        return Some(Duration::from_secs(secs));
+    }
+    let at = jiff::fmt::rfc2822::parse(value).ok()?.timestamp();
+    // A date in the past means retry now.
+    Some(Duration::try_from(at.duration_since(jiff::Timestamp::now())).unwrap_or_default())
 }
 
 #[cfg(test)]
@@ -421,19 +431,30 @@ mod tests {
     async fn robots_first_then_spacing_and_conditional_get() {
         let store = Store::open_in_memory().unwrap();
         let t = Scripted::new(vec![
-            ("https://a.test/robots.txt", 404, &[], ""),
-            ("https://a.test/board", 200, &[("etag", "\"v1\"")], "body"),
-            ("https://a.test/board", 304, &[], ""),
+            ("https://boards-api.greenhouse.io/robots.txt", 404, &[], ""),
+            (
+                "https://boards-api.greenhouse.io/board",
+                200,
+                &[("etag", "\"v1\"")],
+                "body",
+            ),
+            ("https://boards-api.greenhouse.io/board", 304, &[], ""),
         ]);
         let f = Fetcher::new(&t, &store, Politeness::default(), 100);
-        let Fetched::Body { body, validators } = f.get("https://a.test/board", true).await.unwrap()
+        let Fetched::Body { body, validators } = f
+            .get("https://boards-api.greenhouse.io/board", true)
+            .await
+            .unwrap()
         else {
             panic!("expected body");
         };
         assert_eq!(body, b"body");
-        f.commit("https://a.test/board", &validators).unwrap();
+        f.commit("https://boards-api.greenhouse.io/board", &validators)
+            .unwrap();
         assert!(matches!(
-            f.get("https://a.test/board", true).await.unwrap(),
+            f.get("https://boards-api.greenhouse.io/board", true)
+                .await
+                .unwrap(),
             Fetched::NotModified
         ));
         let log = t.log.lock().unwrap();
@@ -449,14 +470,16 @@ mod tests {
     async fn disallowed_path_is_never_requested() {
         let store = Store::open_in_memory().unwrap();
         let t = Scripted::new(vec![(
-            "https://b.test/robots.txt",
+            "https://api.lever.co/robots.txt",
             200,
             &[],
             "User-agent: *\nDisallow: /private\n",
         )]);
         let f = Fetcher::new(&t, &store, Politeness::default(), 0);
         assert!(matches!(
-            f.get("https://b.test/private/x", false).await.unwrap(),
+            f.get("https://api.lever.co/private/x", false)
+                .await
+                .unwrap(),
             Fetched::Disallowed
         ));
         assert_eq!(t.log.lock().unwrap().len(), 1);
@@ -466,14 +489,19 @@ mod tests {
     async fn retries_on_429_honoring_retry_after() {
         let store = Store::open_in_memory().unwrap();
         let t = Scripted::new(vec![
-            ("https://c.test/robots.txt", 404, &[], ""),
-            ("https://c.test/x", 429, &[("retry-after", "5")], ""),
-            ("https://c.test/x", 503, &[], ""),
-            ("https://c.test/x", 200, &[], "ok"),
+            ("https://api.ashbyhq.com/robots.txt", 404, &[], ""),
+            (
+                "https://api.ashbyhq.com/x",
+                429,
+                &[("retry-after", "5")],
+                "",
+            ),
+            ("https://api.ashbyhq.com/x", 503, &[], ""),
+            ("https://api.ashbyhq.com/x", 200, &[], "ok"),
         ]);
         let f = Fetcher::new(&t, &store, Politeness::default(), 0);
         assert!(matches!(
-            f.get("https://c.test/x", false).await.unwrap(),
+            f.get("https://api.ashbyhq.com/x", false).await.unwrap(),
             Fetched::Body { .. }
         ));
         let log = t.log.lock().unwrap();
@@ -491,9 +519,18 @@ mod tests {
         let f = Fetcher::new(&t, &store, Politeness::default(), 0);
         for url in [
             "https://nvidia.wd5.myworkdayjobs.com/en-US/careers/job/1",
+            "https://acme.wd1.myworkdaysite.com/recruiting/acme/jobs",
             "https://www.workday.com/",
             "https://app.joinhandshake.com/jobs/1",
             "https://www.linkedin.com/jobs/view/1",
+            "https://linkedin.com./jobs/view/1",
+            "https://lnkd.in/abc",
+            "https://uk.indeed.com/viewjob?jk=1",
+            "https://www.indeed.co.uk/viewjob?jk=1",
+            "https://www.glassdoor.co.uk/job-listing/1",
+            "https://api.lever.co./v0/postings/x",
+            "https://evil.api.lever.co/v0/postings/x",
+            "http://api.lever.co/v0/postings/x",
         ] {
             assert!(
                 matches!(f.get(url, false).await.unwrap(), Fetched::Disallowed),
@@ -501,16 +538,76 @@ mod tests {
             );
         }
         assert!(t.log.lock().unwrap().is_empty());
-        assert!(!is_excluded_host("notworkday.com"));
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn redirect_is_an_error_not_followed() {
+        let store = Store::open_in_memory().unwrap();
+        let t = Scripted::new(vec![
+            ("https://api.lever.co/robots.txt", 404, &[], ""),
+            (
+                "https://api.lever.co/v0/postings/x",
+                301,
+                &[("location", "https://www.linkedin.com/")],
+                "",
+            ),
+        ]);
+        let f = Fetcher::new(&t, &store, Politeness::default(), 0);
+        assert!(matches!(
+            f.get("https://api.lever.co/v0/postings/x", false).await,
+            Err(FetchError::Status { status: 301, .. })
+        ));
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn long_retry_after_stops_retrying() {
+        let store = Store::open_in_memory().unwrap();
+        let t = Scripted::new(vec![
+            ("https://api.lever.co/robots.txt", 404, &[], ""),
+            (
+                "https://api.lever.co/x",
+                429,
+                &[("retry-after", "3600")],
+                "",
+            ),
+        ]);
+        let f = Fetcher::new(&t, &store, Politeness::default(), 0);
+        assert!(matches!(
+            f.get("https://api.lever.co/x", false).await,
+            Err(FetchError::Transport { .. })
+        ));
+        assert_eq!(t.log.lock().unwrap().len(), 2);
+    }
+
+    #[test]
+    fn retry_after_forms() {
+        assert_eq!(retry_after(" 5 "), Some(Duration::from_secs(5)));
+        assert_eq!(
+            retry_after("Sun, 06 Nov 1994 08:49:37 GMT"),
+            Some(Duration::ZERO)
+        );
+        let later = jiff::Timestamp::now() + jiff::SignedDuration::from_hours(2);
+        let http_date = jiff::fmt::rfc2822::DateTimePrinter::new()
+            .timestamp_to_rfc9110_string(&later)
+            .unwrap();
+        assert!(retry_after(&http_date).unwrap() > MAX_RETRY_WAIT);
+        assert_eq!(retry_after("soon"), None);
     }
 
     #[tokio::test(start_paused = true)]
     async fn unreachable_robots_blocks_host() {
         let store = Store::open_in_memory().unwrap();
-        let t = Scripted::new(vec![("https://d.test/robots.txt", 503, &[], "")]);
+        let t = Scripted::new(vec![(
+            "https://hacker-news.firebaseio.com/robots.txt",
+            503,
+            &[],
+            "",
+        )]);
         let f = Fetcher::new(&t, &store, Politeness::default(), 0);
         assert!(matches!(
-            f.get("https://d.test/x", false).await.unwrap(),
+            f.get("https://hacker-news.firebaseio.com/x", false)
+                .await
+                .unwrap(),
             Fetched::Disallowed
         ));
     }
