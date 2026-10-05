@@ -27,6 +27,17 @@ impl Ats {
         }
     }
 
+    /// The board token as stored. Greenhouse and Ashby answer for any
+    /// letter case, so one board reached through differently cased URLs is
+    /// stored once; Lever tokens are case-sensitive (checked live
+    /// 2026-10-04).
+    pub fn canonical_token(self, token: &str) -> String {
+        match self {
+            Self::Greenhouse | Self::Ashby => token.to_lowercase(),
+            Self::Lever | Self::LeverEu | Self::External => token.to_owned(),
+        }
+    }
+
     pub fn parse(s: &str) -> Option<Self> {
         Some(match s {
             "greenhouse" => Self::Greenhouse,

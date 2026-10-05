@@ -1,7 +1,7 @@
 //! Board-slug probing (§4.1.1): guess a company's board token from its
 //! name and ask each board API whether it exists.
 
-use gantry_core::text::normalize;
+use gantry_core::text::{contains_phrase, normalize};
 
 /// Trailing words that are legal form, not name.
 const LEGAL_SUFFIXES: &[&str] = &[
@@ -66,6 +66,16 @@ pub fn names_match(board_name: &str, company: &str) -> bool {
     !a.is_empty() && a == name_words(company).concat()
 }
 
+/// Whether a board response mentions the company, for board APIs that do
+/// not return its name. Postings shorten names ("Cobalt Harbor Software"
+/// writes "Cobalt Harbor"), so the first two words are enough. An empty
+/// board cannot be checked and does not count.
+pub fn mentions_company(body: &[u8], company: &str) -> bool {
+    let words = name_words(company);
+    let name = words[..words.len().min(2)].join(" ");
+    contains_phrase(&normalize(&String::from_utf8_lossy(body)), &name)
+}
+
 /// A company-name guess from a careers-site host:
 /// "careers.northwind.example" → "northwind".
 pub fn host_company(host: &str) -> Option<String> {
@@ -111,5 +121,13 @@ mod tests {
         );
         assert_eq!(host_company("www.acme.co.uk").as_deref(), Some("acme"));
         assert_eq!(host_company("localhost"), None);
+    }
+
+    #[test]
+    fn mention_check_uses_the_first_two_words() {
+        let body = br#"[{"descriptionPlain":"Cobalt Harbor builds billing tools."}]"#;
+        assert!(mentions_company(body, "Cobalt Harbor Software, Inc."));
+        assert!(!mentions_company(body, "Cobalt Robotics"));
+        assert!(!mentions_company(b"[]", "Cobalt Harbor"));
     }
 }

@@ -184,6 +184,7 @@ pub async fn discover(
         run.register(entry, "user")?;
     }
     run.register_manual_urls()?;
+    run.retire_removed_boards()?;
 
     let enabled: Vec<&FeedDef> = inputs
         .feeds
@@ -215,6 +216,7 @@ pub async fn discover(
     let (feeds_result, hn_result) = tokio::join!(feeds_task, hn_task);
     let (statuses, pending) = feeds_result?;
     let hacker_news = hn_result?;
+    run.close_disabled_feeds(&enabled)?;
     {
         let mut report = run.tally();
         report.feeds = statuses;
@@ -381,6 +383,43 @@ impl Run<'_> {
         }
     }
 
+    /// Seed and user boards no longer in either list stop being polled.
+    /// Boards found by other sources stay; a feed or HN that still points
+    /// at a retired board registers it again.
+    fn retire_removed_boards(&self) -> Result<(), StoreError> {
+        let listed: HashSet<(Ats, String)> = self
+            .inputs
+            .seed
+            .iter()
+            .chain(&self.inputs.snapshot.companies)
+            .map(|e| (e.ats, e.ats.canonical_token(&e.token)))
+            .collect();
+        for c in self.store.companies()? {
+            if matches!(c.source.as_str(), "seed" | "user")
+                && !listed.contains(&(c.ats, c.token.clone()))
+            {
+                let closed = self.store.retire_company(&c, self.now())?;
+                self.closed(closed);
+            }
+        }
+        Ok(())
+    }
+
+    /// Postings only a feed no longer enabled (or no longer bundled)
+    /// listed take misses, as if the feed had dropped them.
+    fn close_disabled_feeds(&self, enabled: &[&FeedDef]) -> Result<(), StoreError> {
+        let enabled: HashSet<String> = enabled.iter().map(|f| f.source()).collect();
+        for source in self.store.posting_source_names()? {
+            if source.starts_with("feed:") && !enabled.contains(&source) {
+                let closed =
+                    self.store
+                        .reconcile_feed(&source, Some(&HashSet::new()), self.now())?;
+                self.closed(closed);
+            }
+        }
+        Ok(())
+    }
+
     fn register_manual_urls(&self) -> Result<(), StoreError> {
         for (url, json) in self.store.manual_urls()? {
             match serde_json::from_str::<Resolved>(&json) {
@@ -424,7 +463,8 @@ impl Run<'_> {
         let (body, validators) = match self.get(&source, &feed.url, true).await? {
             None => return Ok(status(SourceOutcome::Failed, 0)),
             Some(Fetched::NotModified) => {
-                self.store.touch_board(Ats::External, &source, self.now())?;
+                let closed = self.store.reconcile_feed(&source, None, self.now())?;
+                self.closed(closed);
                 return Ok(status(SourceOutcome::Unchanged, 0));
             }
             Some(Fetched::NotFound) => {
@@ -464,12 +504,14 @@ impl Run<'_> {
                 Some(company_id),
             ) = (&resolved, company_id)
             {
+                let key = PostingKey {
+                    ats: *ats,
+                    board_token: board_token.clone(),
+                    job_id: job_id.clone(),
+                };
+                seen.insert(key.clone());
                 pending.push(Pending {
-                    key: PostingKey {
-                        ats: *ats,
-                        board_token: board_token.clone(),
-                        job_id: job_id.clone(),
-                    },
+                    key,
                     company_id,
                     item: item.clone(),
                     source: source.clone(),
@@ -482,18 +524,18 @@ impl Run<'_> {
                 job_id: item.id.clone(),
             };
             let outcome = self.store.upsert_posting(
-                &feed_posting(key, item),
+                &feed_posting(key.clone(), item),
                 None,
                 &source,
                 &item.url,
                 self.now(),
             )?;
             self.count(&outcome);
-            seen.insert(item.id.clone());
+            seen.insert(key);
         }
         let closed = self
             .store
-            .reconcile_board(Ats::External, &source, &seen, self.now())?;
+            .reconcile_feed(&source, Some(&seen), self.now())?;
         self.closed(closed);
         self.fetcher.commit(&feed.url, &validators)?;
         Ok(status(
@@ -541,10 +583,21 @@ impl Run<'_> {
             if self.store.is_processed(SOURCE, &item_id)? {
                 continue;
             }
-            let Some(item) = self.hn_item(*kid).await? else {
+            // A failed request is retried next run; an item the API answers
+            // `null` for (deleted) is done.
+            let Some(Fetched::Body { body, .. }) =
+                self.get(SOURCE, &hn::item_url(*kid), false).await?
+            else {
                 continue;
             };
-            if let Some(lead) = hn::parse_comment(&item) {
+            let item = match hn::parse_item(&body) {
+                Ok(item) => item,
+                Err(e) => {
+                    self.error(SOURCE, e);
+                    continue;
+                }
+            };
+            if let Some(lead) = item.as_ref().and_then(hn::parse_comment) {
                 if let Some(company) = &lead.company {
                     self.store.queue_probe_name(company, SOURCE, self.now())?;
                 }
@@ -646,15 +699,17 @@ impl Run<'_> {
                 Ats::External => return Ok(Probe::Miss),
             };
             let hit = match self.get(&format!("probe:{ats}"), &url, false).await? {
-                None => return Ok(Probe::Failed),
+                // Not an answer about the slug, so nothing is cached.
+                None | Some(Fetched::Disallowed) => return Ok(Probe::Failed),
+                // A slug shared by an unrelated company is rejected:
+                // Greenhouse names the board; Lever and Ashby do not, so
+                // their postings must mention the company.
                 Some(Fetched::Body { body, .. }) => match ats {
-                    // Greenhouse names the board, so a slug shared by an
-                    // unrelated company is rejected.
                     Ats::Greenhouse => greenhouse::parse_board_name(&body)
                         .is_some_and(|board| probe::names_match(&board, name)),
-                    _ => true,
+                    _ => probe::mentions_company(&body, name),
                 },
-                Some(_) => false,
+                Some(Fetched::NotFound | Fetched::NotModified) => false,
             };
             self.store.record_probe(slug, ats, hit, self.now())?;
             if hit {
@@ -686,13 +741,26 @@ impl Run<'_> {
                     fail(&mut stats, "disallowed by robots.txt")?;
                 }
                 Some(Fetched::NotFound) => {
+                    // A deleted board lists nothing; two 404s in a row
+                    // close its postings like any other two misses.
                     stats.not_found += 1;
+                    let closed = self.store.reconcile_board(
+                        c.ats,
+                        &c.token,
+                        Some(&HashSet::new()),
+                        self.now(),
+                    )?;
+                    self.closed(closed);
                     self.store
                         .record_poll(c.id, self.now(), Some("board not found"))?;
+                    ok.insert((c.ats, c.token.clone()));
                 }
                 Some(Fetched::NotModified) => {
                     stats.unchanged += 1;
-                    self.store.touch_board(c.ats, &c.token, self.now())?;
+                    let closed = self
+                        .store
+                        .reconcile_board(c.ats, &c.token, None, self.now())?;
+                    self.closed(closed);
                     self.store.record_poll(c.id, self.now(), None)?;
                     ok.insert((c.ats, c.token.clone()));
                 }
@@ -716,7 +784,7 @@ impl Run<'_> {
                         }
                         let closed =
                             self.store
-                                .reconcile_board(c.ats, &c.token, &seen, self.now())?;
+                                .reconcile_board(c.ats, &c.token, Some(&seen), self.now())?;
                         self.closed(closed);
                         self.fetcher.commit(&url, &validators)?;
                         self.store.record_poll(c.id, self.now(), None)?;
@@ -730,20 +798,23 @@ impl Run<'_> {
     }
 
     /// Feed items that point at a board posting: record the feed as a
-    /// source of that posting. If the board was polled and did not list
-    /// the job, it is gone and the stale feed entry is ignored. If the
-    /// board could not be polled, the feed's data stands in.
+    /// source of that posting, with its sponsorship statement. If the board
+    /// was polled (or is gone) and did not list the job, the stale feed
+    /// entry is ignored. If the board could not be polled, the feed's data
+    /// stands in.
     fn attach_pending(
         &self,
         pending: Vec<Pending>,
         polled_ok: &HashSet<(Ats, String)>,
     ) -> Result<(), StoreError> {
         for p in pending {
-            if self
-                .store
-                .add_source_if_exists(&p.key, &p.source, &p.item.url, self.now())?
-                .is_some()
+            if let Some(id) =
+                self.store
+                    .add_source_if_exists(&p.key, &p.source, &p.item.url, self.now())?
             {
+                if let Some(fact) = &p.item.sponsorship {
+                    self.store.set_feed_sponsorship(id, fact)?;
+                }
                 continue;
             }
             if polled_ok.contains(&(p.key.ats, p.key.board_token.clone())) {

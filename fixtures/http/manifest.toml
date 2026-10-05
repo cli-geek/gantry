@@ -44,13 +44,13 @@ file = "lever/cobaltharborsoftware.json"
 url = "https://api.ashbyhq.com/posting-api/job-board/lumenforge?includeCompensation=true"
 file = "ashby/lumenforge.json"
 
-# Slug probes. Cobalt Harbor Software has a Lever board. A Greenhouse
-# board named "Tidewater Marine Supply" sits at the slug Tidewater
-# Analytics would use, and must be rejected.
+# Slug probes. Cobalt Harbor Software has a Lever board whose postings
+# name the company. A Greenhouse board named "Tidewater Marine Supply"
+# sits at the slug Tidewater Analytics would use, and must be rejected.
 
 [[route]]
 url = "https://api.lever.co/v0/postings/cobaltharborsoftware?mode=json&limit=1"
-body = "[]"
+file = "lever/cobaltharborsoftware.json"
 
 [[route]]
 url = "https://boards-api.greenhouse.io/v1/boards/tidewateranalytics"

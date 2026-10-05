@@ -3,6 +3,7 @@
 
 use std::collections::HashSet;
 
+use gantry_core::facts::{Fact, FactSource, Sponsorship};
 use gantry_core::filter::{Check, FilterOutcome};
 use gantry_core::text::{REPOST_SIMHASH_BITS, fnv1a64, hamming, normalize, simhash};
 use gantry_core::{Ats, Posting, PostingKey, WorkMode};
@@ -112,7 +113,6 @@ impl Store {
         source_url: &str,
         now: i64,
     ) -> Result<UpsertOutcome, StoreError> {
-        let json = serde_json::to_string(posting)?;
         let title_norm = normalize(&posting.title);
         let company_norm = normalize(&posting.company_name);
         let location_raw = posting.locations_raw.join("; ");
@@ -135,14 +135,24 @@ impl Store {
 
         let mut conn = self.conn()?;
         let tx = conn.transaction()?;
-        let existing: Option<(i64, String, Option<i64>)> = tx
+        let existing: Option<(i64, String, Option<i64>, String)> = tx
             .query_row(
-                "SELECT id, content_hash, closed_at FROM postings
+                "SELECT id, content_hash, closed_at, posting_json FROM postings
                  WHERE ats = ?1 AND board_token = ?2 AND ats_job_id = ?3",
                 params![key.ats.as_str(), key.board_token, key.job_id],
-                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
             )
             .optional()?;
+        // A board refresh does not know what a feed said about sponsorship;
+        // keep the feed's fact until a structured source says otherwise.
+        let mut posting = std::borrow::Cow::Borrowed(posting);
+        if posting.facts.sponsorship.is_none()
+            && let Some((.., old_json)) = &existing
+            && let Some(kept) = feed_sponsorship(old_json)?
+        {
+            posting.to_mut().facts.sponsorship = Some(kept);
+        }
+        let json = serde_json::to_string(&*posting)?;
 
         let outcome = match existing {
             None => {
@@ -177,15 +187,20 @@ impl Store {
                 )?;
                 let id = tx.last_insert_rowid();
                 log_event(&tx, "posting", id, None, "discovered", now)?;
-                let repost_of =
-                    link_repost(&tx, id, &company_norm, &title_norm, &location_norm, sim)?;
+                // Feed-only postings have no description; every SimHash of
+                // empty text is equal, so there is nothing to compare.
+                let repost_of = if posting.description.trim().is_empty() {
+                    None
+                } else {
+                    link_repost(&tx, id, &company_norm, &title_norm, &location_norm, sim)?
+                };
                 UpsertOutcome {
                     id,
                     status: UpsertStatus::New,
                     repost_of,
                 }
             }
-            Some((id, old_hash, closed_at)) => {
+            Some((id, old_hash, closed_at, _)) => {
                 let status = if closed_at.is_some() {
                     log_event(&tx, "posting", id, Some("closed"), "open", now)?;
                     UpsertStatus::Reopened
@@ -251,45 +266,105 @@ impl Store {
     }
 
     /// After a successful poll of a board: every open posting of that board
-    /// not in `seen_job_ids` takes a miss, and closes on its second.
-    /// Returns how many closed.
+    /// not in `seen_job_ids` takes a miss, and closes on its second. `None`
+    /// is a `304 Not Modified` (see [`settle`]). Returns how many closed.
     pub fn reconcile_board(
         &self,
         ats: Ats,
         board_token: &str,
-        seen_job_ids: &HashSet<String>,
+        seen_job_ids: Option<&HashSet<String>>,
         now: i64,
     ) -> Result<u32, StoreError> {
         let mut conn = self.conn()?;
         let tx = conn.transaction()?;
-        let open: Vec<(i64, String, i64)> = {
+        let open: Vec<(i64, i64, bool)> = {
             let mut stmt = tx.prepare(
-                "SELECT id, ats_job_id, missed_polls FROM postings
+                "SELECT id, missed_polls, ats_job_id FROM postings
                  WHERE ats = ?1 AND board_token = ?2 AND closed_at IS NULL",
             )?;
             let rows = stmt.query_map(params![ats.as_str(), board_token], |r| {
-                Ok((r.get(0)?, r.get(1)?, r.get(2)?))
+                let job_id: String = r.get(2)?;
+                Ok((
+                    r.get(0)?,
+                    r.get(1)?,
+                    seen_job_ids.is_some_and(|s| s.contains(&job_id)),
+                ))
             })?;
             rows.collect::<Result<_, _>>()?
         };
-        let mut closed = 0;
-        for (id, job_id, missed) in open {
-            if seen_job_ids.contains(&job_id) {
-                continue;
-            }
-            closed += u32::from(take_miss(&tx, id, missed, now)?);
-        }
+        let closed = settle(&tx, open, seen_job_ids.is_none(), now)?;
         tx.commit()?;
         Ok(closed)
     }
 
-    /// After a `304 Not Modified` for a board: nothing changed, so every
-    /// open posting on it was seen.
-    pub fn touch_board(&self, ats: Ats, board_token: &str, now: i64) -> Result<(), StoreError> {
-        self.conn()?.execute(
-            "UPDATE postings SET last_seen = ?3, missed_polls = 0
-             WHERE ats = ?1 AND board_token = ?2 AND closed_at IS NULL",
-            params![ats.as_str(), board_token, now],
+    /// Like [`Store::reconcile_board`] for a list feed: covers the open
+    /// postings no source but this feed lists, including ones that stand in
+    /// for a board posting whose board could not be polled.
+    pub fn reconcile_feed(
+        &self,
+        source: &str,
+        seen: Option<&HashSet<PostingKey>>,
+        now: i64,
+    ) -> Result<u32, StoreError> {
+        let mut conn = self.conn()?;
+        let tx = conn.transaction()?;
+        let open: Vec<(i64, i64, bool)> = {
+            let mut stmt = tx.prepare(
+                "SELECT p.id, p.missed_polls, p.ats, p.board_token, p.ats_job_id
+                 FROM postings p JOIN posting_sources s ON s.posting_id = p.id AND s.source = ?1
+                 WHERE p.closed_at IS NULL AND NOT EXISTS (
+                     SELECT 1 FROM posting_sources o WHERE o.posting_id = p.id AND o.source != ?1)",
+            )?;
+            let rows = stmt.query_map([source], |r| {
+                let key = PostingKey {
+                    ats: ats_at(r, 2)?,
+                    board_token: r.get(3)?,
+                    job_id: r.get(4)?,
+                };
+                Ok((r.get(0)?, r.get(1)?, seen.is_some_and(|s| s.contains(&key))))
+            })?;
+            rows.collect::<Result<_, _>>()?
+        };
+        let closed = settle(&tx, open, seen.is_none(), now)?;
+        tx.commit()?;
+        Ok(closed)
+    }
+
+    /// Every source that has listed a posting, e.g. `feed:<id>`.
+    pub fn posting_source_names(&self) -> Result<Vec<String>, StoreError> {
+        let conn = self.conn()?;
+        let mut stmt =
+            conn.prepare("SELECT DISTINCT source FROM posting_sources ORDER BY source")?;
+        let rows = stmt.query_map([], |r| r.get(0))?;
+        Ok(rows.collect::<Result<_, _>>()?)
+    }
+
+    /// Records a feed's sponsorship statement on a posting another source
+    /// owns, unless a structured ATS field already set one.
+    pub fn set_feed_sponsorship(
+        &self,
+        posting_id: i64,
+        fact: &Fact<Sponsorship>,
+    ) -> Result<(), StoreError> {
+        let conn = self.conn()?;
+        let json: String = conn.query_row(
+            "SELECT posting_json FROM postings WHERE id = ?1",
+            [posting_id],
+            |r| r.get(0),
+        )?;
+        let mut posting: Posting = serde_json::from_str(&json)?;
+        if posting
+            .facts
+            .sponsorship
+            .as_ref()
+            .is_some_and(|f| f.source != FactSource::Feed)
+        {
+            return Ok(());
+        }
+        posting.facts.sponsorship = Some(fact.clone());
+        conn.execute(
+            "UPDATE postings SET posting_json = ?2 WHERE id = ?1",
+            params![posting_id, serde_json::to_string(&posting)?],
         )?;
         Ok(())
     }
@@ -394,6 +469,40 @@ impl Store {
         }
         Ok(out)
     }
+}
+
+/// Applies one poll to open postings `(id, missed_polls, listed)`. A
+/// listed posting was already refreshed by the upsert; an unlisted one
+/// takes a miss. With `unchanged` (a 304), the body is the one that was
+/// last processed: postings it listed are seen again, and postings it had
+/// already missed are still missing.
+fn settle(
+    conn: &Connection,
+    open: Vec<(i64, i64, bool)>,
+    unchanged: bool,
+    now: i64,
+) -> Result<u32, StoreError> {
+    let mut closed = 0;
+    for (id, missed, listed) in open {
+        if unchanged && missed == 0 {
+            conn.execute(
+                "UPDATE postings SET last_seen = ?2 WHERE id = ?1",
+                params![id, now],
+            )?;
+        } else if !listed {
+            closed += u32::from(take_miss(conn, id, missed, now)?);
+        }
+    }
+    Ok(closed)
+}
+
+/// A feed-sourced sponsorship fact in a stored posting's JSON.
+fn feed_sponsorship(posting_json: &str) -> Result<Option<Fact<Sponsorship>>, StoreError> {
+    let old: Posting = serde_json::from_str(posting_json)?;
+    Ok(old
+        .facts
+        .sponsorship
+        .filter(|f| f.source == FactSource::Feed))
 }
 
 /// Increments a posting's miss count, closing it at the threshold.
@@ -548,13 +657,13 @@ mod tests {
         let empty = HashSet::new();
         assert_eq!(
             store
-                .reconcile_board(Ats::Greenhouse, "nw", &empty, 20)
+                .reconcile_board(Ats::Greenhouse, "nw", Some(&empty), 20)
                 .unwrap(),
             0
         );
         assert_eq!(
             store
-                .reconcile_board(Ats::Greenhouse, "nw", &empty, 30)
+                .reconcile_board(Ats::Greenhouse, "nw", Some(&empty), 30)
                 .unwrap(),
             1
         );
@@ -574,14 +683,91 @@ mod tests {
         let p = posting("nw", "1", "Backend Engineer", DESC);
         store.upsert_posting(&p, None, "board", "u", 10).unwrap();
         store
-            .reconcile_board(Ats::Greenhouse, "nw", &HashSet::new(), 20)
+            .reconcile_board(Ats::Greenhouse, "nw", Some(&HashSet::new()), 20)
             .unwrap();
-        store.touch_board(Ats::Greenhouse, "nw", 30).unwrap();
+        store.upsert_posting(&p, None, "board", "u", 30).unwrap();
         assert_eq!(
             store
-                .reconcile_board(Ats::Greenhouse, "nw", &HashSet::new(), 40)
+                .reconcile_board(Ats::Greenhouse, "nw", Some(&HashSet::new()), 40)
                 .unwrap(),
             0
         );
+    }
+
+    #[test]
+    fn not_modified_after_a_miss_closes() {
+        let store = Store::open_in_memory().unwrap();
+        let gone = posting("nw", "1", "Backend Engineer", DESC);
+        let kept = posting("nw", "2", "Data Engineer", "Other text entirely.");
+        store.upsert_posting(&gone, None, "board", "u", 10).unwrap();
+        store.upsert_posting(&kept, None, "board", "u", 10).unwrap();
+        store.upsert_posting(&kept, None, "board", "u", 20).unwrap();
+        let listed = HashSet::from(["2".to_owned()]);
+        store
+            .reconcile_board(Ats::Greenhouse, "nw", Some(&listed), 20)
+            .unwrap();
+        assert_eq!(
+            store
+                .reconcile_board(Ats::Greenhouse, "nw", None, 30)
+                .unwrap(),
+            1,
+            "the unchanged body still lacks job 1"
+        );
+        let open = store.open_postings().unwrap();
+        assert_eq!(open.len(), 1);
+        assert_eq!(open[0].posting.key.job_id, "2");
+    }
+
+    #[test]
+    fn feed_reconciles_only_postings_it_alone_lists() {
+        let store = Store::open_in_memory().unwrap();
+        let stand_in = posting("nw", "1", "Backend Engineer", "");
+        let shared = posting("nw", "2", "Data Engineer", "");
+        store
+            .upsert_posting(&stand_in, None, "feed:x", "u", 10)
+            .unwrap();
+        store
+            .upsert_posting(&shared, None, "feed:x", "u", 10)
+            .unwrap();
+        store
+            .upsert_posting(&shared, None, "greenhouse", "u", 10)
+            .unwrap();
+        let empty = HashSet::new();
+        store.reconcile_feed("feed:x", Some(&empty), 20).unwrap();
+        assert_eq!(store.reconcile_feed("feed:x", Some(&empty), 30).unwrap(), 1);
+        let open = store.open_postings().unwrap();
+        assert_eq!(open.len(), 1);
+        assert_eq!(open[0].posting.key.job_id, "2");
+    }
+
+    #[test]
+    fn empty_descriptions_are_not_reposts() {
+        let store = Store::open_in_memory().unwrap();
+        let a = posting("nw", "1", "Backend Engineer", "");
+        let b = posting("nw", "2", "Backend Engineer", "");
+        store.upsert_posting(&a, None, "feed:x", "u", 10).unwrap();
+        let out = store.upsert_posting(&b, None, "feed:x", "u", 20).unwrap();
+        assert_eq!(out.repost_of, None);
+    }
+
+    #[test]
+    fn feed_sponsorship_survives_board_refresh() {
+        let store = Store::open_in_memory().unwrap();
+        let p = posting("nw", "1", "Backend Engineer", DESC);
+        let id = store
+            .upsert_posting(&p, None, "greenhouse", "u", 10)
+            .unwrap()
+            .id;
+        let fact = Fact {
+            value: Sponsorship::NotOffered,
+            source: FactSource::Feed,
+            evidence: "Does Not Offer Sponsorship".into(),
+        };
+        store.set_feed_sponsorship(id, &fact).unwrap();
+        store
+            .upsert_posting(&p, None, "greenhouse", "u", 20)
+            .unwrap();
+        let open = store.open_postings().unwrap();
+        assert_eq!(open[0].posting.facts.sponsorship, Some(fact));
     }
 }

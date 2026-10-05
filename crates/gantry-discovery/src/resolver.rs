@@ -105,7 +105,7 @@ pub fn resolve(input: &str) -> Result<Resolved, ResolveError> {
 fn posting(ats: Ats, board: &str, job: &str) -> Resolved {
     Resolved::Posting {
         ats,
-        board_token: board.to_owned(),
+        board_token: ats.canonical_token(board),
         job_id: job.to_ascii_lowercase(),
     }
 }
@@ -113,7 +113,7 @@ fn posting(ats: Ats, board: &str, job: &str) -> Resolved {
 fn board_of(ats: Ats, board: &str) -> Resolved {
     Resolved::Board {
         ats,
-        board_token: board.to_owned(),
+        board_token: ats.canonical_token(board),
     }
 }
 
