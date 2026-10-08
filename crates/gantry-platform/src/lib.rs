@@ -15,7 +15,7 @@ mod secrets;
 
 pub use browser::{BrowserInfo, BrowserLocator, OsBrowserLocator};
 pub use error::PlatformError;
-pub use fs::{restrict_dir, restrict_file, write_atomic};
+pub use fs::{readable_by_others, restrict_dir, restrict_file, write_atomic};
 pub use paths::Paths;
 pub use scheduler::{OsScheduler, ScheduleSpec, ScheduleStatus, Scheduler};
 pub use secrets::{OsSecretStore, SecretStore};
