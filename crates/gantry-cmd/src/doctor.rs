@@ -146,7 +146,7 @@ fn config_files(ctx: &Context) -> DoctorCheck {
     }
     let exposed: Vec<String> = states
         .iter()
-        .filter(|(p, s)| *s == FileState::Valid && readable_by_others(p))
+        .filter(|(p, s)| *s == FileState::Valid && gantry_platform::readable_by_others(p))
         .map(|(p, _)| p.display().to_string())
         .collect();
     if !exposed.is_empty() {
@@ -164,19 +164,6 @@ fn config_files(ctx: &Context) -> DoctorCheck {
     } else {
         check("config files", CheckStatus::Warn, warnings.join("\n"))
     }
-}
-
-/// Files Gantry writes are user-only; files the user wrote may not be.
-#[cfg(unix)]
-fn readable_by_others(path: &std::path::Path) -> bool {
-    use std::os::unix::fs::PermissionsExt;
-    std::fs::metadata(path).is_ok_and(|m| m.permissions().mode() & 0o077 != 0)
-}
-
-/// Windows profile directories are private to the user by default.
-#[cfg(not(unix))]
-fn readable_by_others(_path: &std::path::Path) -> bool {
-    false
 }
 
 fn search_profile(ctx: &Context) -> DoctorCheck {
@@ -239,7 +226,7 @@ fn data_dir(ctx: &Context) -> DoctorCheck {
     match result {
         // Gantry restricts only a directory it creates; one the user
         // pointed it at keeps its permissions.
-        Ok(()) if readable_by_others(dir) => check(
+        Ok(()) if gantry_platform::readable_by_others(dir) => check(
             "data directory",
             CheckStatus::Warn,
             format!(

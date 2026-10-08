@@ -46,6 +46,20 @@ pub fn restrict_file(path: &Path) -> Result<(), PlatformError> {
     os::restrict_file(path)
 }
 
+/// Whether other users can read the file. Files Gantry writes are
+/// user-only; files the user wrote may not be.
+#[cfg(unix)]
+pub fn readable_by_others(path: &Path) -> bool {
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::metadata(path).is_ok_and(|m| m.permissions().mode() & 0o077 != 0)
+}
+
+/// Windows profile directories are private to the user by default.
+#[cfg(not(unix))]
+pub fn readable_by_others(_path: &Path) -> bool {
+    false
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
