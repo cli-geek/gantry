@@ -341,8 +341,7 @@ impl Gazetteer {
             .get(&(country.to_owned(), code.to_owned()))
             .copied()
             .unwrap_or(0);
-        (CITY_RIVALS_REGION_POPULATION..CITY_OVER_REGION_POPULATION).contains(&rival)
-            && region < REGION_OUTWEIGHS_CITY_FACTOR * u64::from(rival)
+        rival_outweighs_region(rival, region)
     }
 
     /// The US region an informal qualifier names: "LA" in "Burbank, LA".
@@ -663,6 +662,13 @@ pub fn locate_all(raws: &[String]) -> Vec<Location> {
         .collect()
 }
 
+/// Whether a namesake city of `rival` people outside a region of `region`
+/// people (0 when unknown) makes the region name ambiguous.
+fn rival_outweighs_region(rival: u32, region: u64) -> bool {
+    (CITY_RIVALS_REGION_POPULATION..CITY_OVER_REGION_POPULATION).contains(&rival)
+        && region < REGION_OUTWEIGHS_CITY_FACTOR * u64::from(rival)
+}
+
 #[cfg(test)]
 mod tests {
     use gantry_core::WorkMode;
@@ -878,6 +884,16 @@ mod tests {
         for raw in ["Oakdale, LA", "Patterson, LA", "Delhi, LA"] {
             assert_eq!(place(raw).admin1.as_deref(), Some("LA"), "{raw}");
         }
+    }
+
+    #[test]
+    fn region_population_against_a_namesake_city() {
+        assert!(!rival_outweighs_region(99_999, 0), "rival too small");
+        assert!(rival_outweighs_region(100_000, 0), "region unknown");
+        assert!(rival_outweighs_region(100_000, 999_999));
+        assert!(!rival_outweighs_region(100_000, 1_000_000), "exactly 10x");
+        assert!(rival_outweighs_region(999_999, 9_999_989));
+        assert!(!rival_outweighs_region(1_000_000, 0), "rival is a big city");
     }
 
     #[test]
