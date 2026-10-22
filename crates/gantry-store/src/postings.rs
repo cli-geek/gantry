@@ -303,11 +303,14 @@ impl Store {
 
     /// Like [`Store::reconcile_board`] for a list feed: covers the open
     /// postings no source but this feed lists, including ones that stand in
-    /// for a board posting whose board could not be polled.
+    /// for a board posting whose board could not be polled. `polled` holds
+    /// the boards polled successfully this run; their stand-ins are left to
+    /// the board, so one absence is never counted twice.
     pub fn reconcile_feed(
         &self,
         source: &str,
         seen: Option<&HashSet<PostingKey>>,
+        polled: &HashSet<(Ats, String)>,
         now: i64,
     ) -> Result<u32, StoreError> {
         let mut conn = self.conn()?;
@@ -328,8 +331,10 @@ impl Store {
                 let listed = seen.is_some_and(|s| s.contains(&key));
                 // A stand-in for a board posting is the board's to keep
                 // alive: the pipeline marks it seen only when the board
-                // could not be polled. The feed only counts its omissions.
-                let feed_owned = key.ats == Ats::External || (seen.is_some() && !listed);
+                // could not be polled. The feed only counts its omissions,
+                // and only while the board was not polled this run.
+                let feed_owned = key.ats == Ats::External
+                    || !polled.contains(&(key.ats, key.board_token.clone()));
                 Ok(feed_owned.then_some((r.get(0)?, r.get(1)?, listed)))
             })?;
             rows.collect::<Result<_, _>>()?
@@ -344,18 +349,25 @@ impl Store {
         Ok(closed)
     }
 
-    /// A source still lists a posting that nothing refreshed this run:
-    /// clears its misses and reopens it if it had closed. Returns whether it
-    /// reopened.
+    /// A feed still lists a posting that nothing refreshed this run:
+    /// clears its misses and reopens it if it had closed. Does nothing to a
+    /// posting any non-feed source lists; its board decides. Returns whether
+    /// it reopened.
     pub fn mark_seen(&self, posting_id: i64, now: i64) -> Result<bool, StoreError> {
         let conn = self.conn()?;
         let was_closed = conn
             .query_row(
-                "SELECT closed_at FROM postings WHERE id = ?1",
+                "SELECT closed_at FROM postings WHERE id = ?1 AND NOT EXISTS (
+                     SELECT 1 FROM posting_sources o
+                     WHERE o.posting_id = postings.id AND o.source NOT LIKE 'feed:%')",
                 [posting_id],
                 |r| r.get::<_, Option<i64>>(0),
-            )?
-            .is_some();
+            )
+            .optional()?;
+        let Some(was_closed) = was_closed else {
+            return Ok(false);
+        };
+        let was_closed = was_closed.is_some();
         conn.execute(
             "UPDATE postings SET last_seen = ?2, missed_polls = 0, closed_at = NULL WHERE id = ?1",
             params![posting_id, now],
@@ -764,11 +776,113 @@ mod tests {
             .upsert_posting(&shared, None, "greenhouse", "u", 10)
             .unwrap();
         let empty = HashSet::new();
-        store.reconcile_feed("feed:x", Some(&empty), 20).unwrap();
-        assert_eq!(store.reconcile_feed("feed:x", Some(&empty), 30).unwrap(), 1);
+        store
+            .reconcile_feed("feed:x", Some(&empty), &HashSet::new(), 20)
+            .unwrap();
+        assert_eq!(
+            store
+                .reconcile_feed("feed:x", Some(&empty), &HashSet::new(), 30)
+                .unwrap(),
+            1
+        );
         let open = store.open_postings().unwrap();
         assert_eq!(open.len(), 1);
         assert_eq!(open[0].posting.key.job_id, "2");
+    }
+
+    /// A stand-in: a Greenhouse-keyed posting only a feed lists.
+    fn stand_in(store: &Store, job: &str) -> (PostingKey, i64) {
+        let p = posting("nw", job, "Backend Engineer", "");
+        let out = store.upsert_posting(&p, None, "feed:x", "u", 10).unwrap();
+        (p.key, out.id)
+    }
+
+    fn is_open(store: &Store, id: i64) -> bool {
+        store.open_postings().unwrap().iter().any(|p| p.id == id)
+    }
+
+    #[test]
+    fn mark_seen_reopens_a_feed_only_posting() {
+        let store = Store::open_in_memory().unwrap();
+        let (_, id) = stand_in(&store, "1");
+        let empty = HashSet::new();
+        store
+            .reconcile_feed("feed:x", Some(&empty), &empty_polled(), 20)
+            .unwrap();
+        store
+            .reconcile_feed("feed:x", Some(&empty), &empty_polled(), 30)
+            .unwrap();
+        assert!(!is_open(&store, id));
+        assert!(store.mark_seen(id, 40).unwrap());
+        assert!(is_open(&store, id));
+    }
+
+    #[test]
+    fn mark_seen_leaves_a_posting_a_board_lists_alone() {
+        let store = Store::open_in_memory().unwrap();
+        let p = posting("nw", "1", "Backend Engineer", DESC);
+        let id = store
+            .upsert_posting(&p, None, "greenhouse", "u", 10)
+            .unwrap()
+            .id;
+        store
+            .add_source_if_exists(&p.key, "feed:x", "u", 11)
+            .unwrap();
+        let gone = HashSet::new();
+        store
+            .reconcile_board(Ats::Greenhouse, "nw", Some(&gone), 20)
+            .unwrap();
+        store
+            .reconcile_board(Ats::Greenhouse, "nw", Some(&gone), 30)
+            .unwrap();
+        assert!(!is_open(&store, id));
+        assert!(!store.mark_seen(id, 40).unwrap());
+        assert!(
+            !is_open(&store, id),
+            "the board closed it; the feed cannot reopen it"
+        );
+    }
+
+    #[test]
+    fn feed_leaves_stand_ins_of_polled_boards_to_the_board() {
+        let store = Store::open_in_memory().unwrap();
+        let (_, id) = stand_in(&store, "1");
+        let empty = HashSet::new();
+        let polled = HashSet::from([(Ats::Greenhouse, "nw".to_owned())]);
+        for now in [20, 30] {
+            store
+                .reconcile_feed("feed:x", Some(&empty), &polled, now)
+                .unwrap();
+        }
+        assert!(is_open(&store, id), "omissions are the board's to count");
+        store
+            .reconcile_feed("feed:x", Some(&empty), &empty_polled(), 40)
+            .unwrap();
+        store
+            .reconcile_feed("feed:x", Some(&empty), &empty_polled(), 50)
+            .unwrap();
+        assert!(!is_open(&store, id), "board down: the feed counts them");
+    }
+
+    #[test]
+    fn feed_not_modified_takes_a_miss_on_a_missed_stand_in() {
+        let store = Store::open_in_memory().unwrap();
+        let (_, id) = stand_in(&store, "1");
+        let empty = HashSet::new();
+        store
+            .reconcile_feed("feed:x", Some(&empty), &empty_polled(), 20)
+            .unwrap();
+        assert_eq!(
+            store
+                .reconcile_feed("feed:x", None, &empty_polled(), 30)
+                .unwrap(),
+            1
+        );
+        assert!(!is_open(&store, id));
+    }
+
+    fn empty_polled() -> HashSet<(Ats, String)> {
+        HashSet::new()
     }
 
     #[test]
@@ -781,10 +895,24 @@ mod tests {
             .unwrap();
         let listed = HashSet::from([stand_in.key.clone()]);
         let empty = HashSet::new();
-        store.reconcile_feed("feed:x", Some(&empty), 20).unwrap();
-        store.reconcile_feed("feed:x", Some(&listed), 30).unwrap();
-        assert_eq!(store.reconcile_feed("feed:x", None, 40).unwrap(), 0);
-        assert_eq!(store.reconcile_feed("feed:x", Some(&empty), 50).unwrap(), 0);
+        store
+            .reconcile_feed("feed:x", Some(&empty), &HashSet::new(), 20)
+            .unwrap();
+        store
+            .reconcile_feed("feed:x", Some(&listed), &HashSet::new(), 30)
+            .unwrap();
+        assert_eq!(
+            store
+                .reconcile_feed("feed:x", None, &HashSet::new(), 40)
+                .unwrap(),
+            0
+        );
+        assert_eq!(
+            store
+                .reconcile_feed("feed:x", Some(&empty), &HashSet::new(), 50)
+                .unwrap(),
+            0
+        );
         assert_eq!(store.open_postings().unwrap().len(), 1);
     }
 
