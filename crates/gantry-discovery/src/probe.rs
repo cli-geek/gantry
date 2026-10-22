@@ -93,22 +93,30 @@ pub fn mentions_company<'a>(
 
 /// Whether `word` (lowercase ASCII, as from [`name_words`]) appears as a
 /// capitalized whole word that is not merely sentence- or item-initial.
+/// Any capital letter counts, so brand spellings like "eBay" and
+/// "1Password" do.
 fn names_company(text: &str, word: &str) -> bool {
-    text.char_indices().any(|(i, c)| {
+    // Emphasis markers between the previous text and the word do not
+    // change whether it starts a sentence; a line break, an opening quote
+    // or bracket makes it start one.
+    let is_opener = |ch: char| ch.is_whitespace() || "\"“‘'([*_".contains(ch);
+    text.char_indices().any(|(i, _)| {
         let Some(found) = text.get(i..i + word.len()) else {
             return false;
         };
         let rest = &text[i + word.len()..];
-        if !c.is_uppercase()
-            || !found.eq_ignore_ascii_case(word)
+        if !found.eq_ignore_ascii_case(word)
+            || !found.contains(char::is_uppercase)
             || text[..i].ends_with(char::is_alphanumeric)
             || rest.starts_with(char::is_alphanumeric)
         {
             return false;
         }
-        let before = text[..i].trim_end_matches([' ', '\t']);
-        let starts_sentence =
-            before.is_empty() || before.ends_with(['.', '!', '?', '\n', ':', '•', '-', '*']);
+        let before = text[..i].trim_end_matches(is_opener);
+        let starts_sentence = before.is_empty()
+            || text[before.len()..i].contains(['\n', '"', '“', '‘', '\'', '(', '['])
+            || before.ends_with(['.', '!', '?', ':', '•', '-', '–', '—']);
+        let rest = rest.trim_start_matches(['*', '_']);
         !starts_sentence
             || [" is ", " was ", "'s ", "’s "]
                 .iter()
@@ -187,5 +195,38 @@ mod tests {
             "Plaid"
         ));
         assert!(mentions_company(["We are hiring at Plaid."], "PLAID"));
+    }
+
+    #[test]
+    fn brand_spellings_count_as_capitalized() {
+        for (text, company) in [
+            ("We are 1Password, hiring.", "1Password"),
+            ("Join 23andMe today", "23andMe"),
+            ("Work at eBay now", "eBay"),
+            ("Come build at iRobot.", "iRobot"),
+            ("Welcome to **Ramp** today", "Ramp"),
+            ("Welcome to _Ramp_ today", "Ramp"),
+        ] {
+            assert!(mentions_company([text], company), "{text}");
+        }
+        assert!(!mentions_company(["We use 1password daily."], "1Password"));
+    }
+
+    #[test]
+    fn item_starts_hide_behind_spaces_quotes_and_dashes() {
+        for text in [
+            "Hi.\u{a0}Ramp up fast",
+            "Join us — Ramp up fast",
+            "Join us – Ramp up fast",
+            "\"Ramp up fast\" is our motto",
+            "“Ramp up fast”",
+            "Goals (Ramp up fast)",
+            "Goals:\r\n  Ramp up fast",
+            "Goals\n\n**Ramp up fast**",
+            "* Ramp up fast",
+        ] {
+            assert!(!mentions_company([text], "Ramp"), "{text:?}");
+        }
+        assert!(mentions_company(["**Ramp** is hiring."], "Ramp"));
     }
 }
