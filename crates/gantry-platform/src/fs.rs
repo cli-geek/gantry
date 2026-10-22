@@ -88,4 +88,19 @@ mod tests {
         let mode = std::fs::metadata(&path).unwrap().permissions().mode();
         assert_eq!(mode & 0o777, 0o600);
     }
+
+    #[cfg(unix)]
+    #[test]
+    fn readable_by_others_checks_group_and_other_bits() {
+        use std::os::unix::fs::PermissionsExt;
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("legal.toml");
+        write_atomic(&path, b"x").unwrap();
+        assert!(!readable_by_others(&path));
+        for mode in [0o640, 0o604] {
+            std::fs::set_permissions(&path, std::fs::Permissions::from_mode(mode)).unwrap();
+            assert!(readable_by_others(&path), "{mode:o}");
+        }
+        assert!(!readable_by_others(&dir.path().join("missing")));
+    }
 }
