@@ -19,7 +19,8 @@ use gantry_core::filter::{FilterContext, Subject, evaluate};
 use gantry_core::geo::Place;
 use gantry_core::{Ats, Posting, PostingKey};
 use gantry_store::{
-    CompanyEntry, CompanyRow, ConfigSnapshot, Store, StoreError, UpsertOutcome, UpsertStatus,
+    CompanyEntry, CompanyRow, ConfigSnapshot, HttpValidators, Store, StoreError, UpsertOutcome,
+    UpsertStatus,
 };
 use schemars::JsonSchema;
 use serde::Serialize;
@@ -141,6 +142,15 @@ struct Pending {
     source: String,
 }
 
+/// What a feed read leaves for after the boards are polled: the feed's
+/// listing (`None`: unchanged, a 304) and, for a feed that was read, its URL
+/// and validators to commit once the listing is reconciled.
+struct FeedRead {
+    source: String,
+    seen: Option<HashSet<PostingKey>>,
+    commit: Option<(String, HttpValidators)>,
+}
+
 /// One company name on one board API.
 enum Probe {
     Hit(String),
@@ -200,11 +210,12 @@ pub async fn discover(
     }
     let feeds_task = async {
         let mut pending = Vec::new();
+        let mut reads = Vec::new();
         let mut statuses = Vec::new();
         for feed in &enabled {
-            statuses.push(run.read_feed(feed, &mut pending).await?);
+            statuses.push(run.read_feed(feed, &mut pending, &mut reads).await?);
         }
-        Ok::<_, StoreError>((statuses, pending))
+        Ok::<_, StoreError>((statuses, pending, reads))
     };
     let hn_task = async {
         if settings.hacker_news {
@@ -214,9 +225,9 @@ pub async fn discover(
         }
     };
     let (feeds_result, hn_result) = tokio::join!(feeds_task, hn_task);
-    let (statuses, pending) = feeds_result?;
+    let (statuses, pending, mut reads) = feeds_result?;
     let hacker_news = hn_result?;
-    run.close_disabled_feeds(&enabled)?;
+    run.close_disabled_feeds(&enabled, &mut reads)?;
     {
         let mut report = run.tally();
         report.feeds = statuses;
@@ -245,7 +256,10 @@ pub async fn discover(
         polled_ok.extend(ok);
     }
 
+    // Attach first, so a stand-in its feed lists is seen (or reopened)
+    // before the feed's reconcile counts omissions.
     run.attach_pending(pending, &polled_ok)?;
+    run.reconcile_feeds(reads, &polled_ok)?;
     run.evaluate_all(&mut run.tally())?;
 
     let mut report = run
@@ -410,17 +424,45 @@ impl Run<'_> {
 
     /// Postings only a feed no longer enabled (or no longer bundled)
     /// listed take misses, as if the feed had dropped them.
-    fn close_disabled_feeds(&self, enabled: &[&FeedDef]) -> Result<(), StoreError> {
+    fn close_disabled_feeds(
+        &self,
+        enabled: &[&FeedDef],
+        reads: &mut Vec<FeedRead>,
+    ) -> Result<(), StoreError> {
         let enabled: HashSet<String> = enabled.iter().map(|f| f.source()).collect();
         for source in self.store.posting_source_names()? {
             if source.starts_with("feed:") && !enabled.contains(&source) {
                 if let Some(feed) = self.inputs.feeds.iter().find(|f| f.source() == source) {
                     self.fetcher.forget(&feed.url)?;
                 }
-                let closed =
-                    self.store
-                        .reconcile_feed(&source, Some(&HashSet::new()), self.now())?;
-                self.closed(closed);
+                reads.push(FeedRead {
+                    source,
+                    seen: Some(HashSet::new()),
+                    commit: None,
+                });
+            }
+        }
+        Ok(())
+    }
+
+    /// Reconciles each feed read, then commits its validators. Runs after
+    /// the boards are polled so a feed counts only omissions the board
+    /// could not.
+    fn reconcile_feeds(
+        &self,
+        reads: Vec<FeedRead>,
+        polled_ok: &HashSet<(Ats, String)>,
+    ) -> Result<(), StoreError> {
+        for read in reads {
+            let closed = self.store.reconcile_feed(
+                &read.source,
+                read.seen.as_ref(),
+                polled_ok,
+                self.now(),
+            )?;
+            self.closed(closed);
+            if let Some((url, validators)) = read.commit {
+                self.fetcher.commit(&url, &validators)?;
             }
         }
         Ok(())
@@ -459,6 +501,7 @@ impl Run<'_> {
         &self,
         feed: &FeedDef,
         pending: &mut Vec<Pending>,
+        reads: &mut Vec<FeedRead>,
     ) -> Result<SourceStatus, StoreError> {
         let source = feed.source();
         let status = |outcome, items| SourceStatus {
@@ -469,8 +512,11 @@ impl Run<'_> {
         let (body, validators) = match self.get(&source, &feed.url, true).await? {
             None => return Ok(status(SourceOutcome::Failed, 0)),
             Some(Fetched::NotModified) => {
-                let closed = self.store.reconcile_feed(&source, None, self.now())?;
-                self.closed(closed);
+                reads.push(FeedRead {
+                    source: source.clone(),
+                    seen: None,
+                    commit: None,
+                });
                 return Ok(status(SourceOutcome::Unchanged, 0));
             }
             Some(Fetched::NotFound) => {
@@ -539,11 +585,11 @@ impl Run<'_> {
             self.count(&outcome);
             seen.insert(key);
         }
-        let closed = self
-            .store
-            .reconcile_feed(&source, Some(&seen), self.now())?;
-        self.closed(closed);
-        self.fetcher.commit(&feed.url, &validators)?;
+        reads.push(FeedRead {
+            source: source.clone(),
+            seen: Some(seen),
+            commit: Some((feed.url.clone(), validators)),
+        });
         Ok(status(
             SourceOutcome::Ok,
             u32::try_from(items.len()).unwrap_or(u32::MAX),
@@ -954,6 +1000,12 @@ mod tests {
     const FEED_BODY: &str = r#"[{"id": "s1", "company_name": "Pinecrest Robotics",
         "title": "Robotics Intern", "locations": ["Seattle, WA"], "active": true,
         "url": "https://job-boards.greenhouse.io/pinecrestrobotics/jobs/9999"}]"#;
+    /// A feed that lists nothing.
+    const EMPTY_FEED_BODY: &str = "[]";
+    /// A listing for the job the board does list.
+    const BOARD_JOB_FEED_BODY: &str = r#"[{"id": "s2", "company_name": "Pinecrest Robotics",
+        "title": "Software Engineer, New Grad", "locations": ["Seattle, WA"], "active": true,
+        "url": "https://job-boards.greenhouse.io/pinecrestrobotics/jobs/9001"}]"#;
 
     /// Answers each URL with its configured status. A board 200 carries an
     /// ETag and becomes a 304 when that ETag comes back; the feed sends
@@ -961,11 +1013,17 @@ mod tests {
     #[derive(Debug, Default)]
     struct Server {
         status: Mutex<HashMap<String, u16>>,
+        /// What the feed lists; `FEED_BODY` unless set.
+        feed_body: Mutex<Option<&'static str>>,
     }
 
     impl Server {
         fn set(&self, url: &str, status: u16) {
             self.status.lock().unwrap().insert(url.to_owned(), status);
+        }
+
+        fn set_feed_body(&self, body: &'static str) {
+            *self.feed_body.lock().unwrap() = Some(body);
         }
     }
 
@@ -978,7 +1036,11 @@ mod tests {
             };
             let is_feed = request.url == FEED;
             let body = if is_feed {
-                FEED_BODY.as_bytes()
+                self.feed_body
+                    .lock()
+                    .unwrap()
+                    .unwrap_or(FEED_BODY)
+                    .as_bytes()
             } else {
                 BOARD_BODY
             };
@@ -1130,5 +1192,53 @@ mod tests {
             open.contains(&"9999".to_owned()),
             "listed again, board still down"
         );
+    }
+
+    #[tokio::test]
+    async fn stand_in_omitted_by_feed_and_board_takes_one_miss_per_run() {
+        let store = Store::open_in_memory().unwrap();
+        let server = Server::default();
+        server.set(FEED, 200);
+        server.set(BOARD, 500);
+        run_with(&store, &server, &seed(), true, 1).await;
+        server.set(BOARD, 200);
+        server.set_feed_body(EMPTY_FEED_BODY);
+        let open = run_with(&store, &server, &seed(), true, 2).await;
+        assert!(open.contains(&"9999".to_owned()), "one absence, one miss");
+        let open = run_with(&store, &server, &seed(), true, 3).await;
+        assert!(!open.contains(&"9999".to_owned()), "second run closes it");
+    }
+
+    #[tokio::test]
+    async fn feed_does_not_reopen_a_posting_its_board_closed() {
+        let store = Store::open_in_memory().unwrap();
+        let server = Server::default();
+        server.set(FEED, 200);
+        server.set(BOARD, 200);
+        let open = run_with(&store, &server, &seed(), false, 1).await;
+        assert!(open.contains(&"9001".to_owned()));
+        server.set(BOARD, 404);
+        for now in [2, 3] {
+            run_with(&store, &server, &seed(), false, now).await;
+        }
+        server.set(BOARD, 500);
+        server.set_feed_body(BOARD_JOB_FEED_BODY);
+        let open = run_with(&store, &server, &seed(), true, 4).await;
+        assert!(!open.contains(&"9001".to_owned()), "closed by its board");
+    }
+
+    #[tokio::test]
+    async fn feed_not_modified_closes_a_missed_stand_in_while_its_board_is_down() {
+        let store = Store::open_in_memory().unwrap();
+        let server = Server::default();
+        server.set(FEED, 200);
+        server.set(BOARD, 500);
+        run_with(&store, &server, &seed(), true, 1).await;
+        server.set_feed_body(EMPTY_FEED_BODY);
+        let open = run_with(&store, &server, &seed(), true, 2).await;
+        assert!(open.contains(&"9999".to_owned()), "first miss");
+        server.set(FEED, 304);
+        let open = run_with(&store, &server, &seed(), true, 3).await;
+        assert!(!open.contains(&"9999".to_owned()), "304 still omits it");
     }
 }
