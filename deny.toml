@@ -5,6 +5,14 @@ all-features = true
 
 [advisories]
 version = 2
+# zbus 6.0 (2026-10-16) absorbed these crates; secret-service 5.2.0 still
+# requires zbus ^5, so the Linux keyring store pulls them in. Not a known
+# vulnerability. Look again 2026-12-01: drop once secret-service moves to zbus 6.
+ignore = [
+    { id = "RUSTSEC-2026-0370", reason = "zvariant merged into zbus 6; waiting on secret-service (review 2026-12-01)" },
+    { id = "RUSTSEC-2026-0371", reason = "zbus_names merged into zbus 6; waiting on secret-service (review 2026-12-01)" },
+    { id = "RUSTSEC-2026-0372", reason = "zvariant_derive merged into zbus 6; waiting on secret-service (review 2026-12-01)" },
+]
 
 [licenses]
 version = 2
