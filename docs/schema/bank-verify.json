@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VerifyOutcome",
+  "description": "What `bank_verify` did with each id.",
+  "type": "object",
+  "properties": {
+    "already": {
+      "description": "Ids that were verified already.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "derived": {
+      "description": "Suggestions stored because a newly verified value could suggest more.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DerivedRow"
+      }
+    },
+    "nothing_stored": {
+      "description": "Ids that are valid but hold no stored value.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unknown": {
+      "description": "Ids that are not questions, or are not addressable.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "verified": {
+      "description": "Ids whose stored item (every entry, for a list) is now verified.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "verified",
+    "already",
+    "nothing_stored",
+    "unknown",
+    "derived"
+  ],
+  "$defs": {
+    "DerivedRow": {
+      "description": "A suggestion stored by the derive rules.",
+      "type": "object",
+      "properties": {
+        "from": {
+          "description": "The question whose new answer suggested it.",
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "value": true
+      },
+      "required": [
+        "id",
+        "from",
+        "redacted"
+      ]
+    }
+  }
+}

@@ -13,7 +13,9 @@ mod urls;
 use gantry_store::{ConfigSnapshot, Store, load_snapshot};
 
 pub use bank::{
-    BankFilter, BankList, BankRow, DerivedRow, SetAction, SetOutcome, bank_list, bank_set,
+    AlwaysAskRow, BankCoverage, BankFilter, BankList, BankRow, DerivedRow, PendingItem, SetAction,
+    SetOutcome, VerifyOutcome, bank_coverage, bank_list, bank_pending, bank_set, bank_verify,
+    bank_verify_all,
 };
 pub use discover::{run_discover, run_discover_with};
 pub use doctor::{CheckStatus, DoctorCheck, DoctorReport, Services, doctor};

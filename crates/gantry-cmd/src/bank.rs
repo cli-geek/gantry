@@ -6,9 +6,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::PathBuf;
 
 use gantry_core::questions::{
-    AnswerState, AnswerType, Catalog, Derived, OptionError, PolicyMode, QuestionDef, Resolved,
-    Section, Sensitivity, ValueWarning, composable, derive, resolve_option, stored_at,
-    unknown_paths, validate_value, value_at,
+    AnswerState, AnswerType, Catalog, CoverageReport, Derived, OptionError, PolicyMode,
+    QuestionDef, Resolved, Section, Sensitivity, Stored, ValueWarning, composable, coverage,
+    derive, resolve_option, stored_at, unknown_paths, validate_value, value_at,
 };
 use gantry_store::{BankDocs, StoreError, bundled_catalog, load_bank_docs, update_table};
 use jiff::Timestamp;
@@ -517,4 +517,254 @@ fn store_derived(
             }
         })
         .collect())
+}
+
+/// What `bank_verify` did with each id.
+#[derive(Debug, Clone, PartialEq, Serialize, JsonSchema)]
+pub struct VerifyOutcome {
+    /// Ids whose stored item (every entry, for a list) is now verified.
+    pub verified: Vec<String>,
+    /// Ids that were verified already.
+    pub already: Vec<String>,
+    /// Ids that are valid but hold no stored value.
+    pub nothing_stored: Vec<String>,
+    /// Ids that are not questions, or are not addressable.
+    pub unknown: Vec<String>,
+    /// Suggestions stored because a newly verified value could suggest more.
+    pub derived: Vec<DerivedRow>,
+}
+
+/// One suggestion waiting for the user to verify it.
+#[derive(Debug, Clone, PartialEq, Serialize, JsonSchema)]
+pub struct PendingItem {
+    pub id: String,
+    pub label: String,
+    pub section: Section,
+    pub sensitivity: Sensitivity,
+    /// The stored value; `None` when redacted.
+    pub value: Option<serde_json::Value>,
+    pub redacted: bool,
+    /// Where the suggestion came from, e.g. `derived:<question id>`.
+    pub source: Option<String>,
+}
+
+/// A question the user told gantry to ask every time.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, JsonSchema)]
+pub struct AlwaysAskRow {
+    pub id: String,
+    pub label: String,
+    pub section: Section,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, JsonSchema)]
+pub struct BankCoverage {
+    pub report: CoverageReport,
+    /// Applicable questions that "will always ask you", sorted by id.
+    pub always_ask: Vec<AlwaysAskRow>,
+}
+
+/// The stored item(s) of `def` in `doc`, mutable, without creating anything.
+fn leaf_mut<'a>(doc: &'a mut toml::Table, def: &QuestionDef) -> Option<&'a mut toml::Value> {
+    let mut segments = def.id.split('.').skip(1).peekable();
+    let mut table = doc;
+    while let Some(seg) = segments.next() {
+        let value = table.get_mut(seg)?;
+        if segments.peek().is_none() {
+            return Some(value);
+        }
+        table = value.as_table_mut()?;
+    }
+    None
+}
+
+/// Marks one item table verified and bumps `updated_at`.
+fn verify_item(item: &mut toml::Value, stamp: &str) {
+    if let Some(item) = item.as_table_mut() {
+        item.insert("verified".into(), true.into());
+        item.insert("updated_at".into(), stamp.into());
+    }
+}
+
+/// Applicable (core, or in a pack named by `occupations`) addressable
+/// questions.
+fn applicable<'a>(
+    catalog: &'a Catalog,
+    occupations: &'a [String],
+) -> impl Iterator<Item = &'a QuestionDef> {
+    catalog.iter().filter(move |def| {
+        def.is_addressable()
+            && catalog
+                .pack_of(&def.id)
+                .is_none_or(|p| occupations.iter().any(|o| o == p))
+    })
+}
+
+/// `gantry bank verify ID...`: flips stored items to verified. A list
+/// question verifies every entry. Unknown or non-addressable ids are
+/// reported in `unknown` and do not stop the batch; only a batch with no
+/// valid id is an error (`InvalidInput`). A verified value can suggest
+/// more, so derive runs afterwards. A `derived:` source tag is kept.
+///
+/// Each touched file is written once; derived files are separate writes.
+/// Errors: an unparsable bank file is `Config`.
+pub fn bank_verify(ctx: &Context, ids: &[String], values: bool) -> Result<VerifyOutcome, CmdError> {
+    let catalog = catalog()?;
+    let docs = load_docs(ctx)?;
+    let stamp = Timestamp::from_second(crate::now())
+        .unwrap_or(Timestamp::UNIX_EPOCH)
+        .to_string();
+    let mut outcome = VerifyOutcome {
+        verified: Vec::new(),
+        already: Vec::new(),
+        nothing_stored: Vec::new(),
+        unknown: Vec::new(),
+        derived: Vec::new(),
+    };
+    let mut seen = BTreeSet::new();
+    let mut by_file: BTreeMap<&str, Vec<&QuestionDef>> = BTreeMap::new();
+    for id in ids {
+        if !seen.insert(id.as_str()) {
+            continue;
+        }
+        let Some(def) = catalog.get(id).filter(|d| d.is_addressable()) else {
+            outcome.unknown.push(id.clone());
+            continue;
+        };
+        match docs.files.get(stem(def)).and_then(|d| stored_at(d, def)) {
+            None | Some(Stored::List { items: 0, .. }) => outcome.nothing_stored.push(id.clone()),
+            Some(Stored::Scalar { verified: true }) => outcome.already.push(id.clone()),
+            Some(Stored::List { items, verified }) if verified == items => {
+                outcome.already.push(id.clone());
+            }
+            Some(_) => {
+                by_file.entry(stem(def)).or_default().push(def);
+                outcome.verified.push(id.clone());
+            }
+        }
+    }
+    if outcome.unknown.len() == seen.len() && !seen.is_empty() {
+        return Err(CmdError::InvalidInput(format!(
+            "unknown question id {:?}",
+            outcome.unknown[0]
+        )));
+    }
+    for (stem, defs) in by_file {
+        let file = format!("{stem}.toml");
+        let path = ctx.paths.config_dir().join(&file);
+        update_table(&path, |t| {
+            for def in defs {
+                match leaf_mut(t, def) {
+                    Some(toml::Value::Array(rows)) => {
+                        for row in rows {
+                            verify_item(row, &stamp);
+                        }
+                    }
+                    Some(item) => verify_item(item, &stamp),
+                    None => {}
+                }
+            }
+        })
+        .map_err(store_error)?;
+    }
+    if !outcome.verified.is_empty() {
+        outcome.derived = store_derived(ctx, &catalog, &stamp, values)?;
+    }
+    Ok(outcome)
+}
+
+/// `gantry bank verify` without ids: the suggestions waiting for the user,
+/// intake order first (unranked last), then by id. Values of sensitive
+/// questions are hidden unless `values`.
+pub fn bank_pending(ctx: &Context, values: bool) -> Result<Vec<PendingItem>, CmdError> {
+    let catalog = catalog()?;
+    let docs = load_docs(ctx)?;
+    let occupations = ctx.snapshot()?.search.occupations;
+    let states = docs.states(&catalog);
+    let mut pending: Vec<&QuestionDef> = applicable(&catalog, &occupations)
+        .filter(|def| states.get(&def.id) == Some(&AnswerState::Suggested))
+        .collect();
+    pending.sort_by(|a, b| {
+        let rank = |d: &QuestionDef| d.intake_rank.map_or((1, 0), |r| (0, r));
+        rank(a).cmp(&rank(b)).then_with(|| a.id.cmp(&b.id))
+    });
+    Ok(pending
+        .into_iter()
+        .map(|def| {
+            let doc = docs.files.get(stem(def));
+            let stored = doc.and_then(|d| value_at(d, def));
+            let hide = !values && is_redacted(def.sensitivity);
+            PendingItem {
+                id: def.id.clone(),
+                label: def.label.clone(),
+                section: def.section,
+                sensitivity: def.sensitivity,
+                value: match &stored {
+                    Some((v, _)) if !hide => to_json(v),
+                    _ => None,
+                },
+                redacted: hide && stored.is_some(),
+                source: doc.and_then(|d| source_of(d, def)),
+            }
+        })
+        .collect())
+}
+
+/// The `source` tag of `def`'s item (first entry, for a list).
+fn source_of(doc: &toml::Table, def: &QuestionDef) -> Option<String> {
+    let mut table = doc;
+    let mut segments = def.id.split('.').skip(1).peekable();
+    while let Some(seg) = segments.next() {
+        let value = table.get(seg)?;
+        if segments.peek().is_some() {
+            table = value.as_table()?;
+            continue;
+        }
+        let item = match value {
+            toml::Value::Array(rows) => rows.iter().find_map(|r| r.as_table()?.get("source")),
+            other => other.as_table()?.get("source"),
+        };
+        return item?.as_str().map(str::to_owned);
+    }
+    None
+}
+
+/// `gantry bank verify --all`: verifies every pending suggestion. `confirmed`
+/// is the typed confirmation the CLI collected; without it nothing happens.
+/// An accident guard, not a security boundary (design §5).
+pub fn bank_verify_all(
+    ctx: &Context,
+    confirmed: bool,
+    values: bool,
+) -> Result<VerifyOutcome, CmdError> {
+    if !confirmed {
+        return Err(CmdError::InvalidInput(
+            "verify --all needs a typed confirmation".to_owned(),
+        ));
+    }
+    let ids: Vec<String> = bank_pending(ctx, values)?
+        .into_iter()
+        .map(|p| p.id)
+        .collect();
+    bank_verify(ctx, &ids, values)
+}
+
+/// `gantry bank coverage`: the meter over the applicable non-optional
+/// questions, plus the questions the user set to always ask. No values
+/// appear in the output.
+pub fn bank_coverage(ctx: &Context) -> Result<BankCoverage, CmdError> {
+    let catalog = catalog()?;
+    let docs = load_docs(ctx)?;
+    let occupations = ctx.snapshot()?.search.occupations;
+    let states = docs.states(&catalog);
+    let report = coverage(&catalog, &occupations, &states);
+    let mut always_ask: Vec<AlwaysAskRow> = applicable(&catalog, &occupations)
+        .filter(|def| states.get(&def.id) == Some(&AnswerState::AlwaysAsk))
+        .map(|def| AlwaysAskRow {
+            id: def.id.clone(),
+            label: def.label.clone(),
+            section: def.section,
+        })
+        .collect();
+    always_ask.sort_by(|a, b| a.id.cmp(&b.id));
+    Ok(BankCoverage { report, always_ask })
 }

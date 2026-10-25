@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Array_of_PendingItem",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/PendingItem"
+  },
+  "$defs": {
+    "PendingItem": {
+      "description": "One suggestion waiting for the user to verify it.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "section": {
+          "$ref": "#/$defs/Section"
+        },
+        "sensitivity": {
+          "$ref": "#/$defs/Sensitivity"
+        },
+        "source": {
+          "description": "Where the suggestion came from, e.g. `derived:<question id>`.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {
+          "description": "The stored value; `None` when redacted."
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "section",
+        "sensitivity",
+        "redacted"
+      ]
+    },
+    "Section": {
+      "description": "Question section A..K (design §1). Each section lives in one bank file.",
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ]
+    },
+    "Sensitivity": {
+      "description": "Sensitivity classes (plan §7.3). `Attestation` and `Prohibited` questions\nexist for classification only and are never addressable.",
+      "type": "string",
+      "enum": [
+        "contact",
+        "legal",
+        "eeo",
+        "clearance",
+        "availability",
+        "numeric",
+        "preference",
+        "free_text",
+        "attestation",
+        "prohibited"
+      ]
+    }
+  }
+}

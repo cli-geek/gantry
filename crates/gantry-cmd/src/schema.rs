@@ -5,7 +5,8 @@
 use schemars::{Schema, schema_for};
 
 use crate::{
-    BankList, DiscoverReport, DoctorReport, ErrorOutput, PostingSummary, SetOutcome, UrlAdded,
+    BankCoverage, BankList, DiscoverReport, DoctorReport, ErrorOutput, PendingItem, PostingSummary,
+    SetOutcome, UrlAdded, VerifyOutcome,
 };
 
 /// `(name, schema)` for each output, named after the command.
@@ -17,6 +18,9 @@ pub fn all() -> Vec<(&'static str, Schema)> {
         ("url-add", schema_for!(UrlAdded)),
         ("bank-list", schema_for!(BankList)),
         ("bank-set", schema_for!(SetOutcome)),
+        ("bank-verify", schema_for!(VerifyOutcome)),
+        ("bank-pending", schema_for!(Vec<PendingItem>)),
+        ("bank-coverage", schema_for!(BankCoverage)),
         ("error", schema_for!(ErrorOutput)),
     ]
 }

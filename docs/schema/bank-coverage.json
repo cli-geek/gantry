@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BankCoverage",
+  "type": "object",
+  "properties": {
+    "always_ask": {
+      "description": "Applicable questions that \"will always ask you\", sorted by id.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/AlwaysAskRow"
+      }
+    },
+    "report": {
+      "$ref": "#/$defs/CoverageReport"
+    }
+  },
+  "required": [
+    "report",
+    "always_ask"
+  ],
+  "$defs": {
+    "AlwaysAskRow": {
+      "description": "A question the user told gantry to ask every time.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "section": {
+          "$ref": "#/$defs/Section"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "section"
+      ]
+    },
+    "AnswerState": {
+      "description": "Where one question stands.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "answered",
+            "declined",
+            "always_ask",
+            "not_applicable",
+            "missing"
+          ]
+        },
+        {
+          "description": "Stored but not yet verified; counts as not covered.",
+          "type": "string",
+          "const": "suggested"
+        },
+        {
+          "description": "Nothing stored and no policy, but at least one `draws_on` source is\nanswered, so M3 can compose it; counts as covered.",
+          "type": "string",
+          "const": "composable"
+        }
+      ]
+    },
+    "CoverageReport": {
+      "description": "The coverage meter's output.",
+      "type": "object",
+      "properties": {
+        "overall": {
+          "$ref": "#/$defs/Tally"
+        },
+        "packs": {
+          "description": "`core`, plus each pack that has applicable questions.",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Tally"
+          }
+        },
+        "sections": {
+          "description": "Only sections that have applicable questions.",
+          "type": "object",
+          "properties": {
+            "A": {
+              "$ref": "#/$defs/Tally"
+            },
+            "B": {
+              "$ref": "#/$defs/Tally"
+            },
+            "C": {
+              "$ref": "#/$defs/Tally"
+            },
+            "D": {
+              "$ref": "#/$defs/Tally"
+            },
+            "E": {
+              "$ref": "#/$defs/Tally"
+            },
+            "F": {
+              "$ref": "#/$defs/Tally"
+            },
+            "G": {
+              "$ref": "#/$defs/Tally"
+            },
+            "H": {
+              "$ref": "#/$defs/Tally"
+            },
+            "I": {
+              "$ref": "#/$defs/Tally"
+            },
+            "J": {
+              "$ref": "#/$defs/Tally"
+            },
+            "K": {
+              "$ref": "#/$defs/Tally"
+            }
+          },
+          "additionalProperties": false
+        },
+        "top_missing": {
+          "description": "Up to 10 missing or suggested questions, heaviest first.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MissingEntry"
+          }
+        }
+      },
+      "required": [
+        "overall",
+        "sections",
+        "packs",
+        "top_missing"
+      ]
+    },
+    "MissingEntry": {
+      "description": "An applicable question that still needs the user.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "section": {
+          "$ref": "#/$defs/Section"
+        },
+        "state": {
+          "description": "`missing` or `suggested`.",
+          "$ref": "#/$defs/AnswerState"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "section",
+        "weight",
+        "state"
+      ]
+    },
+    "Section": {
+      "description": "Question section A..K (design §1). Each section lives in one bank file.",
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ]
+    },
+    "Tally": {
+      "description": "Counts for a group of applicable questions.",
+      "type": "object",
+      "properties": {
+        "always_ask": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "answered": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "composable": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "covered": {
+          "description": "Answered + declined + not applicable + composable.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "declined": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "denominator": {
+          "description": "All questions except always-ask ones.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "missing": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "not_applicable": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "ratio": {
+          "description": "`None` when the denominator is 0.",
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        },
+        "suggested": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "weighted_covered": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "weighted_denominator": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "weighted_ratio": {
+          "description": "`None` when the weighted denominator is 0.",
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        }
+      },
+      "required": [
+        "answered",
+        "suggested",
+        "declined",
+        "always_ask",
+        "not_applicable",
+        "missing",
+        "composable",
+        "covered",
+        "denominator",
+        "weighted_covered",
+        "weighted_denominator"
+      ]
+    }
+  }
+}
