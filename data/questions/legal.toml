@@ -1,0 +1,608 @@
+# Core question bank, sections C (work authorization and legal) and D (security clearance).
+# Format and rules: docs/question-bank.md.
+
+[[question]]
+id = "legal.authorization.citizenship_countries"
+section = "C"
+label = "Countries of citizenship"
+sensitivity = "legal"
+answer_type = "list"
+
+[[question]]
+id = "legal.authorization.us_citizen"
+section = "C"
+label = "Are you a US citizen?"
+sensitivity = "legal"
+answer_type = "bool"
+intake_rank = 12
+jurisdiction_note = "US wording; other countries ask about work permits or right to work."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.authorization.us_permanent_resident"
+section = "C"
+label = "Are you a US lawful permanent resident?"
+sensitivity = "legal"
+answer_type = "bool"
+intake_rank = 13
+jurisdiction_note = "US wording; other countries ask about work permits or right to work."
+derive = [
+  { from = "legal.authorization.us_citizen", equals = true, value = false },
+]
+variants = [
+  { text = "Are you a US citizen or lawful permanent resident?", ats = "greenhouse", note = "Composite: citizen or permanent resident. Answer yes if either is yes." },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.authorization.us_person"
+section = "C"
+label = "Are you a \"U.S. person\" under ITAR/EAR (citizen, permanent resident, refugee or asylee)?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "US export-control definition (ITAR and EAR)."
+derive = [
+  { from = "legal.authorization.us_citizen", equals = true, value = true },
+  { from = "legal.authorization.us_permanent_resident", equals = true, value = true },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.authorization.authorized_us"
+section = "C"
+label = "Are you legally authorized to work in the United States?"
+sensitivity = "legal"
+answer_type = "bool"
+weight = 2
+intake_rank = 14
+jurisdiction_note = "US wording; other countries ask about work permits or right to work."
+derive = [
+  { from = "legal.authorization.us_citizen", equals = true, value = true },
+  { from = "legal.authorization.us_permanent_resident", equals = true, value = true },
+]
+variants = [
+  { text = "Are you authorized to work in the United States?", ats = "greenhouse" },
+  { text = "Are you currently authorized to work in the U.S.?", ats = "greenhouse" },
+  { text = "Are you legally authorized to work in the United States?", ats = "greenhouse" },
+  { text = "Are you legally authorized to work in the United States for our Company?", ats = "greenhouse" },
+  { text = "Are you legally work authorized to work in the US?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.authorization.authorized_countries"
+section = "C"
+label = "Countries where you are legally authorized to work"
+sensitivity = "legal"
+answer_type = "list"
+variants = [
+  { text = "Are you authorized to work in the country for which you applied?", ats = "greenhouse", note = "Country-agnostic: the resolver checks the posting country against this list." },
+  { text = "Are you authorized to work in the location(s) you selected in your previous response?", ats = "greenhouse", note = "Country-agnostic: the resolver checks the posting country against this list." },
+  { text = "Are you currently authorized to work for Pinterest in the country in which you are applying for a position?", ats = "greenhouse", note = "Country-agnostic: the resolver checks the posting country against this list." },
+  { text = "Are you currently authorized to work in the Canada?", ats = "greenhouse", note = "Canada only: check for CA in this list." },
+  { text = "Are you legally entitled to work in Canada?", ats = "greenhouse", note = "Canada only: check for CA in this list." },
+  { text = "Are you legally authorized to work in the country in which this role is located?", ats = "greenhouse", note = "Country-agnostic: the resolver checks the posting country against this list." },
+  { text = "Are you legally authorized to work in the country in which you are applying?", ats = "greenhouse", note = "Country-agnostic: the resolver checks the posting country against this list." },
+  { text = "Are you legally authorized to work in the country where the job is located?", ats = "greenhouse", note = "Country-agnostic: the resolver checks the posting country against this list." },
+  { text = "Are you legally authorized to work in the country where this position is located?", ats = "greenhouse", note = "Country-agnostic: the resolver checks the posting country against this list." },
+  { text = "Do you have the unrestricted right to work in the country where this role is located?", ats = "greenhouse", note = "Country-agnostic: the resolver checks the posting country against this list." },
+]
+
+[[question]]
+id = "legal.authorization.require_sponsorship_now"
+section = "C"
+label = "Do you currently require visa sponsorship to work?"
+sensitivity = "legal"
+answer_type = "bool"
+weight = 2
+intake_rank = 15
+jurisdiction_note = "US wording; other countries ask about work permits."
+derive = [
+  { from = "legal.authorization.us_citizen", equals = true, value = false },
+  { from = "legal.authorization.us_permanent_resident", equals = true, value = false },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.authorization.require_sponsorship_future"
+section = "C"
+label = "Will you require visa sponsorship to work in the future?"
+sensitivity = "legal"
+answer_type = "bool"
+weight = 2
+intake_rank = 16
+jurisdiction_note = "US wording; other countries ask about work permits."
+derive = [
+  { from = "legal.authorization.us_citizen", equals = true, value = false },
+  { from = "legal.authorization.us_permanent_resident", equals = true, value = false },
+]
+variants = [
+  { text = "Do you now or will you in the future need sponsorship for employment visa status in the country in which you are applying?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Do you now or will you in the future require immigration sponsorship to work at Cloudflare?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Do you now, or will you in the future, require immigration sponsorship to work at Reddit?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Do you, now or in the future, require sponsorship to work in the United States?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you now (or in the future) require visa sponsorship in order to work in the US?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you now or in the future require immigration sponsorship to work for Instacart?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you now or in the future require sponsorship for employment visa status (e.g., H-1B visa status)?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you require Stripe to sponsor you for a work permit now or in the future for the location(s) you selected in in your previous response?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you require our assistance with work authorization now or in the future?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you require sponsorship for employment visa status now or in the future?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you now or in the future require company sponsorship to retain or extend your work authorization in the country where the job is located?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you now or in the future require sponsorship for a visa to remain in your current location?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you now or in the future require sponsorship for work authorization?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+  { text = "Will you now or in the future require sponsorship or a visa transfer for employment visa status (ie: H-1B visa)?", ats = "greenhouse", note = "Composite: now or in the future. Answer yes if either sponsorship answer is yes." },
+]
+
+[question.options_normalization]
+yes = ["Yes", "Yes, I will require immigration sponsorship in the future to legally work in the country where the job is located.", "Yes, I will require immigration sponsorship now to legally work in the country where the job is located.", "Yes, I require sponsorship for work authorization in the offer location", "Yes, I require sponsorship or a visa transfer (eg: J-1, F-1 CPT/OPT, H-1B, TN, etc.)", "Yes, EU Blue Card", "Yes, F-1 Visa OPT (USA)", "Yes, Ireland Highly Skilled Worker Visa", "Yes, Netherlands Highly Skilled Migrant Visa", "Yes, USMCA Professional (TN) Visa (USA)", "Yes, but not one of the visas listed here"]
+no = ["No", "No, I do not and will not require immigration sponsorship to legally work in the country where the job is located.", "No, I can work for any employer in the offer location without sponsorship", "No, I can work for any US employer without sponsorship (eg: US citizen, permanent resident, EAD, etc.)"]
+
+[[question]]
+id = "legal.authorization.immigration_status"
+section = "C"
+label = "Current immigration status"
+sensitivity = "legal"
+answer_type = "enum"
+options = ["citizen", "permanent_resident", "work_visa", "student_visa", "refugee_or_asylee", "other"]
+jurisdiction_note = "Categories are generic; map to the status names of the posting country."
+variants = [
+  { text = "What is the source of your right to work where this role is listed?", ats = "greenhouse", note = "Options mix citizenship and visa status; the resolver picks by status." },
+]
+
+[question.options_normalization]
+citizen = []
+permanent_resident = []
+work_visa = []
+student_visa = []
+refugee_or_asylee = []
+other = []
+
+[[question]]
+id = "legal.authorization.work_permit_start"
+section = "C"
+label = "Work permit start date"
+sensitivity = "legal"
+answer_type = "date"
+optional = true
+
+[[question]]
+id = "legal.authorization.work_permit_end"
+section = "C"
+label = "Work permit end date"
+sensitivity = "legal"
+answer_type = "date"
+optional = true
+
+[[question]]
+id = "legal.age.over_16"
+section = "C"
+label = "Are you at least 16 years old?"
+sensitivity = "legal"
+answer_type = "bool"
+derive = [
+  { from = "legal.age.over_18", equals = true, value = true },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.age.over_18"
+section = "C"
+label = "Are you at least 18 years old?"
+sensitivity = "legal"
+answer_type = "bool"
+intake_rank = 17
+variants = [
+  { text = "Are you at least 18 years of age?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.age.over_21"
+section = "C"
+label = "Are you at least 21 years old?"
+sensitivity = "legal"
+answer_type = "bool"
+derive = [
+  { from = "legal.age.over_18", equals = false, value = false },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.checks.background_check"
+section = "C"
+label = "Are you willing to undergo a background check?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "Scope and timing of checks vary by jurisdiction."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.checks.drug_screen"
+section = "C"
+label = "Are you willing to take a drug screen?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "Testing rules, especially for cannabis, vary by state and country."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.checks.credit_check"
+section = "C"
+label = "Are you willing to undergo a credit check?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "Restricted for most roles in several US states."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.checks.fingerprinting"
+section = "C"
+label = "Are you willing to be fingerprinted as an employment check?"
+sensitivity = "legal"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.criminal.convicted"
+section = "C"
+label = "Have you ever been convicted of a crime?"
+sensitivity = "legal"
+answer_type = "bool"
+default_policy = "always_ask"
+jurisdiction_note = "Ban-the-box laws limit this question by jurisdiction and stage, so it is asked each time."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.criminal.pending_charges"
+section = "C"
+label = "Do you have criminal charges pending?"
+sensitivity = "legal"
+answer_type = "bool"
+default_policy = "always_ask"
+jurisdiction_note = "Ban-the-box laws limit this question by jurisdiction and stage, so it is asked each time."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.criminal.details"
+section = "C"
+label = "Explanation of any conviction or pending charge"
+sensitivity = "legal"
+answer_type = "text"
+default_policy = "always_ask"
+optional = true
+jurisdiction_note = "Ban-the-box laws limit this question by jurisdiction and stage, so it is asked each time."
+
+[[question]]
+id = "legal.employment.prior_at_company"
+section = "C"
+label = "Companies you have worked for before, with dates and employee ID"
+sensitivity = "legal"
+answer_type = "list"
+weight = 2
+fields = [
+  { name = "company", label = "Company", answer_type = "text" },
+  { name = "start_date", label = "Start date", answer_type = "date", optional = true },
+  { name = "end_date", label = "End date", answer_type = "date", optional = true },
+  { name = "employee_id", label = "Employee ID", answer_type = "text", optional = true },
+]
+variants = [
+  { text = "Are you currently or have you ever worked for Airbnb in any capacity? This could include, but is not limited to, a full-time employee, intern, apprentice, or contingent worker.", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Do you currently or have you previously worked for Databricks in the past?", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Have you ever been employed by Stripe or a Stripe affiliate?", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Have you ever worked for Figma before, as an employee or a contractor/consultant?", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Have you ever worked for Robinhood as an employee, intern or contractor? Note that providing false or misleading information may result in disqualification from the hiring process.", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Have you previously been employed by Coinbase in any capacity?", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Have you previously worked at or consulted for GitLab?", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Have you previously worked for Dropbox?", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Are you currently, or have you previously, worked at Instacart?", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+  { text = "Are you currently, or have you previously, worked for Instacart?", ats = "greenhouse", note = "Company-specific yes/no: answered by looking for the company in this list." },
+]
+
+[[question]]
+id = "legal.employment.prior_applications"
+section = "C"
+label = "Companies you have applied to before, with dates"
+sensitivity = "legal"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "company", label = "Company", answer_type = "text" },
+  { name = "date", label = "Date applied", answer_type = "date", optional = true },
+  { name = "role", label = "Role", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "legal.relationships.relatives_employed"
+section = "C"
+label = "Relatives or close relationships with employees, by company"
+sensitivity = "legal"
+answer_type = "list"
+fields = [
+  { name = "company", label = "Company", answer_type = "text" },
+  { name = "name", label = "Employee name", answer_type = "text" },
+  { name = "relationship", label = "Relationship", answer_type = "text" },
+]
+variants = [
+  { text = "Do you have: a) any Personal/Familial Relationships (current Robinhood employees or employees of Robinhood’s vendors); b) any Outside Business Activities that you wish to continue; c) any investment that is greater than 5% of the outstanding shares of a publicly-traded company; d) any investment in a private company that has a business relationship or that is a current competitor of Robinhood; or e) any Intellectual Property Ownership (patents, trademarks, copyrights) that you wish to retain and/or create/develop while at Robinhood?", ats = "greenhouse", note = "Company-specific yes/no: answered from this list." },
+]
+
+[[question]]
+id = "legal.government.official_recent"
+section = "C"
+label = "Are you a government official now, or were you in the last five years?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "Anti-corruption wording; the look-back period varies by company."
+variants = [
+  { text = "Are you a current government official or were you a government official in the last five years (e.g., employee of a government agency or a government owned/controlled company, holder of public office or a civil service position)?", ats = "greenhouse" },
+  { text = "Robinhood adheres to applicable laws and regulations in relation to government officials given inherent bribery and/or corruption risk. A government official is any person that performs a public function on any level or acts in any official capacity on behalf of a government or government owned entity. a) Do you currently hold or have you held, within the last 5 years, a position as a government official? b) Have you been referred or recommended for this position by a government official? c) Are you related to or have a close personal relationship with a government official?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes", "Yes, I am a current Government Official", "Yes, I am a former Government Official"]
+no = ["No", "No, I am not a current or former Government Official"]
+
+[[question]]
+id = "legal.government.agency"
+section = "C"
+label = "Government agency you served (current or former)"
+sensitivity = "legal"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "legal.government.relative_of_official"
+section = "C"
+label = "Are you a close relative of a government official?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "Anti-corruption wording; the relative definition varies by company."
+variants = [
+  { text = "Are you a close relative of a government official (i.e., child/step-child, spouse/partner, parent/guardian, aunt/uncle, first cousin, in-law)?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes", "Yes, I am a relative of a government official."]
+no = ["No", "No, I am not a relative of a government official."]
+
+[[question]]
+id = "legal.restrictions.non_compete"
+section = "C"
+label = "Are you bound by a non-compete, non-solicit or other restrictive agreement?"
+sensitivity = "legal"
+answer_type = "bool"
+variants = [
+  { text = "Are you currently subject to any non-compete or non-solicitation agreement that would impact your ability to work at Airbnb or prevent you from accepting a job offer from Airbnb?", ats = "greenhouse" },
+  { text = "Are you subject to any employment agreements and/or post-employment restrictions with your current employer or a past employer?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.identity.proof_on_start"
+section = "C"
+label = "Can you provide proof of identity and work eligibility on your first day (I-9 or local equivalent)?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "US I-9 wording; other countries use a local equivalent."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.export.sanctioned_ties"
+section = "C"
+label = "Are you a citizen or resident of a comprehensively sanctioned country or region?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "US sanctions wording (OFAC); the country list changes."
+variants = [
+  { text = "Please indicate whether you are either a citizen or resident of any of the following countries: Cuba, Iran, North Korea, Syria or Crimea Region of Ukraine.", ats = "greenhouse" },
+  { text = "Please confirm whether any of the below applies to you. Select all that apply. Note: This information will only be used to ensure compliance with U.S. sanctions and export controls.", ats = "greenhouse", note = "Multi-select; \"None of the above\" means no." },
+]
+
+[question.options_normalization]
+yes = ["Yes", "Citizen or permanent resident of Cuba, Iran, North Korea, or Syria", "Ordinarily a resident of Cuba, Iran, North Korea, Syria or the Crimea, Donetsk, Luhansk, Zaporizhzhia, or Kherson regions of Ukraine"]
+no = ["No", "None of the above"]
+
+[[question]]
+id = "legal.export.controlled_access_eligible"
+section = "C"
+label = "Are you eligible for access to export-controlled technology?"
+sensitivity = "legal"
+answer_type = "bool"
+jurisdiction_note = "US export-control wording (ITAR and EAR)."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.military.served"
+section = "C"
+label = "Have you served in the military?"
+sensitivity = "legal"
+answer_type = "bool"
+default_policy = "always_ask"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.military.service"
+section = "C"
+label = "Military service periods: branch, dates and type of discharge"
+sensitivity = "legal"
+answer_type = "list"
+default_policy = "always_ask"
+optional = true
+fields = [
+  { name = "branch", label = "Branch of service", answer_type = "enum", options = ["army", "navy", "air_force", "marine_corps", "coast_guard", "space_force", "national_guard", "other"] },
+  { name = "start_date", label = "Start date", answer_type = "date", optional = true },
+  { name = "end_date", label = "End date", answer_type = "date", optional = true },
+  { name = "discharge_type", label = "Type of discharge", answer_type = "enum", options = ["honorable", "general", "other_than_honorable", "bad_conduct", "dishonorable", "other"], optional = true },
+]
+
+[[question]]
+id = "legal.clearance.level"
+section = "D"
+label = "Current security clearance level"
+sensitivity = "clearance"
+answer_type = "enum"
+options = ["none", "public_trust", "confidential", "secret", "top_secret", "ts_sci"]
+jurisdiction_note = "US levels; give non-US equivalents under non_us_equivalent."
+
+[question.options_normalization]
+none = ["None", "No clearance"]
+public_trust = ["Public Trust"]
+confidential = ["Confidential"]
+secret = ["Secret"]
+top_secret = ["Top Secret", "TS"]
+ts_sci = ["TS/SCI", "Top Secret/SCI"]
+
+[[question]]
+id = "legal.clearance.status"
+section = "D"
+label = "Clearance status"
+sensitivity = "clearance"
+answer_type = "enum"
+options = ["active", "current", "expired"]
+optional = true
+
+[question.options_normalization]
+active = ["Active"]
+current = ["Current", "Inactive (within 24 months)"]
+expired = ["Expired"]
+
+[[question]]
+id = "legal.clearance.date_granted"
+section = "D"
+label = "Date clearance was granted"
+sensitivity = "clearance"
+answer_type = "date"
+optional = true
+
+[[question]]
+id = "legal.clearance.investigation_date"
+section = "D"
+label = "Date of the most recent investigation"
+sensitivity = "clearance"
+answer_type = "date"
+optional = true
+
+[[question]]
+id = "legal.clearance.granting_agency"
+section = "D"
+label = "Agency that granted the clearance"
+sensitivity = "clearance"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "legal.clearance.non_us_equivalent"
+section = "D"
+label = "Non-US clearance equivalent"
+sensitivity = "clearance"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "legal.clearance.polygraph"
+section = "D"
+label = "Polygraph held"
+sensitivity = "clearance"
+answer_type = "enum"
+options = ["none", "ci", "full_scope"]
+optional = true
+
+[question.options_normalization]
+none = ["None", "No polygraph"]
+ci = ["CI", "CI Poly", "Counterintelligence"]
+full_scope = ["Full Scope", "Full Scope Poly", "Lifestyle"]
+
+[[question]]
+id = "legal.clearance.polygraph_date"
+section = "D"
+label = "Polygraph date"
+sensitivity = "clearance"
+answer_type = "date"
+optional = true
+
+[[question]]
+id = "legal.clearance.willing_to_obtain"
+section = "D"
+label = "Are you willing to obtain a clearance?"
+sensitivity = "clearance"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.clearance.eligible_to_obtain"
+section = "D"
+label = "Do you believe you are eligible to obtain a clearance?"
+sensitivity = "clearance"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "legal.clearance.dual_citizenship"
+section = "D"
+label = "Do you hold citizenship in more than one country?"
+sensitivity = "clearance"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]

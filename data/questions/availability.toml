@@ -1,0 +1,367 @@
+# Core question bank, section F (availability and logistics).
+# Format and rules: docs/question-bank.md.
+
+[[question]]
+id = "availability.schedule.weekly"
+section = "F"
+label = "Weekly availability: days and time ranges"
+sensitivity = "availability"
+answer_type = "grid"
+variants = [
+  { text = "The role requires availability Sunday to Thursday OR Tuesday to Saturday, between 6 AM and 9 PM local time. Do you have any scheduling restrictions or conflicts with this work schedule?", ats = "greenhouse", note = "Yes/no scheduling-conflict question: answered by comparing the grid with the stated hours." },
+]
+
+[[question]]
+id = "availability.hours.desired_per_week"
+section = "F"
+label = "Desired hours per week"
+sensitivity = "availability"
+answer_type = "number"
+
+[[question]]
+id = "availability.hours.max_per_week"
+section = "F"
+label = "Maximum hours per week"
+sensitivity = "availability"
+answer_type = "number"
+optional = true
+
+[[question]]
+id = "availability.hours.overtime"
+section = "F"
+label = "Are you open to overtime?"
+sensitivity = "availability"
+answer_type = "bool"
+optional = true
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.hours.holidays"
+section = "F"
+label = "Are you available to work holidays?"
+sensitivity = "availability"
+answer_type = "bool"
+optional = true
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.start.earliest_date"
+section = "F"
+label = "Earliest date you can start"
+sensitivity = "availability"
+answer_type = "date"
+intake_rank = 18
+
+[[question]]
+id = "availability.start.notice_weeks"
+section = "F"
+label = "Notice period, in weeks"
+sensitivity = "availability"
+answer_type = "number"
+variants = [
+  { text = "What is your current notice period?", ats = "greenhouse", note = "Free text on the form; fill \"N weeks\"." },
+]
+
+[[question]]
+id = "availability.pay.desired_annual"
+section = "F"
+label = "Desired annual pay"
+sensitivity = "numeric"
+answer_type = "number"
+intake_rank = 21
+
+[[question]]
+id = "availability.pay.desired_hourly"
+section = "F"
+label = "Desired hourly pay"
+sensitivity = "numeric"
+answer_type = "number"
+
+[[question]]
+id = "availability.pay.answer_format"
+section = "F"
+label = "How to answer a pay question"
+sensitivity = "numeric"
+answer_type = "enum"
+options = ["range", "single_number", "open_to_discussion"]
+jurisdiction_note = "Pay-transparency and salary-history rules differ by US state and country."
+
+[question.options_normalization]
+range = ["Range"]
+single_number = ["Single number"]
+open_to_discussion = ["Open to discussion", "Negotiable"]
+
+[[question]]
+id = "availability.pay.current_annual"
+section = "F"
+label = "Current or most recent annual pay"
+sensitivity = "numeric"
+answer_type = "number"
+default_policy = "always_ask"
+jurisdiction_note = "Pay-transparency and salary-history rules differ by US state and country."
+
+[[question]]
+id = "availability.driving.license_held"
+section = "F"
+label = "Do you hold a driver's license?"
+sensitivity = "availability"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.driving.license_class"
+section = "F"
+label = "Driver's license class"
+sensitivity = "availability"
+answer_type = "enum"
+options = ["standard", "cdl_a", "cdl_b", "cdl_c", "motorcycle"]
+optional = true
+
+[question.options_normalization]
+standard = ["Standard", "Class C", "Class D"]
+cdl_a = ["CDL A", "CDL Class A"]
+cdl_b = ["CDL B", "CDL Class B"]
+cdl_c = ["CDL C", "CDL Class C"]
+motorcycle = ["Motorcycle"]
+
+[[question]]
+id = "availability.driving.license_region"
+section = "F"
+label = "State or province that issued your license"
+sensitivity = "availability"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "availability.driving.license_expiry"
+section = "F"
+label = "Driver's license expiry date"
+sensitivity = "availability"
+answer_type = "date"
+optional = true
+
+[[question]]
+id = "availability.driving.clean_record"
+section = "F"
+label = "Do you have a clean driving record?"
+sensitivity = "availability"
+answer_type = "bool"
+default_policy = "always_ask"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.transport.reliable"
+section = "F"
+label = "Do you have reliable transportation to work?"
+sensitivity = "availability"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.transport.own_vehicle"
+section = "F"
+label = "Do you have your own vehicle?"
+sensitivity = "availability"
+answer_type = "bool"
+optional = true
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.transport.vehicle_insurance"
+section = "F"
+label = "Is your vehicle insured?"
+sensitivity = "availability"
+answer_type = "bool"
+optional = true
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.functions.essential"
+section = "F"
+label = "Can you perform the essential functions of the job, with or without reasonable accommodation?"
+sensitivity = "availability"
+answer_type = "bool"
+default_policy = "always_ask"
+jurisdiction_note = "US ADA wording."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.physical.requirements"
+section = "F"
+label = "Can you meet the physical requirements of the job (lifting, standing)?"
+sensitivity = "availability"
+answer_type = "bool"
+default_policy = "always_ask"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.locations.other_sites"
+section = "F"
+label = "Are you willing to work at other locations of the same employer?"
+sensitivity = "availability"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.interview.timezone"
+section = "F"
+label = "Time zone for interviews"
+sensitivity = "availability"
+answer_type = "text"
+
+[[question]]
+id = "availability.interview.windows"
+section = "F"
+label = "Interview availability: days and time ranges"
+sensitivity = "availability"
+answer_type = "grid"
+
+[[question]]
+id = "availability.interview.accommodations"
+section = "F"
+label = "Accommodations you need for the interview process"
+sensitivity = "availability"
+answer_type = "text"
+default_policy = "always_ask"
+optional = true
+variants = [
+  { text = "It is important to us to create an accessible and inclusive interview experience. Please let us know if there are any adjustments we can make to assist you during the hiring and interview process.", ats = "greenhouse" },
+]
+
+[[question]]
+id = "availability.assessment.willing"
+section = "F"
+label = "Are you willing to complete an assessment, take-home or skills test?"
+sensitivity = "availability"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.references.list"
+section = "F"
+label = "Professional references"
+sensitivity = "availability"
+answer_type = "list"
+default_policy = "always_ask"
+fields = [
+  { name = "name", label = "Name", answer_type = "text" },
+  { name = "relationship", label = "Relationship", answer_type = "text" },
+  { name = "organization", label = "Organization", answer_type = "text", optional = true },
+  { name = "email", label = "Email", answer_type = "text", optional = true },
+  { name = "phone", label = "Phone", answer_type = "text", optional = true },
+  { name = "years_known", label = "Years known", answer_type = "number", optional = true },
+  { name = "consent_to_contact", label = "Consent to contact given", answer_type = "bool" },
+]
+
+[[question]]
+id = "availability.employer_contact.may_contact_current"
+section = "F"
+label = "May we contact your current employer?"
+sensitivity = "availability"
+answer_type = "bool"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.work_mode"
+section = "F"
+label = "Where do you want to work?"
+sensitivity = "availability"
+answer_type = "enum"
+options = ["remote_only", "hybrid", "onsite", "flexible"]
+intake_rank = 20
+variants = [
+  { text = "If this role offers the option to work from a remote location, do you plan to work remotely?", ats = "greenhouse", note = "Two-option form: remote_only answers the remote option, anything else the office option." },
+]
+
+[question.options_normalization]
+remote_only = ["Remote only", "Yes, I intend to work remotely."]
+hybrid = ["Hybrid"]
+onsite = ["On-site", "Onsite", "No, I intend to work from an office location."]
+flexible = ["Flexible", "No preference"]
+
+[[question]]
+id = "availability.willing_onsite"
+section = "F"
+label = "Are you willing to work from an office?"
+sensitivity = "availability"
+answer_type = "bool"
+derive = [
+  { from = "availability.work_mode", equals = "remote_only", value = false },
+]
+variants = [
+  { text = "Are you willing to work from the office(s) listed on the job description?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.relocation.willing"
+section = "F"
+label = "Are you willing to relocate?"
+sensitivity = "availability"
+answer_type = "bool"
+intake_rank = 19
+variants = [
+  { text = "Are you currently based in Canada, or willing to relocate to Canada?", ats = "greenhouse", note = "Composite: already based there or willing to relocate. Answer yes if either holds." },
+  { text = "Are you currently based in US or willing to relocate to US?", ats = "greenhouse", note = "Composite: already based there or willing to relocate. Answer yes if either holds." },
+  { text = "Are you currently based in or willing to relocate to the Bay Area for this position?", ats = "greenhouse", note = "Composite: already based there or willing to relocate. Answer yes if either holds." },
+  { text = "Are you currently based in or willing to relocate to the Bay Area or Los Angeles area for this position?", ats = "greenhouse", note = "Composite: already based there or willing to relocate. Answer yes if either holds." },
+  { text = "This position is based in Mexico City, do you live in Mexico CIty or are you willing to relocate?", ats = "greenhouse", note = "Composite: already based there or willing to relocate. Answer yes if either holds." },
+  { text = "Do you live in or plan to relocate to Poland?", ats = "greenhouse", note = "Composite: already based there or willing to relocate. Answer yes if either holds." },
+  { text = "If not currently in the SF Bay Area, are you willing to relocate to the SF Bay Area for this position?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "availability.locations.preferred"
+section = "F"
+label = "Cities or offices where you would like to work"
+sensitivity = "availability"
+answer_type = "list"
+variants = [
+  { text = "In what cities are you available to work?", ats = "greenhouse" },
+  { text = "What is your preferred office location?", ats = "greenhouse" },
+  { text = "Please select the location you anticipate working in for the role in which you are applying.", ats = "greenhouse" },
+  { text = "From where do you intend to work?", ats = "greenhouse" },
+]

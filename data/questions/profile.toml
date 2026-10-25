@@ -1,0 +1,438 @@
+# Core question bank, sections A (identity and contact) and B (education).
+# Format and rules: docs/question-bank.md.
+
+[[question]]
+id = "profile.name.legal_first"
+section = "A"
+label = "Legal first name"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 1
+variants = [
+  { text = "First Name", ats = "greenhouse" },
+  { text = "What is your legal first name?", ats = "greenhouse" },
+  { text = "Prénom", ats = "greenhouse", note = "French-language form." },
+]
+
+[[question]]
+id = "profile.name.legal_middle"
+section = "A"
+label = "Legal middle name or initial"
+sensitivity = "contact"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "profile.name.legal_last"
+section = "A"
+label = "Legal last name"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 2
+variants = [
+  { text = "Last Name", ats = "greenhouse" },
+  { text = "Nom", ats = "greenhouse", note = "French-language form." },
+]
+
+[[question]]
+id = "profile.name.suffix"
+section = "A"
+label = "Name suffix (Jr., III)"
+sensitivity = "contact"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "profile.name.preferred"
+section = "A"
+label = "Preferred or chosen first name"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 3
+variants = [
+  { text = "Preferred First Name", ats = "greenhouse" },
+  { text = "What's the name you'd prefer us to use throughout the interview process?", ats = "greenhouse" },
+  { text = "Prénom préféré", ats = "greenhouse", note = "French-language form." },
+]
+
+[[question]]
+id = "profile.name.pronouns"
+section = "A"
+label = "Pronouns"
+sensitivity = "preference"
+answer_type = "enum"
+options = ["he_him", "she_her", "they_them", "other", "ask_me"]
+optional = true
+variants = [
+  { text = "Pronouns", ats = "greenhouse" },
+  { text = "What are your personal pronouns?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+he_him = ["he/him/his", "He / Him / His"]
+she_her = ["she/her/hers", "She / Her / Hers"]
+they_them = ["they/them/theirs", "They / Them / Their"]
+other = ["self-describe", "Zie / Ze / Zir / Hir / Zir", "Other - Please ask me"]
+ask_me = ["Multiple pronouns - Please ask me", "Please use my name"]
+
+[[question]]
+id = "profile.contact.email"
+section = "A"
+label = "Email address"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 4
+variants = [
+  { text = "Email", ats = "greenhouse" },
+  { text = "Adresse e-mail", ats = "greenhouse", note = "French-language form." },
+]
+
+[[question]]
+id = "profile.contact.phone"
+section = "A"
+label = "Phone number (E.164)"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 5
+variants = [
+  { text = "Phone", ats = "greenhouse" },
+  { text = "Téléphone", ats = "greenhouse", note = "French-language form." },
+]
+
+[[question]]
+id = "profile.contact.phone_type"
+section = "A"
+label = "Phone type"
+sensitivity = "contact"
+answer_type = "enum"
+options = ["mobile", "home", "work"]
+optional = true
+
+[question.options_normalization]
+mobile = ["Mobile", "Cell"]
+home = ["Home"]
+work = ["Work"]
+
+[[question]]
+id = "profile.contact.sms_consent"
+section = "A"
+label = "Consent to receive text or chat messages from recruiters"
+sensitivity = "preference"
+answer_type = "bool"
+optional = true
+variants = [
+  { text = "Do you opt-in to receive WhatsApp messages from Stripe Recruiting?", ats = "greenhouse", note = "WhatsApp opt-in; the closest messaging-consent form seen." },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "profile.address.street"
+section = "A"
+label = "Street address, including unit or apartment"
+sensitivity = "contact"
+answer_type = "text"
+
+[[question]]
+id = "profile.address.city"
+section = "A"
+label = "City"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 6
+variants = [
+  { text = "Location", ats = "greenhouse", note = "Location autocomplete; fill city, region and country together." },
+  { text = "Lieu", ats = "greenhouse", note = "French-language location autocomplete." },
+  { text = "What city/town and state do you live in?", ats = "greenhouse", note = "City and state in one field." },
+  { text = "If located in the US, in what city and state do you reside?", ats = "greenhouse", note = "City and state in one field." },
+]
+
+[[question]]
+id = "profile.address.region"
+section = "A"
+label = "State or province"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 7
+variants = [
+  { text = "Which state or province do you currently live in?", ats = "greenhouse" },
+  { text = "What U.S State do you currently reside in?", ats = "greenhouse" },
+]
+
+[[question]]
+id = "profile.address.postal_code"
+section = "A"
+label = "Postal or ZIP code"
+sensitivity = "contact"
+answer_type = "text"
+variants = [
+  { text = "Please provide the zip code of your primary residence.", ats = "greenhouse" },
+]
+
+[[question]]
+id = "profile.address.country"
+section = "A"
+label = "Country of residence"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 8
+variants = [
+  { text = "What is your current country of residence?", ats = "greenhouse" },
+  { text = "Please select the country where you currently reside.", ats = "greenhouse" },
+  { text = "Please choose the country in which you are located.", ats = "greenhouse" },
+  { text = "Please select your country of residence from the list below. Pinterest typically requires employees to work and reside in the country of their employment. Certain geographies may also have provincial requirements.", ats = "greenhouse" },
+  { text = "This role is only open to candidates in the United States. Please confirm your current country of residence.", ats = "greenhouse" },
+]
+
+[[question]]
+id = "profile.address.disclose_full"
+section = "A"
+label = "Give the full street address when a form asks (otherwise city and state only)"
+sensitivity = "preference"
+answer_type = "bool"
+
+[[question]]
+id = "profile.links.linkedin"
+section = "A"
+label = "LinkedIn profile URL"
+sensitivity = "contact"
+answer_type = "text"
+weight = 2
+intake_rank = 9
+variants = [
+  { text = "LinkedIn Profile", ats = "greenhouse" },
+  { text = "Linkedin Profile URL", ats = "greenhouse" },
+  { text = "LinkedIn Profile (Required)", ats = "greenhouse" },
+]
+
+[[question]]
+id = "profile.links.website"
+section = "A"
+label = "Portfolio or personal website URL"
+sensitivity = "contact"
+answer_type = "text"
+intake_rank = 10
+variants = [
+  { text = "Website", ats = "greenhouse" },
+  { text = "Other Website", ats = "greenhouse" },
+  { text = "Portfolio", ats = "greenhouse" },
+  { text = "Would you like to include your LinkedIn profile, personal website or blog?", ats = "greenhouse", note = "Composite: fill the website, or the LinkedIn URL if there is none." },
+]
+
+[[question]]
+id = "profile.links.other"
+section = "A"
+label = "Other profile URLs relevant to the field (GitHub, Behance, publications)"
+sensitivity = "contact"
+answer_type = "list"
+optional = true
+
+[[question]]
+id = "profile.referral.default_source"
+section = "A"
+label = "Default answer to \"How did you hear about this job?\""
+sensitivity = "preference"
+answer_type = "enum"
+options = ["careers_site", "linkedin", "job_board", "search_engine", "social_media", "referral", "recruiter", "event", "campus_or_community", "company_content", "other"]
+weight = 2
+intake_rank = 11
+variants = [
+  { text = "How did you hear about this job?", ats = "greenhouse" },
+  { text = "How did you hear about Twilio?", ats = "greenhouse" },
+  { text = "How did you first hear about this opportunity?", ats = "greenhouse" },
+  { text = "How did you hear about this opportunity?", ats = "greenhouse" },
+  { text = "How did you hear about this role? (Please select all that apply)", ats = "greenhouse" },
+  { text = "How did your hear about this position?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+careers_site = ["Career Page", "Company Website (Airbnb Careers)", "Careers Website", "Dropbox Career Site", "Datadog's Careers Page"]
+linkedin = ["LinkedIn", "LinkedIn (Job Posting)", "LinkedIn (Datadog Page)"]
+job_board = ["Job Board", "BuiltIn", "BuiltIn Boston", "BuiltIn NYC", "Indeed", "Glassdoor", "Angelist", "Flexjobs", "Hired", "Hiretual", "The Muse", "Welcome to the Jungle", "JobTeaser", "Underdog", "Thrive", "Blind App", "InHerSight", "PompCryptoJobs", "Dropbox Talent Community"]
+search_engine = ["Google Search", "Third-party website or search engine"]
+social_media = ["Social media (Facebook, LinkedIn, Twitter, Instagram)", "Twitter", "Twitter Ad", "Instagram", "Facebook", "Farcaster", "Github", "Hacker News"]
+referral = ["Referral", "Family/Friend", "Friend, family, colleague", "Airbnb Employee", "Current Pinterest Employee", "Datadog Employee", "Referral from Dropboxer", "Advisor or Faculty referral"]
+recruiter = ["Contacted by Recruiter"]
+event = ["Conference", "Event (Tech Talk, Meetup, conference)", "Coinbase Event", "Conference or Event", "Attended a talk or conference", "Event", "In Person Event", "Pinterest-hosted Recruiting Event"]
+campus_or_community = ["On Campus Recruiting", "Campus Event", "School job board", "Carnegie Mellon University department or mailing list", "ColorStack", "Break Through Tech", "Girls Who Code", "AfroTech", "Rewriting the Code", "SHPE (Society of Hispanic Professional Engineers)", "MLT (Management Leadership for Tomorrow)"]
+company_content = ["Airbnb Open Source", "Airbnb Tech blog post", "Airbnb.io", "Coinbase Blog", "Twilio Blog", "Content (e.g. videos, ads, billboards etc)", "I love Datadog's product!"]
+other = ["Other"]
+
+[[question]]
+id = "profile.referral.by_source"
+section = "A"
+label = "Answers to \"How did you hear\" for specific job boards, overriding the default"
+sensitivity = "preference"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "source", label = "Where the posting was found", answer_type = "text" },
+  { name = "answer", label = "Answer to give", answer_type = "enum", options = ["careers_site", "linkedin", "job_board", "search_engine", "social_media", "referral", "recruiter", "event", "campus_or_community", "company_content", "other"] },
+]
+
+[[question]]
+id = "profile.referral.referrers"
+section = "A"
+label = "People who referred you, by company"
+sensitivity = "contact"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "company", label = "Company", answer_type = "text" },
+  { name = "name", label = "Referrer name", answer_type = "text" },
+  { name = "email", label = "Referrer email", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "profile.education.highest_level"
+section = "B"
+label = "Highest level of education completed"
+sensitivity = "contact"
+answer_type = "enum"
+options = ["none", "high_school", "some_college", "certificate", "associate", "bachelors", "masters", "professional", "doctorate"]
+intake_rank = 22
+variants = [
+  { text = "What is the highest level of education you have completed?", ats = "greenhouse" },
+  { text = "What is the most recent degree you obtained?", ats = "greenhouse", note = "Asks for the most recent degree; answer with the highest level." },
+]
+
+[question.options_normalization]
+none = []
+high_school = ["High School"]
+some_college = []
+certificate = []
+associate = ["Associate's Degree"]
+bachelors = ["B.A./ B.S.", "Bachelor's Degree"]
+masters = ["M.A./ M.S.", "Master's Degree", "Master of Business Administration (M.B.A.)"]
+professional = ["Doctor of Medicine (M.D.)", "Juris Doctor (J.D.)"]
+doctorate = ["Ph.D", "Doctor of Philosophy (Ph.D.)"]
+
+[[question]]
+id = "profile.education.has_bachelors"
+section = "B"
+label = "Has a bachelor's degree or higher"
+sensitivity = "contact"
+answer_type = "bool"
+derive = [
+  { from = "profile.education.highest_level", equals = "none", value = false },
+  { from = "profile.education.highest_level", equals = "high_school", value = false },
+  { from = "profile.education.highest_level", equals = "some_college", value = false },
+  { from = "profile.education.highest_level", equals = "certificate", value = false },
+  { from = "profile.education.highest_level", equals = "associate", value = false },
+  { from = "profile.education.highest_level", equals = "bachelors", value = true },
+  { from = "profile.education.highest_level", equals = "masters", value = true },
+  { from = "profile.education.highest_level", equals = "professional", value = true },
+  { from = "profile.education.highest_level", equals = "doctorate", value = true },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+
+[[question]]
+id = "profile.education.history"
+section = "B"
+label = "Education history, one entry per institution"
+sensitivity = "contact"
+answer_type = "list"
+fields = [
+  { name = "institution", label = "Institution", answer_type = "text" },
+  { name = "campus", label = "Campus", answer_type = "text", optional = true },
+  { name = "credential", label = "Credential type (BS, MA, certificate)", answer_type = "text" },
+  { name = "field_of_study", label = "Field of study", answer_type = "text", optional = true },
+  { name = "minor", label = "Minor", answer_type = "text", optional = true },
+  { name = "concentration", label = "Concentration", answer_type = "text", optional = true },
+  { name = "start_date", label = "Start date", answer_type = "date", optional = true },
+  { name = "end_date", label = "Completion date (actual or expected)", answer_type = "date", optional = true },
+  { name = "expected", label = "Completion date is expected, not actual", answer_type = "bool", optional = true },
+  { name = "currently_enrolled", label = "Currently enrolled", answer_type = "bool", optional = true },
+  { name = "gpa", label = "GPA", answer_type = "number", optional = true },
+  { name = "gpa_scale", label = "GPA scale (4.0, 5.0, 100)", answer_type = "number", optional = true },
+  { name = "major_gpa", label = "Major GPA", answer_type = "number", optional = true },
+  { name = "honors", label = "Honors", answer_type = "text", optional = true },
+  { name = "scholarships", label = "Scholarships", answer_type = "text", optional = true },
+]
+variants = [
+  { text = "Education: Last University Attended", ats = "greenhouse", note = "Answer with the most recent institution." },
+  { text = "What is the most recent school you attended?", ats = "greenhouse", note = "Answer with the most recent institution." },
+]
+
+[[question]]
+id = "profile.education.gpa_disclose_min"
+section = "B"
+label = "Share GPA only when it is at least this value (leave blank otherwise)"
+sensitivity = "numeric"
+answer_type = "number"
+optional = true
+
+[[question]]
+id = "profile.education.relevant_coursework"
+section = "B"
+label = "Relevant coursework, each tagged with skills"
+sensitivity = "contact"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "course", label = "Course", answer_type = "text" },
+  { name = "skills", label = "Skills it demonstrates", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "profile.education.thesis"
+section = "B"
+label = "Thesis, capstone or practicum"
+sensitivity = "contact"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "title", label = "Title", answer_type = "text" },
+  { name = "kind", label = "Thesis, capstone or practicum", answer_type = "text", optional = true },
+  { name = "project_link", label = "Link to the project in the experience bank", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "profile.education.high_school_name"
+section = "B"
+label = "High school name"
+sensitivity = "contact"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "profile.education.high_school_year"
+section = "B"
+label = "High school graduation year"
+sensitivity = "numeric"
+answer_type = "number"
+optional = true
+
+[[question]]
+id = "profile.education.test_scores"
+section = "B"
+label = "Standardized test scores (leave empty to decline when asked)"
+sensitivity = "numeric"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "test", label = "Test", answer_type = "text" },
+  { name = "score", label = "Score", answer_type = "number" },
+  { name = "date", label = "Date taken", answer_type = "date", optional = true },
+]
+
+[[question]]
+id = "profile.education.transcript"
+section = "B"
+label = "Transcript PDF"
+sensitivity = "contact"
+answer_type = "file"
+optional = true
