@@ -14,6 +14,7 @@ use crate::text::normalize_label;
 
 use super::{
     AnswerType, FieldDef, Pack, PolicyMode, QuestionDef, ReviewStatus, Section, Sensitivity,
+    validate_value,
 };
 
 /// One broken rule. Every variant names the file; all but the file-level ones
@@ -193,6 +194,98 @@ pub enum CatalogError {
         text: String,
         other: String,
     },
+
+    #[error("{file}: {id}: intake_rank must be at least 1")]
+    IntakeRankZero { file: String, id: String },
+    #[error("{file}: {id}: intake_rank {rank} is also used by {other}")]
+    IntakeRankDuplicate {
+        file: String,
+        id: String,
+        rank: u32,
+        other: String,
+    },
+    #[error("{file}: {id}: intake_rank is only allowed on addressable questions")]
+    IntakeUnaddressable { file: String, id: String },
+    #[error("{file}: {id}: intake_rank is not allowed with a default_policy")]
+    IntakeWithPolicy { file: String, id: String },
+    #[error("{file}: {id}: intake_rank is not allowed on optional questions")]
+    IntakeOptional { file: String, id: String },
+
+    #[error("{file}: {id}: derive source {from:?} does not exist")]
+    DeriveSourceUnknown {
+        file: String,
+        id: String,
+        from: String,
+    },
+    #[error("{file}: {id}: derive source {from:?} is not addressable")]
+    DeriveSourceUnaddressable {
+        file: String,
+        id: String,
+        from: String,
+    },
+    #[error("{file}: {id}: derive source must not be the question itself")]
+    DeriveSelf { file: String, id: String },
+    #[error("{file}: {id}: derive source {from:?} is {answer_type:?}; need bool, enum or number")]
+    DeriveSourceType {
+        file: String,
+        id: String,
+        from: String,
+        answer_type: AnswerType,
+    },
+    #[error("{file}: {id}: derive equals for {from:?} is invalid: {message}")]
+    DeriveEqualsInvalid {
+        file: String,
+        id: String,
+        from: String,
+        message: String,
+    },
+    #[error("{file}: {id}: derive value for {from:?} is invalid: {message}")]
+    DeriveValueInvalid {
+        file: String,
+        id: String,
+        from: String,
+        message: String,
+    },
+    #[error("{file}: {id}: derive is only allowed on addressable questions")]
+    DeriveTargetUnaddressable { file: String, id: String },
+    #[error("{file}: {id}: derive is not allowed on list or grid questions")]
+    DeriveTargetNotScalar { file: String, id: String },
+    #[error("{file}: {id}: more than one derive rule for {from:?} equals {equals}")]
+    DeriveDuplicate {
+        file: String,
+        id: String,
+        from: String,
+        equals: String,
+    },
+
+    #[error("{file}: {id}: draws_on is only allowed on text and list questions")]
+    DrawsOnType { file: String, id: String },
+    #[error("{file}: {id}: draws_on entry {entry:?} matches no question")]
+    DrawsOnNoMatch {
+        file: String,
+        id: String,
+        entry: String,
+    },
+    #[error("{file}: {id}: draws_on entry {entry:?} matches {matched}, which is {sensitivity:?}")]
+    DrawsOnForbidden {
+        file: String,
+        id: String,
+        entry: String,
+        matched: String,
+        sensitivity: Sensitivity,
+    },
+    #[error("{file}: {id}: draws_on entry {entry:?} is the question itself")]
+    DrawsOnSelf {
+        file: String,
+        id: String,
+        entry: String,
+    },
+    #[error("{file}: {id}: duplicate draws_on entry {entry:?}")]
+    DrawsOnDuplicate {
+        file: String,
+        id: String,
+        entry: String,
+    },
 }
 
 /// Every problem found in one `Catalog::parse` call.
@@ -319,6 +412,8 @@ impl Catalog {
             }
         }
 
+        check_cross_references(&all, &mut errs);
+
         if !errs.is_empty() {
             return Err(CatalogErrors(errs));
         }
@@ -362,6 +457,56 @@ impl Catalog {
 
     pub fn packs(&self) -> impl Iterator<Item = &Pack> {
         self.packs.values()
+    }
+
+    /// The short intake set, lowest `intake_rank` first.
+    pub fn intake(&self) -> Vec<&QuestionDef> {
+        let mut out: Vec<&QuestionDef> = self
+            .questions
+            .values()
+            .filter(|d| d.intake_rank.is_some())
+            .collect();
+        out.sort_by_key(|d| d.intake_rank);
+        out
+    }
+
+    /// The questions `id`'s `draws_on` entries match, deduplicated, in id
+    /// order. Empty for unknown ids.
+    pub fn draws_on(&self, id: &str) -> Vec<&QuestionDef> {
+        let Some(def) = self.questions.get(id) else {
+            return Vec::new();
+        };
+        self.questions
+            .values()
+            .filter(|d| d.id != id && def.draws_on.iter().any(|e| entry_matches(e, &d.id)))
+            .collect()
+    }
+
+    /// How many questions `id` feeds: `(derive_targets, draws_on_dependents)`
+    /// are the questions with a derive rule from `id` and the questions whose
+    /// `draws_on` matches `id`.
+    pub fn fan_out(&self, id: &str) -> (usize, usize) {
+        let targets = self
+            .questions
+            .values()
+            .filter(|d| d.derive.iter().any(|r| r.from == id))
+            .count();
+        let dependents = self
+            .questions
+            .values()
+            .filter(|d| d.id != id && d.draws_on.iter().any(|e| entry_matches(e, id)))
+            .count();
+        (targets, dependents)
+    }
+}
+
+/// Whether a `draws_on` entry (exact id or `<prefix>.*`) matches `id`.
+fn entry_matches(entry: &str, id: &str) -> bool {
+    match entry.strip_suffix(".*") {
+        Some(prefix) => id
+            .strip_prefix(prefix)
+            .is_some_and(|rest| rest.starts_with('.')),
+        None => entry == id,
     }
 }
 
@@ -562,6 +707,142 @@ fn check_question(
             bad!(VariantEmpty);
         } else if !seen.insert(norm) {
             bad!(VariantDuplicate, text: v.text.clone());
+        }
+    }
+
+    if let Some(rank) = def.intake_rank {
+        if rank < 1 {
+            bad!(IntakeRankZero);
+        }
+        if !def.is_addressable() {
+            bad!(IntakeUnaddressable);
+        }
+        if def.default_policy.is_some() {
+            bad!(IntakeWithPolicy);
+        }
+        if def.optional {
+            bad!(IntakeOptional);
+        }
+    }
+
+    if !def.draws_on.is_empty() && !matches!(ty, AnswerType::Text | AnswerType::List) {
+        bad!(DrawsOnType);
+    }
+    let mut entries = BTreeSet::new();
+    for entry in &def.draws_on {
+        if !entries.insert(entry.as_str()) {
+            bad!(DrawsOnDuplicate, entry: entry.clone());
+        }
+    }
+
+    if !def.derive.is_empty() {
+        if !def.is_addressable() {
+            bad!(DeriveTargetUnaddressable);
+        } else if !ty.is_scalar() {
+            bad!(DeriveTargetNotScalar);
+        }
+    }
+}
+
+/// Rules that need every question's id: intake ranks, derive sources and
+/// draws_on targets.
+fn check_cross_references(
+    all: &[(String, Option<String>, QuestionDef)],
+    errs: &mut Vec<CatalogError>,
+) {
+    let by_id: BTreeMap<&str, &QuestionDef> =
+        all.iter().map(|(_, _, d)| (d.id.as_str(), d)).collect();
+    let mut ranks: BTreeMap<u32, &str> = BTreeMap::new();
+
+    for (file, _, def) in all {
+        macro_rules! bad {
+            ($v:ident $(, $k:ident : $val:expr)*) => {
+                errs.push(CatalogError::$v {
+                    file: file.clone(),
+                    id: def.id.clone()
+                    $(, $k: $val)*
+                })
+            };
+        }
+
+        // Rank 0 is reported by `check_question`; it still counts as taken.
+        if let Some(rank) = def.intake_rank {
+            match ranks.get(&rank) {
+                Some(other) => bad!(IntakeRankDuplicate, rank: rank, other: (*other).to_owned()),
+                None => {
+                    ranks.insert(rank, &def.id);
+                }
+            }
+        }
+
+        let mut seen_rules: Vec<(&str, &toml::Value)> = Vec::new();
+        for rule in &def.derive {
+            let from = rule.from.clone();
+            if rule.from == def.id {
+                bad!(DeriveSelf);
+                continue;
+            }
+            if seen_rules
+                .iter()
+                .any(|(f, e)| *f == rule.from && super::derive::same(e, &rule.equals))
+            {
+                bad!(DeriveDuplicate, from: from.clone(), equals: rule.equals.to_string());
+            }
+            seen_rules.push((&rule.from, &rule.equals));
+
+            let Some(source) = by_id.get(rule.from.as_str()) else {
+                bad!(DeriveSourceUnknown, from: from.clone());
+                continue;
+            };
+            if !source.is_addressable() {
+                bad!(DeriveSourceUnaddressable, from: from.clone());
+            } else if !matches!(
+                source.answer_type,
+                AnswerType::Bool | AnswerType::Enum | AnswerType::Number
+            ) {
+                bad!(DeriveSourceType, from: from.clone(), answer_type: source.answer_type);
+            } else if let Err(e) = validate_value(source, &rule.equals) {
+                bad!(DeriveEqualsInvalid, from: from.clone(), message: e.to_string());
+            }
+            if def.is_addressable()
+                && def.answer_type.is_scalar()
+                && let Err(e) = validate_value(def, &rule.value)
+            {
+                bad!(DeriveValueInvalid, from: from, message: e.to_string());
+            }
+        }
+
+        for entry in &def.draws_on {
+            if *entry == def.id {
+                bad!(DrawsOnSelf, entry: entry.clone());
+                continue;
+            }
+            // A prefix that happens to cover the question itself skips it.
+            let matched: Vec<&&QuestionDef> = by_id
+                .values()
+                .filter(|d| d.id != def.id && entry_matches(entry, &d.id))
+                .collect();
+            if matched.is_empty() {
+                bad!(DrawsOnNoMatch, entry: entry.clone());
+            }
+            for m in matched {
+                if matches!(
+                    m.sensitivity,
+                    Sensitivity::Legal
+                        | Sensitivity::Eeo
+                        | Sensitivity::Clearance
+                        | Sensitivity::Availability
+                        | Sensitivity::Attestation
+                        | Sensitivity::Prohibited
+                ) {
+                    bad!(
+                        DrawsOnForbidden,
+                        entry: entry.clone(),
+                        matched: m.id.clone(),
+                        sensitivity: m.sensitivity
+                    );
+                }
+            }
         }
     }
 }
@@ -1283,5 +1564,401 @@ mod tests {
             CatalogErrors(errs).to_string(),
             "legal.toml: legal.a: weight must be at least 1"
         );
+    }
+
+    /// legal.toml with a bool source `legal.src` plus `body`.
+    fn with_src(body: &str) -> String {
+        format!("{}{body}", q("legal.src", "C", "legal", "bool", ""))
+    }
+
+    fn rule_on(extra: &str) -> String {
+        with_src(&legal("t", extra))
+    }
+
+    #[test]
+    fn intake_rank_rules() {
+        rule!(
+            "legal.toml",
+            legal("a", "intake_rank = 1"),
+            legal("a", "intake_rank = 0"),
+            CatalogError::IntakeRankZero { .. }
+        );
+        rule!(
+            "legal.toml",
+            format!(
+                "{}{}",
+                legal("a", "intake_rank = 1"),
+                legal("b", "intake_rank = 2")
+            ),
+            format!(
+                "{}{}",
+                legal("a", "intake_rank = 1"),
+                legal("b", "intake_rank = 1")
+            ),
+            CatalogError::IntakeRankDuplicate { .. }
+        );
+        let errs = errors(
+            "legal.toml",
+            &format!(
+                "{}{}",
+                legal("a", "intake_rank = 1"),
+                legal("b", "intake_rank = 1")
+            ),
+        );
+        assert!(matches!(
+            &errs[..],
+            [CatalogError::IntakeRankDuplicate { id, other, rank: 1, .. }]
+                if id == "legal.b" && other == "legal.a"
+        ));
+        rule!(
+            "legal.toml",
+            legal("a", "intake_rank = 1"),
+            q("legal.a", "C", "attestation", "text", "intake_rank = 1"),
+            CatalogError::IntakeUnaddressable { .. }
+        );
+        rule!(
+            "legal.toml",
+            legal("a", "intake_rank = 1"),
+            legal("a", "intake_rank = 1\ndefault_policy = 'always_ask'"),
+            CatalogError::IntakeWithPolicy { .. }
+        );
+        rule!(
+            "legal.toml",
+            legal("a", "intake_rank = 1"),
+            legal("a", "intake_rank = 1\noptional = true"),
+            CatalogError::IntakeOptional { .. }
+        );
+    }
+
+    #[test]
+    fn intake_is_sorted_by_rank() {
+        let body = format!(
+            "{}{}{}",
+            legal("a", "intake_rank = 3"),
+            legal("b", "intake_rank = 1"),
+            legal("c", "")
+        );
+        let cat = parse1("legal.toml", &body).unwrap();
+        let ids: Vec<&str> = cat.intake().iter().map(|d| d.id.as_str()).collect();
+        assert_eq!(ids, ["legal.b", "legal.a"]);
+    }
+
+    const RULE: &str = "derive = [{ from = 'legal.src', equals = true, value = 'x' }]";
+
+    #[test]
+    fn derive_source_must_exist() {
+        rule!(
+            "legal.toml",
+            rule_on(RULE),
+            legal(
+                "t",
+                "derive = [{ from = 'legal.nope', equals = true, value = 'x' }]"
+            ),
+            CatalogError::DeriveSourceUnknown { .. }
+        );
+    }
+
+    #[test]
+    fn derive_source_must_be_addressable() {
+        let att = q("legal.src", "C", "attestation", "bool", "");
+        rule!(
+            "legal.toml",
+            rule_on(RULE),
+            format!("{att}{}", legal("t", RULE)),
+            CatalogError::DeriveSourceUnaddressable { .. }
+        );
+    }
+
+    #[test]
+    fn derive_source_is_not_self() {
+        rule!(
+            "legal.toml",
+            rule_on(RULE),
+            legal(
+                "t",
+                "derive = [{ from = 'legal.t', equals = true, value = 'x' }]"
+            ),
+            CatalogError::DeriveSelf { .. }
+        );
+    }
+
+    #[test]
+    fn derive_source_type() {
+        let text_src = q("legal.src", "C", "legal", "text", "");
+        rule!(
+            "legal.toml",
+            rule_on(RULE),
+            format!(
+                "{text_src}{}",
+                legal(
+                    "t",
+                    "derive = [{ from = 'legal.src', equals = 'a', value = 'x' }]"
+                )
+            ),
+            CatalogError::DeriveSourceType {
+                answer_type: AnswerType::Text,
+                ..
+            }
+        );
+    }
+
+    #[test]
+    fn derive_equals_must_fit_source() {
+        rule!(
+            "legal.toml",
+            rule_on(RULE),
+            rule_on("derive = [{ from = 'legal.src', equals = 'yes', value = 'x' }]"),
+            CatalogError::DeriveEqualsInvalid { .. }
+        );
+    }
+
+    #[test]
+    fn derive_value_must_fit_target() {
+        let bool_t = |v: &str| {
+            with_src(&q(
+                "legal.t",
+                "C",
+                "legal",
+                "bool",
+                &format!("derive = [{{ from = 'legal.src', equals = true, value = {v} }}]"),
+            ))
+        };
+        rule!(
+            "legal.toml",
+            bool_t("false"),
+            bool_t("'x'"),
+            CatalogError::DeriveValueInvalid { .. }
+        );
+    }
+
+    #[test]
+    fn derive_target_must_be_addressable_and_scalar() {
+        let t = |sens: &str, ty: &str| {
+            with_src(&q(
+                "legal.t",
+                "C",
+                sens,
+                ty,
+                "derive = [{ from = 'legal.src', equals = true, value = true }]",
+            ))
+        };
+        rule!(
+            "legal.toml",
+            t("legal", "bool"),
+            t("attestation", "bool"),
+            CatalogError::DeriveTargetUnaddressable { .. }
+        );
+        rule!(
+            "legal.toml",
+            t("legal", "bool"),
+            t("legal", "list"),
+            CatalogError::DeriveTargetNotScalar { .. }
+        );
+    }
+
+    #[test]
+    fn derive_duplicate_rule() {
+        let two = |second: &str| {
+            rule_on(&format!(
+                "derive = [{{ from = 'legal.src', equals = true, value = 'x' }}, \
+                 {{ from = 'legal.src', equals = {second}, value = 'y' }}]"
+            ))
+        };
+        rule!(
+            "legal.toml",
+            two("false"),
+            two("true"),
+            CatalogError::DeriveDuplicate { .. }
+        );
+    }
+
+    #[test]
+    fn derive_rule_rejects_unknown_keys() {
+        let errs = errors(
+            "legal.toml",
+            &rule_on("derive = [{ from = 'legal.src', equals = true, value = 'x', extra = 1 }]"),
+        );
+        assert!(matches!(&errs[..], [CatalogError::Toml { .. }]));
+    }
+
+    #[test]
+    fn draws_on_only_text_or_list() {
+        let t = |ty: &str| {
+            format!(
+                "{}{}",
+                q("profile.f", "A", "contact", "text", ""),
+                q("profile.t", "A", "contact", ty, "draws_on = ['profile.f']")
+            )
+        };
+        rule!(
+            "profile.toml",
+            t("text"),
+            t("bool"),
+            CatalogError::DrawsOnType { .. }
+        );
+        parse1("profile.toml", &t("list")).unwrap();
+    }
+
+    #[test]
+    fn draws_on_must_match() {
+        let pf = q("profile.f", "A", "contact", "text", "");
+        let t = |entry: &str| {
+            format!(
+                "{pf}{}",
+                q(
+                    "profile.t",
+                    "A",
+                    "contact",
+                    "text",
+                    &format!("draws_on = ['{entry}']")
+                )
+            )
+        };
+        rule!(
+            "profile.toml",
+            t("profile.f"),
+            t("profile.g"),
+            CatalogError::DrawsOnNoMatch { .. }
+        );
+        rule!(
+            "profile.toml",
+            t("profile.*"),
+            t("nope.*"),
+            CatalogError::DrawsOnNoMatch { .. }
+        );
+        // A prefix matches whole segments only.
+        rule!(
+            "profile.toml",
+            t("profile.*"),
+            t("prof.*"),
+            CatalogError::DrawsOnNoMatch { .. }
+        );
+    }
+
+    #[test]
+    fn draws_on_refuses_sensitive_matches() {
+        let t = |sens: &str, entry: &str| {
+            format!(
+                "{}{}",
+                q("profile.f", "A", sens, "text", ""),
+                q(
+                    "profile.t",
+                    "A",
+                    "contact",
+                    "text",
+                    &format!("draws_on = ['{entry}']")
+                )
+            )
+        };
+        for sens in ["contact", "numeric", "preference", "free_text"] {
+            parse1("profile.toml", &t(sens, "profile.f")).unwrap();
+        }
+        for sens in [
+            "legal",
+            "eeo",
+            "clearance",
+            "availability",
+            "attestation",
+            "prohibited",
+        ] {
+            // Exact entry and prefix entry both reach the question.
+            for entry in ["profile.f", "profile.*"] {
+                let errs = errors("profile.toml", &t(sens, entry));
+                assert!(
+                    errs.iter().any(|e| matches!(
+                        e,
+                        CatalogError::DrawsOnForbidden { matched, .. } if matched == "profile.f"
+                    )),
+                    "{sens} {entry}: {errs:#?}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn draws_on_not_self_and_not_duplicate() {
+        let pf = q("profile.f", "A", "contact", "text", "");
+        let t = |extra: &str| format!("{pf}{}", q("profile.t", "A", "contact", "text", extra));
+        rule!(
+            "profile.toml",
+            t("draws_on = ['profile.f']"),
+            t("draws_on = ['profile.t']"),
+            CatalogError::DrawsOnSelf { .. }
+        );
+        rule!(
+            "profile.toml",
+            t("draws_on = ['profile.f']"),
+            t("draws_on = ['profile.f', 'profile.f']"),
+            CatalogError::DrawsOnDuplicate { .. }
+        );
+    }
+
+    #[test]
+    fn draws_on_resolution_and_fan_out() {
+        let body = format!(
+            "{}{}{}{}{}",
+            q("profile.skills.rust", "A", "contact", "text", ""),
+            q("profile.skills.go", "A", "contact", "text", ""),
+            q("profile.skillset", "A", "contact", "text", ""),
+            q(
+                "profile.summary",
+                "A",
+                "contact",
+                "text",
+                "draws_on = ['profile.skills.*', 'profile.skills.go', 'profile.skillset']"
+            ),
+            q(
+                "profile.bio",
+                "A",
+                "contact",
+                "text",
+                "draws_on = ['profile.skills.*']"
+            )
+        );
+        let cat = parse1("profile.toml", &body).unwrap();
+        let ids = |v: Vec<&QuestionDef>| v.iter().map(|d| d.id.clone()).collect::<Vec<_>>();
+        assert_eq!(
+            ids(cat.draws_on("profile.summary")),
+            [
+                "profile.skills.go",
+                "profile.skills.rust",
+                "profile.skillset"
+            ]
+        );
+        assert_eq!(
+            ids(cat.draws_on("profile.bio")),
+            ["profile.skills.go", "profile.skills.rust"]
+        );
+        assert!(cat.draws_on("profile.skillset").is_empty());
+        assert!(cat.draws_on("profile.nope").is_empty());
+        assert_eq!(cat.fan_out("profile.skills.go"), (0, 2));
+        assert_eq!(cat.fan_out("profile.skillset"), (0, 1));
+        assert_eq!(cat.fan_out("profile.summary"), (0, 0));
+    }
+
+    #[test]
+    fn fan_out_counts_derive_targets() {
+        let body = format!(
+            "{}{}{}{}",
+            q("legal.src", "C", "legal", "bool", ""),
+            q(
+                "legal.a",
+                "C",
+                "legal",
+                "bool",
+                "derive = [{ from = 'legal.src', equals = true, value = true }]"
+            ),
+            q(
+                "legal.b",
+                "C",
+                "legal",
+                "bool",
+                "derive = [{ from = 'legal.src', equals = true, value = true }, { from = 'legal.src', equals = false, value = false }]"
+            ),
+            q("legal.c", "C", "legal", "bool", "")
+        );
+        let cat = parse1("legal.toml", &body).unwrap();
+        assert_eq!(cat.fan_out("legal.src"), (2, 0));
+        assert_eq!(cat.fan_out("legal.c"), (0, 0));
     }
 }

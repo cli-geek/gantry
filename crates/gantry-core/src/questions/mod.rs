@@ -17,11 +17,13 @@ use crate::ats::Ats;
 
 pub mod catalog;
 pub mod coverage;
+pub mod derive;
 pub mod options;
 pub mod value;
 
 pub use catalog::{Catalog, CatalogError, CatalogErrors};
 pub use coverage::{AnswerState, CoverageReport, MissingEntry, Stored, Tally, coverage, state_of};
+pub use derive::{Derived, derive};
 pub use options::{OptionError, Resolved, resolve_option};
 pub use value::{ValueError, ValueWarning, validate_value};
 
@@ -143,7 +145,24 @@ pub struct Variant {
     pub note: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+/// "If the verified answer to `from` equals `equals`, suggest `value`."
+/// Only scalar comparable sources (bool, enum, number) are allowed.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct DeriveRule {
+    pub from: String,
+    #[schemars(schema_with = "any_value_schema")]
+    pub equals: toml::Value,
+    #[schemars(schema_with = "any_value_schema")]
+    pub value: toml::Value,
+}
+
+/// Any JSON value; `toml::Value` has no schema of its own.
+fn any_value_schema(_: &mut schemars::SchemaGenerator) -> schemars::Schema {
+    true.into()
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct QuestionDef {
     pub id: String,
@@ -172,6 +191,16 @@ pub struct QuestionDef {
     pub optional: bool,
     #[serde(default = "default_weight")]
     pub weight: u32,
+    /// Position in the short intake set; lower is asked earlier.
+    #[serde(default)]
+    pub intake_rank: Option<u32>,
+    /// Suggestions from other verified answers, first matching rule wins.
+    #[serde(default)]
+    pub derive: Vec<DeriveRule>,
+    /// Facts a free-text answer may be composed from: exact question ids or
+    /// `<prefix>.*` for every id starting with `<prefix>.`.
+    #[serde(default)]
+    pub draws_on: Vec<String>,
 }
 
 fn default_weight() -> u32 {
