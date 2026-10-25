@@ -1,0 +1,41 @@
+{
+  "action": "value",
+  "derived": [
+    {
+      "from": "legal.authorization.us_citizen",
+      "id": "legal.authorization.authorized_us",
+      "redacted": false,
+      "value": true
+    },
+    {
+      "from": "legal.authorization.us_citizen",
+      "id": "legal.authorization.require_sponsorship_future",
+      "redacted": false,
+      "value": false
+    },
+    {
+      "from": "legal.authorization.us_citizen",
+      "id": "legal.authorization.require_sponsorship_now",
+      "redacted": false,
+      "value": false
+    },
+    {
+      "from": "legal.authorization.us_citizen",
+      "id": "legal.authorization.us_permanent_resident",
+      "redacted": false,
+      "value": false
+    },
+    {
+      "from": "legal.authorization.us_citizen",
+      "id": "legal.authorization.us_person",
+      "redacted": false,
+      "value": true
+    }
+  ],
+  "id": "legal.authorization.us_citizen",
+  "policy_cleared": false,
+  "redacted": false,
+  "value": true,
+  "verified": true,
+  "warnings": []
+}
