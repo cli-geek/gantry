@@ -27,6 +27,9 @@ pub enum AnswerState {
     AlwaysAsk,
     NotApplicable,
     Missing,
+    /// Nothing stored and no policy, but at least one `draws_on` source is
+    /// answered, so M3 can compose it; counts as covered.
+    Composable,
 }
 
 /// What is stored for a question, without the value itself.
@@ -87,7 +90,8 @@ pub struct Tally {
     pub always_ask: u32,
     pub not_applicable: u32,
     pub missing: u32,
-    /// Answered + declined + not applicable.
+    pub composable: u32,
+    /// Answered + declined + not applicable + composable.
     pub covered: u32,
     /// All questions except always-ask ones.
     pub denominator: u32,
@@ -104,7 +108,10 @@ impl Tally {
         let w = u64::from(weight);
         let covered = matches!(
             state,
-            AnswerState::Answered | AnswerState::Declined | AnswerState::NotApplicable
+            AnswerState::Answered
+                | AnswerState::Declined
+                | AnswerState::NotApplicable
+                | AnswerState::Composable
         );
         match state {
             AnswerState::Answered => self.answered += 1,
@@ -113,6 +120,7 @@ impl Tally {
             AnswerState::AlwaysAsk => self.always_ask += 1,
             AnswerState::NotApplicable => self.not_applicable += 1,
             AnswerState::Missing => self.missing += 1,
+            AnswerState::Composable => self.composable += 1,
         }
         if covered {
             self.covered += 1;
@@ -157,7 +165,8 @@ pub struct CoverageReport {
 }
 
 /// Roll `states` up over the questions that apply to `occupations`. Ids
-/// absent from `states` are [`AnswerState::Missing`].
+/// absent from `states` are [`AnswerState::Missing`], or
+/// [`AnswerState::Composable`] when [`composable`] says so.
 pub fn coverage(
     catalog: &Catalog,
     occupations: &[String],
@@ -176,7 +185,10 @@ pub fn coverage(
         if pack.is_some_and(|p| !occupations.iter().any(|o| o == p)) {
             continue;
         }
-        let state = states.get(&def.id).copied().unwrap_or(AnswerState::Missing);
+        let mut state = states.get(&def.id).copied().unwrap_or(AnswerState::Missing);
+        if state == AnswerState::Missing && composable(catalog, def, states) {
+            state = AnswerState::Composable;
+        }
         overall.add(state, def.weight);
         sections
             .entry(def.section)
@@ -209,6 +221,21 @@ pub fn coverage(
         packs,
         top_missing: open,
     }
+}
+
+/// Whether `def` can be composed: it has `draws_on` and at least one of
+/// the questions those entries match is answered (verified). The caller
+/// applies this only to a missing question.
+pub fn composable(
+    catalog: &Catalog,
+    def: &QuestionDef,
+    states: &BTreeMap<String, AnswerState>,
+) -> bool {
+    !def.draws_on.is_empty()
+        && catalog
+            .draws_on(&def.id)
+            .iter()
+            .any(|src| states.get(&src.id) == Some(&AnswerState::Answered))
 }
 
 #[cfg(test)]
@@ -505,6 +532,77 @@ mod tests {
         );
         assert_eq!(r.top_missing[0].weight, 3);
         assert_eq!(r.top_missing[0].section, Section::C);
+    }
+
+    /// `profile.bio` draws on `profile.skills.*`; `profile.plain` has no
+    /// `draws_on`.
+    fn composing() -> Catalog {
+        let body = [
+            q("profile.skills.go", "B", "contact", ""),
+            q("profile.skills.rust", "B", "contact", ""),
+            q(
+                "profile.bio",
+                "B",
+                "free_text",
+                "weight = 2\ndraws_on = ['profile.skills.*']",
+            ),
+            q("profile.plain", "B", "free_text", ""),
+        ]
+        .concat();
+        Catalog::parse(&[("profile.toml", &body)]).unwrap()
+    }
+
+    #[test]
+    fn composable_needs_an_answered_source() {
+        let cat = composing();
+        let bio = cat.get("profile.bio").unwrap();
+        let plain = cat.get("profile.plain").unwrap();
+        assert!(!composable(&cat, bio, &BTreeMap::new()));
+        for unverified in [
+            AnswerState::Suggested,
+            AnswerState::Declined,
+            AnswerState::NotApplicable,
+            AnswerState::Missing,
+        ] {
+            let st = states(&[("profile.skills.go", unverified)]);
+            assert!(!composable(&cat, bio, &st), "{unverified:?}");
+        }
+        let st = states(&[("profile.skills.rust", AnswerState::Answered)]);
+        assert!(composable(&cat, bio, &st));
+        assert!(!composable(&cat, plain, &st));
+    }
+
+    #[test]
+    fn composable_is_covered_and_tallied_separately() {
+        let cat = composing();
+        let st = states(&[("profile.skills.go", AnswerState::Answered)]);
+        let r = coverage(&cat, &[], &st);
+        let t = &r.overall;
+        assert_eq!((t.answered, t.composable, t.missing), (1, 1, 2));
+        assert_eq!((t.covered, t.denominator), (2, 4));
+        assert_eq!((t.weighted_covered, t.weighted_denominator), (3, 5));
+        assert_eq!(r.sections[&Section::B].composable, 1);
+        assert_eq!(r.packs["core"].composable, 1);
+        let ids: Vec<_> = r.top_missing.iter().map(|m| m.id.as_str()).collect();
+        assert_eq!(ids, ["profile.plain", "profile.skills.rust"]);
+    }
+
+    #[test]
+    fn stored_or_policy_state_beats_composable() {
+        let cat = composing();
+        for own in [
+            AnswerState::Suggested,
+            AnswerState::Declined,
+            AnswerState::AlwaysAsk,
+            AnswerState::Answered,
+        ] {
+            let st = states(&[
+                ("profile.skills.go", AnswerState::Answered),
+                ("profile.bio", own),
+            ]);
+            let t = coverage(&cat, &[], &st).overall;
+            assert_eq!(t.composable, 0, "{own:?}");
+        }
     }
 
     #[test]

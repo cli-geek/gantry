@@ -22,7 +22,9 @@ pub mod options;
 pub mod value;
 
 pub use catalog::{Catalog, CatalogError, CatalogErrors};
-pub use coverage::{AnswerState, CoverageReport, MissingEntry, Stored, Tally, coverage, state_of};
+pub use coverage::{
+    AnswerState, CoverageReport, MissingEntry, Stored, Tally, composable, coverage, state_of,
+};
 pub use derive::{Derived, derive};
 pub use options::{OptionError, Resolved, resolve_option};
 pub use value::{ValueError, ValueWarning, validate_value};
