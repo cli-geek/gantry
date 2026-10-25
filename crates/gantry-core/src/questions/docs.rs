@@ -5,22 +5,26 @@
 
 use super::{AnswerType, Catalog, QuestionDef, Stored};
 
+/// The value at `def`'s address in `doc` (the parsed file named by the
+/// first segment of `def.id`): a scalar's item table or a list's array.
+fn leaf<'a>(doc: &'a toml::Table, def: &QuestionDef) -> Option<&'a toml::Value> {
+    let mut segments = def.id.split('.').skip(1).peekable();
+    let mut table = doc;
+    while let Some(seg) = segments.next() {
+        let value = table.get(seg)?;
+        if segments.peek().is_none() {
+            return Some(value);
+        }
+        table = value.as_table()?;
+    }
+    None
+}
+
 /// What `doc` (the parsed file named by the first segment of `def.id`)
 /// stores for `def`, without the value itself. Anything absent or
 /// malformed is `None`.
 pub fn stored_at(doc: &toml::Table, def: &QuestionDef) -> Option<Stored> {
-    let mut segments = def.id.split('.').skip(1).peekable();
-    let mut table = doc;
-    let mut leaf = None;
-    while let Some(seg) = segments.next() {
-        let value = table.get(seg)?;
-        if segments.peek().is_none() {
-            leaf = Some(value);
-        } else {
-            table = value.as_table()?;
-        }
-    }
-    let leaf = leaf?;
+    let leaf = leaf(doc, def)?;
     if def.answer_type == AnswerType::List {
         let rows = leaf.as_array()?;
         let mut verified = 0;
@@ -36,6 +40,30 @@ pub fn stored_at(doc: &toml::Table, def: &QuestionDef) -> Option<Stored> {
     } else {
         let verified = leaf.as_table()?.get("verified")?.as_bool()?;
         Some(Stored::Scalar { verified })
+    }
+}
+
+/// The stored `value` of `def` in `doc` and whether it is verified. A list
+/// yields the array of its entries' values, verified when every entry is
+/// (an empty list is verified). Anything absent or malformed, including an
+/// item without a `value`, is `None`.
+pub fn value_at(doc: &toml::Table, def: &QuestionDef) -> Option<(toml::Value, bool)> {
+    let leaf = leaf(doc, def)?;
+    let entry = |item: &toml::Value| {
+        let item = item.as_table()?;
+        Some((item.get("value")?.clone(), item.get("verified")?.as_bool()?))
+    };
+    if def.answer_type == AnswerType::List {
+        let mut values = Vec::new();
+        let mut all_verified = true;
+        for row in leaf.as_array()? {
+            let (value, verified) = entry(row)?;
+            values.push(value);
+            all_verified &= verified;
+        }
+        Some((toml::Value::Array(values), all_verified))
+    } else {
+        entry(leaf)
     }
 }
 
@@ -132,6 +160,42 @@ mod tests {
         assert_eq!(stored_at(&doc("licenses = [1]"), &q), None);
         assert_eq!(stored_at(&doc("[licenses]\nverified = true"), &q), None);
         assert_eq!(stored_at(&doc(""), &q), None);
+    }
+
+    #[test]
+    fn value_at_reads_scalar_and_list() {
+        let q = def("legal.authorization.us_citizen", "bool");
+        let d = doc("[authorization.us_citizen]\nvalue = true\nverified = false\n");
+        assert_eq!(value_at(&d, &q), Some((toml::Value::Boolean(true), false)));
+        let l = def("experience.licenses", "list");
+        let d = doc("[[licenses]]\nvalue = 'a'\nverified = true\n\
+             [[licenses]]\nvalue = 'b'\nverified = true\n");
+        let want = toml::Value::Array(vec!["a".into(), "b".into()]);
+        assert_eq!(value_at(&d, &l), Some((want.clone(), true)));
+        let d = doc("[[licenses]]\nvalue = 'a'\nverified = true\n\
+             [[licenses]]\nvalue = 'b'\nverified = false\n");
+        assert_eq!(value_at(&d, &l), Some((want, false)));
+        assert_eq!(
+            value_at(&doc("licenses = []"), &l),
+            Some((toml::Value::Array(vec![]), true))
+        );
+    }
+
+    #[test]
+    fn value_at_absent_or_malformed_is_none() {
+        let q = def("legal.authorization.us_citizen", "bool");
+        assert_eq!(value_at(&doc(""), &q), None);
+        assert_eq!(
+            value_at(&doc("[authorization.us_citizen]\nverified = true"), &q),
+            None
+        );
+        assert_eq!(
+            value_at(&doc("[authorization.us_citizen]\nvalue = true"), &q),
+            None
+        );
+        let l = def("experience.licenses", "list");
+        assert_eq!(value_at(&doc("[[licenses]]\nverified = true"), &l), None);
+        assert_eq!(value_at(&doc("licenses = [1]"), &l), None);
     }
 
     fn catalog() -> Catalog {

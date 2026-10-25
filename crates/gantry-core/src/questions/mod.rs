@@ -27,7 +27,7 @@ pub use coverage::{
     AnswerState, CoverageReport, MissingEntry, Stored, Tally, composable, coverage, state_of,
 };
 pub use derive::{Derived, derive};
-pub use docs::{stored_at, unknown_paths};
+pub use docs::{stored_at, unknown_paths, value_at};
 pub use options::{OptionError, Resolved, resolve_option};
 pub use value::{ValueError, ValueWarning, validate_value};
 
