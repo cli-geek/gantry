@@ -260,6 +260,23 @@ fn snapshot_sees_verified_values_only() {
 }
 
 #[test]
+fn license_records_load_through_the_m1_snapshot() {
+    let f = Fixture::new();
+    f.set_with(
+        "experience.licenses",
+        SetAction::ValueJson(json!([
+            { "name": "Registered Nurse", "issuer": "Ohio Board of Nursing", "expires": "2028-01-31" }
+        ])),
+    )
+    .unwrap();
+    let licenses = load_snapshot(&f.config).unwrap().banks.experience.licenses;
+    assert_eq!(licenses.len(), 1);
+    assert_eq!(licenses[0].value.name, "Registered Nurse");
+    assert_eq!(licenses[0].value.expires.as_deref(), Some("2028-01-31"));
+    assert!(licenses[0].verified);
+}
+
+#[test]
 fn redaction_follows_sensitivity() {
     let f = Fixture::new();
     f.set("legal.authorization.us_citizen", "yes");

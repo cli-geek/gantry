@@ -1,6 +1,10 @@
 [[licenses]]
-id = "g-license-rdh"
-value = "Registered Dental Hygienist (Texas)"
+id = "licenses-1"
 verified = true
 created_at = "2026-09-01T00:00:00Z"
 updated_at = "2026-09-01T00:00:00Z"
+
+[licenses.value]
+name = "Registered Dental Hygienist"
+issuer = "Texas State Board of Dental Examiners"
+region = "Texas"

@@ -93,7 +93,23 @@ pub struct Clearance {
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ExperienceBank {
-    pub licenses: Vec<Item<String>>,
+    pub licenses: Vec<Item<License>>,
+}
+
+/// One `experience.licenses` entry, the record the question catalog
+/// defines. Dates are `"YYYY-MM-DD"` strings, as everywhere in the bank.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct License {
+    pub name: String,
+    pub issuer: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub number: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub issued: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expires: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq)]
