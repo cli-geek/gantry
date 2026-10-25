@@ -1,0 +1,229 @@
+# Sections J and K: motivation, fit, writing voice and policy (plan 7.3).
+# The EEO autofill flag lives in eeo.toml. "Always ask me" per question is a
+# policy row in answers.toml, not a question. Toggles are optional: unset
+# means the built-in default applies.
+
+[[question]]
+id = "motivation.cover_letter_stance"
+section = "J"
+label = "Default cover-letter stance"
+sensitivity = "preference"
+answer_type = "enum"
+options = ["never", "when_required", "when_optional"]
+intake_rank = 24
+weight = 2
+[question.options_normalization]
+never = ["Never", "No cover letters"]
+when_required = ["Only when required", "When required"]
+when_optional = ["When optional", "Whenever the form allows one"]
+
+[[question]]
+id = "motivation.looking_now"
+section = "J"
+label = "Why you are looking for a new role now"
+sensitivity = "free_text"
+answer_type = "text"
+intake_rank = 25
+
+[[question]]
+id = "motivation.next_role"
+section = "J"
+label = "What you want in your next role"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "motivation.goals.one_year"
+section = "J"
+label = "Career goal: one year"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "motivation.goals.three_years"
+section = "J"
+label = "Career goal: three years"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "motivation.goals.five_years"
+section = "J"
+label = "Career goal: five years"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "motivation.domains"
+section = "J"
+label = "Kinds of work and employers that interest you, and why"
+sensitivity = "free_text"
+answer_type = "list"
+intake_rank = 26
+fields = [
+  { name = "domain", label = "Domain or kind of employer", answer_type = "text" },
+  { name = "why", label = "Why it interests you", answer_type = "text" },
+]
+
+[[question]]
+id = "motivation.team_style"
+section = "J"
+label = "Team and work-style preferences"
+sensitivity = "preference"
+answer_type = "text"
+
+[[question]]
+id = "motivation.manager_values"
+section = "J"
+label = "What you value in a manager"
+sensitivity = "preference"
+answer_type = "text"
+
+[[question]]
+id = "motivation.values"
+section = "J"
+label = "Your values"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "motivation.deal_breakers"
+section = "J"
+label = "Your deal-breakers"
+sensitivity = "preference"
+answer_type = "text"
+
+[[question]]
+id = "motivation.bio_short"
+section = "J"
+label = "Short bio, about 50 words, in your own words"
+sensitivity = "free_text"
+answer_type = "text"
+intake_rank = 27
+
+[[question]]
+id = "motivation.bio_150"
+section = "J"
+label = "Bio, about 150 words"
+sensitivity = "free_text"
+answer_type = "text"
+draws_on = [
+  "motivation.bio_short",
+  "experience.total_years",
+  "stories.proudest_work",
+]
+
+[[question]]
+id = "motivation.bio_300"
+section = "J"
+label = "Bio, about 300 words"
+sensitivity = "free_text"
+answer_type = "text"
+draws_on = [
+  "motivation.bio_short",
+  "experience.total_years",
+  "stories.proudest_work",
+]
+
+[[question]]
+id = "motivation.why_company"
+section = "J"
+label = "Why do you want to work at this company?"
+sensitivity = "free_text"
+answer_type = "text"
+draws_on = [
+  "motivation.domains",
+  "motivation.looking_now",
+  "motivation.values",
+]
+variants = [
+  { text = "Why do you want to work at Discord?", ats = "greenhouse" },
+  { text = "Why do you want to join Figma?", ats = "greenhouse" },
+]
+
+[[question]]
+id = "motivation.why_role"
+section = "J"
+label = "Why are you interested in this role?"
+sensitivity = "free_text"
+answer_type = "text"
+draws_on = [
+  "motivation.looking_now",
+  "motivation.goals.*",
+  "stories.proudest_work",
+]
+
+[[question]]
+id = "motivation.hobbies"
+section = "J"
+label = "Hobbies or a fun fact"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "motivation.voice.writing_samples"
+section = "K"
+label = "Writing samples, two or three paragraphs each"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "title", label = "Short title", answer_type = "text" },
+  { name = "text", label = "The sample, in your own words", answer_type = "text" },
+]
+
+[[question]]
+id = "motivation.voice.banned_phrases"
+section = "K"
+label = "Phrases drafts must never use (added to the defaults)"
+sensitivity = "preference"
+answer_type = "list"
+optional = true
+
+[[question]]
+id = "motivation.voice.tone"
+section = "K"
+label = "Tone for drafts"
+sensitivity = "preference"
+answer_type = "enum"
+options = ["plain", "warm", "formal"]
+[question.options_normalization]
+plain = ["Plain"]
+warm = ["Warm"]
+formal = ["Formal"]
+
+[[question]]
+id = "motivation.voice.max_lengths"
+section = "K"
+label = "Maximum length per field type"
+sensitivity = "preference"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "field_type", label = "Field type (for example short answer, essay)", answer_type = "text" },
+  { name = "max_chars", label = "Maximum characters", answer_type = "number" },
+]
+
+[[question]]
+id = "motivation.policy.clearance_autofill"
+section = "K"
+label = "Fill clearance answers automatically"
+sensitivity = "preference"
+answer_type = "bool"
+optional = true
+
+[[question]]
+id = "motivation.policy.drafts_allowed"
+section = "K"
+label = "Allow drafted answers at all"
+sensitivity = "preference"
+answer_type = "bool"
+optional = true
+
+[[question]]
+id = "motivation.policy.drafts_cover_letters"
+section = "K"
+label = "Allow drafted cover letters"
+sensitivity = "preference"
+answer_type = "bool"
+optional = true

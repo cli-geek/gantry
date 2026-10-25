@@ -1,0 +1,42 @@
+# Section I: approach notes, core prompts for every user (plan 7.3).
+# Occupation prompts live in packs/. Drafts may only rephrase these answers.
+
+[[question]]
+id = "approach.organize_work"
+section = "I"
+label = "How do you organize your work?"
+sensitivity = "free_text"
+answer_type = "text"
+draws_on = [
+  "stories.*",
+]
+
+[[question]]
+id = "approach.learn_new_role"
+section = "I"
+label = "How do you learn a new role?"
+sensitivity = "free_text"
+answer_type = "text"
+draws_on = [
+  "stories.*",
+]
+
+[[question]]
+id = "approach.mistake_after_the_fact"
+section = "I"
+label = "What do you do when you notice a mistake after the fact?"
+sensitivity = "free_text"
+answer_type = "text"
+draws_on = [
+  "stories.*",
+]
+
+[[question]]
+id = "approach.communicate_problem_upward"
+section = "I"
+label = "How do you communicate a problem upward?"
+sensitivity = "free_text"
+answer_type = "text"
+draws_on = [
+  "stories.*",
+]

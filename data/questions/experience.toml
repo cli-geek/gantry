@@ -1,0 +1,242 @@
+# Section G: experience and evidence bank (plan 7.3). Core file, no pack header.
+# Records are `list` questions with inline fields. Pay history and license
+# discipline default to always_ask.
+
+[[question]]
+id = "experience.total_years"
+section = "G"
+label = "Total years of professional experience"
+sensitivity = "numeric"
+answer_type = "number"
+intake_rank = 23
+
+[[question]]
+id = "experience.jobs"
+section = "G"
+label = "Experiences (jobs, internships, volunteer, military, research, freelance)"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "organization", label = "Organization", answer_type = "text" },
+  { name = "title", label = "Title or role", answer_type = "text" },
+  { name = "start_date", label = "Start date", answer_type = "date" },
+  { name = "end_date", label = "End date (blank if current)", answer_type = "date", optional = true },
+  { name = "location", label = "Location", answer_type = "text", optional = true },
+  { name = "employment_type", label = "Employment type", answer_type = "enum", options = ["full_time", "part_time", "internship", "apprenticeship", "volunteer", "military", "research", "freelance", "caregiving", "leadership"] },
+  { name = "hours_per_week", label = "Hours per week", answer_type = "number", optional = true },
+  { name = "team_size", label = "Team size", answer_type = "number", optional = true },
+  { name = "confidentiality", label = "Confidentiality constraints on describing the work", answer_type = "text", optional = true },
+]
+variants = [
+  { text = "Work Experience: Current/Previous Employer", ats = "greenhouse", note = "Employer name only; fills the organization field of the current or latest entry." },
+]
+
+[[question]]
+id = "experience.supervisors"
+section = "G"
+label = "Supervisor for each experience"
+sensitivity = "contact"
+answer_type = "list"
+fields = [
+  { name = "experience", label = "Experience (employer and title)", answer_type = "text" },
+  { name = "name", label = "Supervisor name", answer_type = "text" },
+  { name = "phone", label = "Supervisor phone", answer_type = "text", optional = true },
+  { name = "may_contact", label = "May a prospective employer contact them", answer_type = "bool" },
+]
+
+[[question]]
+id = "experience.exit_reasons"
+section = "G"
+label = "Reason for leaving each experience"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "experience", label = "Experience (employer and title)", answer_type = "text" },
+  { name = "reason", label = "Reason for leaving, one line", answer_type = "text" },
+]
+
+[[question]]
+id = "experience.pay_history"
+section = "G"
+label = "Starting and ending pay for each experience"
+sensitivity = "numeric"
+answer_type = "list"
+default_policy = "always_ask"
+fields = [
+  { name = "experience", label = "Experience (employer and title)", answer_type = "text" },
+  { name = "starting_pay", label = "Starting pay", answer_type = "number" },
+  { name = "ending_pay", label = "Ending pay", answer_type = "number" },
+  { name = "period", label = "Pay period", answer_type = "enum", options = ["hourly", "annual"] },
+]
+
+[[question]]
+id = "experience.bullets"
+section = "G"
+label = "Resume bullets you wrote or approved"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "experience", label = "Experience or project this belongs to", answer_type = "text" },
+  { name = "text", label = "Bullet text, verbatim", answer_type = "text" },
+  { name = "tags", label = "Skills or tags", answer_type = "text", optional = true },
+  { name = "metric", label = "Metric", answer_type = "text", optional = true },
+  { name = "provenance", label = "Where the metric comes from", answer_type = "text", optional = true },
+  { name = "public_safe", label = "Safe to show publicly", answer_type = "bool" },
+]
+
+[[question]]
+id = "experience.projects"
+section = "G"
+label = "Projects and portfolio items"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "name", label = "Project name", answer_type = "text" },
+  { name = "start_date", label = "Start date", answer_type = "date", optional = true },
+  { name = "end_date", label = "End date", answer_type = "date", optional = true },
+  { name = "team", label = "Solo or team", answer_type = "enum", options = ["solo", "team"] },
+  { name = "team_size", label = "Team size", answer_type = "number", optional = true },
+  { name = "contribution", label = "Your personal contribution", answer_type = "text" },
+  { name = "tools", label = "Tools used", answer_type = "text", optional = true },
+  { name = "link", label = "Link", answer_type = "text", optional = true },
+  { name = "status", label = "Status", answer_type = "enum", options = ["active", "shipped", "archived", "abandoned"] },
+]
+
+[[question]]
+id = "experience.skills"
+section = "G"
+label = "Skills with self-rated proficiency"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "name", label = "Skill", answer_type = "text" },
+  { name = "proficiency", label = "Proficiency", answer_type = "enum", options = ["used", "comfortable", "strong"] },
+  { name = "years", label = "Years of use", answer_type = "number", optional = true },
+  { name = "last_used", label = "Last used", answer_type = "date", optional = true },
+  { name = "evidence", label = "Linked experience or project", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "experience.skill_years"
+section = "G"
+label = "Years of experience with a specific skill (overrides the computed value)"
+sensitivity = "numeric"
+answer_type = "list"
+fields = [
+  { name = "skill", label = "Skill", answer_type = "text" },
+  { name = "years", label = "Years", answer_type = "number" },
+  { name = "note", label = "Basis for the number", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "experience.months.full_time"
+section = "G"
+label = "Months of full-time experience"
+sensitivity = "numeric"
+answer_type = "number"
+
+[[question]]
+id = "experience.months.part_time"
+section = "G"
+label = "Months of part-time experience"
+sensitivity = "numeric"
+answer_type = "number"
+
+[[question]]
+id = "experience.months.internship"
+section = "G"
+label = "Months of internship experience"
+sensitivity = "numeric"
+answer_type = "number"
+
+[[question]]
+id = "experience.licenses"
+section = "G"
+label = "Licenses and certifications"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "name", label = "License or certification", answer_type = "text" },
+  { name = "issuer", label = "Issuer", answer_type = "text" },
+  { name = "number", label = "Number", answer_type = "text", optional = true },
+  { name = "region", label = "Issuing state or region", answer_type = "text", optional = true },
+  { name = "issued", label = "Date issued", answer_type = "date", optional = true },
+  { name = "expires", label = "Expiry date", answer_type = "date", optional = true },
+]
+
+[[question]]
+id = "experience.license_discipline"
+section = "G"
+label = "Discipline history on any license"
+sensitivity = "legal"
+answer_type = "list"
+default_policy = "always_ask"
+fields = [
+  { name = "license", label = "License", answer_type = "text" },
+  { name = "description", label = "What happened and when", answer_type = "text" },
+]
+
+[[question]]
+id = "experience.publications"
+section = "G"
+label = "Publications, patents and talks"
+sensitivity = "free_text"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "title", label = "Title", answer_type = "text" },
+  { name = "kind", label = "Kind", answer_type = "enum", options = ["publication", "patent", "talk"] },
+  { name = "venue", label = "Venue or number", answer_type = "text", optional = true },
+  { name = "date", label = "Date", answer_type = "date", optional = true },
+  { name = "link", label = "Link", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "experience.awards"
+section = "G"
+label = "Awards and competitions"
+sensitivity = "free_text"
+answer_type = "list"
+optional = true
+fields = [
+  { name = "name", label = "Award or competition", answer_type = "text" },
+  { name = "kind", label = "Kind", answer_type = "enum", options = ["award", "competition"] },
+  { name = "issuer", label = "Awarded by", answer_type = "text", optional = true },
+  { name = "date", label = "Date", answer_type = "date", optional = true },
+  { name = "result", label = "Result or placement", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "experience.languages"
+section = "G"
+label = "Spoken and written languages"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "language", label = "Language", answer_type = "text" },
+  { name = "speaking", label = "Speaking", answer_type = "enum", options = ["basic", "conversational", "professional", "native"] },
+  { name = "writing", label = "Writing", answer_type = "enum", options = ["basic", "conversational", "professional", "native"] },
+]
+variants = [
+  { text = "Please select all the languages you speak fluently.", ats = "greenhouse", note = "Multi-select; each selected option is an entry with speaking proficiency professional or native." },
+]
+
+[[question]]
+id = "experience.typing_speed"
+section = "G"
+label = "Typing speed in words per minute"
+sensitivity = "numeric"
+answer_type = "number"
+optional = true
+
+[[question]]
+id = "experience.gaps"
+section = "G"
+label = "Employment gaps with a one-line explanation"
+sensitivity = "free_text"
+answer_type = "list"
+fields = [
+  { name = "start_date", label = "Gap start", answer_type = "date" },
+  { name = "end_date", label = "Gap end", answer_type = "date" },
+  { name = "explanation", label = "One-line explanation, used only when asked", answer_type = "text" },
+]

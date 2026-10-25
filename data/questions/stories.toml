@@ -1,0 +1,479 @@
+# Section H: behavioral story bank (plan 7.3). One STAR record per prompt.
+# Every prompt is a `list` with min_items = 1. `stories.proudest_work` is the
+# intake story (rank 28) and a projection source for the other prompts.
+
+[[question]]
+id = "stories.hardest_problem"
+section = "H"
+label = "Hardest problem you solved at work or school"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+variants = [
+  { text = "Tell us about a time you were working toward an important goal and hit an unexpected obstacle that put your success at risk. What was the goal, what got in the way, and what specific steps did you take to get back on track? What was the outcome?", ats = "greenhouse", note = "Long-form obstacle prompt; one board." },
+]
+
+[[question]]
+id = "stories.undiagnosed_problem"
+section = "H"
+label = "A problem you diagnosed that others could not"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.coworker_conflict"
+section = "H"
+label = "A conflict with a coworker and how it was resolved"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.disagreed_with_decision"
+section = "H"
+label = "A time you disagreed with a decision made above you"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.failure"
+section = "H"
+label = "A failure or mistake and what changed afterward"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.mistake_affected_others"
+section = "H"
+label = "A mistake that affected other people"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.led_without_authority"
+section = "H"
+label = "A time you led without formal authority"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.tight_deadline"
+section = "H"
+label = "Delivering under a tight deadline or reducing scope"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.learned_quickly"
+section = "H"
+label = "Learning something unfamiliar quickly"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.unclear_instructions"
+section = "H"
+label = "Working through unclear instructions"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.critical_feedback"
+section = "H"
+label = "Receiving critical feedback"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.helped_coworker"
+section = "H"
+label = "Training or helping a coworker"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.improved_process"
+section = "H"
+label = "Improving a process for others"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.prioritized_tasks"
+section = "H"
+label = "Prioritizing competing tasks"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.upset_customer"
+section = "H"
+label = "Handling an upset customer, client, patient or stakeholder"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.data_driven_decision"
+section = "H"
+label = "A decision you made based on evidence or data"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.beyond_scope"
+section = "H"
+label = "Going beyond the assigned scope"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.safety_rule_pressure"
+section = "H"
+label = "Following a safety or compliance rule under pressure"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.proudest_work"
+section = "H"
+label = "The work you are proudest of, and why"
+sensitivity = "free_text"
+answer_type = "list"
+intake_rank = 28
+min_items = 1
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]
+
+[[question]]
+id = "stories.diverse_perspectives"
+section = "H"
+label = "Working with people of different backgrounds or perspectives"
+sensitivity = "free_text"
+answer_type = "list"
+min_items = 1
+draws_on = [
+  "experience.total_years",
+  "experience.jobs",
+  "experience.bullets",
+  "experience.projects",
+  "experience.skills",
+  "stories.proudest_work",
+]
+fields = [
+  { name = "situation", label = "Situation: the context and what was at stake", answer_type = "text" },
+  { name = "task", label = "Task: what you were responsible for", answer_type = "text" },
+  { name = "action", label = "Action: what you did, in your own words", answer_type = "text" },
+  { name = "result", label = "Result: what happened", answer_type = "text" },
+  { name = "metric", label = "Metric: a number or measurable outcome, if you have one", answer_type = "text", optional = true },
+  { name = "experience", label = "Linked experience (employer, school or project)", answer_type = "text", optional = true },
+]

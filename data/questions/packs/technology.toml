@@ -1,0 +1,192 @@
+# Technology occupation pack (plan 7.3 section I, plan 15). Ids are
+# namespaced approach.technology.<name>. Role-family prompts are optional so a
+# user outside that family is not penalized in coverage.
+
+pack = "technology"
+review_status = "unreviewed"
+reviewed_by = []
+
+[[question]]
+id = "approach.technology.production_outage"
+section = "I"
+label = "How do you diagnose a production outage?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.slow_query"
+section = "I"
+label = "How do you track down a slow endpoint or query?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.flaky_test"
+section = "I"
+label = "How do you deal with a flaky test?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.memory_leak_or_race"
+section = "I"
+label = "How do you find a memory leak or a race condition?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.read_vs_write_scaling"
+section = "I"
+label = "How do you scale a read-heavy service versus a write-heavy one?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.system_design"
+section = "I"
+label = "How do you design a small system end to end?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.api_design"
+section = "I"
+label = "How do you approach API design?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.testing_approach"
+section = "I"
+label = "What is your approach to testing?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.code_review"
+section = "I"
+label = "How do you approach code review, as author and as reviewer?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.tech_debt_vs_features"
+section = "I"
+label = "How do you weigh technical debt against feature pressure?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.technology_choice"
+section = "I"
+label = "How do you choose a language, framework or datastore?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.protecting_data_and_secrets"
+section = "I"
+label = "How do you protect user data and secrets?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.deployment_safety"
+section = "I"
+label = "How do you make deployments safe (rollbacks, feature flags)?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.large_codebase"
+section = "I"
+label = "How do you learn a large unfamiliar codebase?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.preferred_tools"
+section = "I"
+label = "Which tools do you prefer, and why?"
+sensitivity = "free_text"
+answer_type = "text"
+
+[[question]]
+id = "approach.technology.backend_write_safety"
+section = "I"
+label = "Backend: how do you make a write path safe to retry?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.frontend_performance"
+section = "I"
+label = "Frontend: how do you find and fix a slow page or interaction?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.infrastructure_risky_change"
+section = "I"
+label = "Infrastructure: how do you roll out a risky change?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.embedded_constraints"
+section = "I"
+label = "Embedded: how do you work within memory, timing and power limits?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.data_pipeline_quality"
+section = "I"
+label = "Data: how do you keep a pipeline's output correct?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.ml_evaluation"
+section = "I"
+label = "ML: how do you decide a model is good enough to ship?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.security_threat_modeling"
+section = "I"
+label = "Security: how do you threat-model a new feature?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.mobile_release_compatibility"
+section = "I"
+label = "Mobile: how do you handle OS and device fragmentation across releases?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.qa_test_strategy"
+section = "I"
+label = "QA: how do you decide what to automate and what to test by hand?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true
+
+[[question]]
+id = "approach.technology.it_support_triage"
+section = "I"
+label = "IT support: how do you triage and escalate a ticket?"
+sensitivity = "free_text"
+answer_type = "text"
+optional = true

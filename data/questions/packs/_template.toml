@@ -1,0 +1,75 @@
+# Occupation pack template. Copy to packs/<name>.toml (lowercase letters,
+# digits and underscores), change `pack`, and see docs/occupation-packs.md.
+# Files starting with `_` are skipped by the bundled loader; this one is
+# parsed by a test as `packs/example.toml`.
+
+# Header. The pack name must equal the file name.
+pack = "example"
+# Every new pack starts unreviewed. Set "reviewed" and fill `reviewed_by`
+# only after someone who works in the field has checked the questions.
+review_status = "unreviewed"
+reviewed_by = []
+
+# One live example. Ids are `<file>.<pack>.<name>`: the first segment is the
+# bank file of the section (I -> approach), the second is this pack's name.
+[[question]]
+id = "approach.example.handoff"
+section = "I"
+label = "How do you hand work over to the next shift or teammate?"
+sensitivity = "free_text"
+answer_type = "text"
+
+# Optional fields, shown on commented examples.
+#
+# A question seen on real forms. Copy wordings from the harvest tool output
+# (fixtures/questions/harvest-*.json), never from memory. `ats` is one of
+# greenhouse, lever, lever_eu, ashby, external. A wording may appear under
+# only one id in the whole catalog.
+#
+# [[question]]
+# id = "approach.example.upset_client"
+# section = "I"
+# label = "How do you handle an upset client?"
+# sensitivity = "free_text"
+# answer_type = "text"
+# variants = [
+#   { text = "Describe how you handle an upset client.", ats = "greenhouse" },
+# ]
+#
+# Role-specific prompts that not everyone in the field needs should be
+# optional, so they stay outside the coverage meter.
+#
+# [[question]]
+# id = "approach.example.night_shift"
+# section = "I"
+# label = "How do you manage a night shift?"
+# sensitivity = "free_text"
+# answer_type = "text"
+# optional = true
+#
+# An enum needs `options` and a normalization entry for every option.
+#
+# [[question]]
+# id = "approach.example.preferred_shift"
+# section = "I"
+# label = "Which shift do you prefer?"
+# sensitivity = "preference"
+# answer_type = "enum"
+# options = ["day", "night"]
+# [question.options_normalization]
+# day = ["Day shift"]
+# night = ["Night shift"]
+#
+# A record list: one STAR-style entry per item, at least one required.
+#
+# [[question]]
+# id = "approach.example.incident_log"
+# section = "I"
+# label = "An incident you handled"
+# sensitivity = "free_text"
+# answer_type = "list"
+# min_items = 1
+# fields = [
+#   { name = "what", label = "What happened", answer_type = "text" },
+#   { name = "outcome", label = "Outcome", answer_type = "text", optional = true },
+# ]
