@@ -2,6 +2,7 @@
 //! the app call these and nothing else. Every output type serializes to
 //! JSON matching a schema published under `docs/schema/`.
 
+mod bank;
 mod discover;
 mod doctor;
 mod error;
@@ -11,6 +12,9 @@ mod urls;
 
 use gantry_store::{ConfigSnapshot, Store, load_snapshot};
 
+pub use bank::{
+    BankFilter, BankList, BankRow, DerivedRow, SetAction, SetOutcome, bank_list, bank_set,
+};
 pub use discover::{run_discover, run_discover_with};
 pub use doctor::{CheckStatus, DoctorCheck, DoctorReport, Services, doctor};
 pub use error::{CmdError, ErrorBody, ErrorOutput, ExitCode};

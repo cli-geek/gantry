@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BankList",
+  "type": "object",
+  "properties": {
+    "rows": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/BankRow"
+      }
+    },
+    "warnings": {
+      "description": "Stored values that match no question; they are kept as they are.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "rows",
+    "warnings"
+  ],
+  "$defs": {
+    "AnswerState": {
+      "description": "Where one question stands.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "answered",
+            "declined",
+            "always_ask",
+            "not_applicable",
+            "missing"
+          ]
+        },
+        {
+          "description": "Stored but not yet verified; counts as not covered.",
+          "type": "string",
+          "const": "suggested"
+        },
+        {
+          "description": "Nothing stored and no policy, but at least one `draws_on` source is\nanswered, so M3 can compose it; counts as covered.",
+          "type": "string",
+          "const": "composable"
+        }
+      ]
+    },
+    "AnswerType": {
+      "type": "string",
+      "enum": [
+        "bool",
+        "enum",
+        "date",
+        "number",
+        "text",
+        "list",
+        "file",
+        "grid"
+      ]
+    },
+    "BankRow": {
+      "description": "One question and what the bank holds for it.",
+      "type": "object",
+      "properties": {
+        "answer_type": {
+          "$ref": "#/$defs/AnswerType"
+        },
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "pack": {
+          "description": "`None` for core questions.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "redacted": {
+          "description": "A value is stored but hidden (legal, eeo, clearance and availability\nvalues need `values`).",
+          "type": "boolean"
+        },
+        "section": {
+          "$ref": "#/$defs/Section"
+        },
+        "sensitivity": {
+          "$ref": "#/$defs/Sensitivity"
+        },
+        "state": {
+          "$ref": "#/$defs/AnswerState"
+        },
+        "value": {
+          "description": "The stored value (a list as an array); `None` when nothing is stored\nor the value is redacted."
+        },
+        "verified": {
+          "description": "Whether the stored value is verified (every entry, for a list);\n`None` when nothing is stored.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "section",
+        "label",
+        "sensitivity",
+        "answer_type",
+        "state",
+        "redacted"
+      ]
+    },
+    "Section": {
+      "description": "Question section A..K (design §1). Each section lives in one bank file.",
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ]
+    },
+    "Sensitivity": {
+      "description": "Sensitivity classes (plan §7.3). `Attestation` and `Prohibited` questions\nexist for classification only and are never addressable.",
+      "type": "string",
+      "enum": [
+        "contact",
+        "legal",
+        "eeo",
+        "clearance",
+        "availability",
+        "numeric",
+        "preference",
+        "free_text",
+        "attestation",
+        "prohibited"
+      ]
+    }
+  }
+}

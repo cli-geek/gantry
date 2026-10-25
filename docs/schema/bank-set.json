@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SetOutcome",
+  "type": "object",
+  "properties": {
+    "action": {
+      "description": "`value`, `decline`, `always_ask`, `not_applicable` or `clear_policy`.",
+      "type": "string"
+    },
+    "derived": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DerivedRow"
+      }
+    },
+    "id": {
+      "type": "string"
+    },
+    "policy_cleared": {
+      "description": "A policy row was removed.",
+      "type": "boolean"
+    },
+    "redacted": {
+      "type": "boolean"
+    },
+    "value": {
+      "description": "The value written (`value` action only); `None` when redacted."
+    },
+    "verified": {
+      "description": "The written item is verified; `false` for `clear_policy`, which\nwrites nothing.",
+      "type": "boolean"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "action",
+    "verified",
+    "redacted",
+    "derived",
+    "policy_cleared",
+    "warnings"
+  ],
+  "$defs": {
+    "DerivedRow": {
+      "description": "A suggestion stored by the derive rules.",
+      "type": "object",
+      "properties": {
+        "from": {
+          "description": "The question whose new answer suggested it.",
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "value": true
+      },
+      "required": [
+        "id",
+        "from",
+        "redacted"
+      ]
+    }
+  }
+}
