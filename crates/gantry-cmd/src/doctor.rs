@@ -1,13 +1,14 @@
 //! `gantry doctor` (§13): checks that Gantry can run on this machine and
 //! says what to do about each problem.
 
+use gantry_core::questions::unknown_paths;
 use gantry_discovery::bundled;
 use gantry_discovery::geocode::gazetteer;
 use gantry_platform::{
     BrowserLocator, OsBrowserLocator, OsScheduler, OsSecretStore, PlatformError, ScheduleStatus,
     Scheduler, SecretStore,
 };
-use gantry_store::{FileState, Store, check_files, load_snapshot};
+use gantry_store::{FileState, Store, bundled_catalog, check_files, load_bank_docs, load_snapshot};
 use schemars::JsonSchema;
 use serde::Serialize;
 
@@ -83,6 +84,7 @@ pub fn doctor(ctx: &Context, services: &Services) -> DoctorReport {
     let checks = vec![
         config_files(ctx),
         search_profile(ctx),
+        question_bank(ctx),
         data_dir(ctx),
         database(ctx),
         secret_store(services),
@@ -209,6 +211,51 @@ fn search_profile(ctx: &Context) -> DoctorCheck {
     } else {
         check("search profile", CheckStatus::Warn, problems.join("\n"))
     }
+}
+
+/// How many unknown ids the detail lists.
+const UNKNOWN_SHOWN: usize = 5;
+
+fn question_bank(ctx: &Context) -> DoctorCheck {
+    const NAME: &str = "question bank";
+    let catalog = match bundled_catalog() {
+        Ok(c) => c,
+        Err(e) => return check(NAME, CheckStatus::Fail, e.to_string()),
+    };
+    let Ok(docs) = load_bank_docs(ctx.paths.config_dir()) else {
+        return check(NAME, CheckStatus::Skip, "config files do not parse");
+    };
+    let unknown: Vec<String> = docs
+        .files
+        .iter()
+        .flat_map(|(stem, doc)| unknown_paths(&catalog, stem, doc))
+        .collect();
+    if unknown.is_empty() {
+        return check(
+            NAME,
+            CheckStatus::Ok,
+            format!("{} questions, no unknown values", catalog.len()),
+        );
+    }
+    let shown: Vec<&str> = unknown
+        .iter()
+        .take(UNKNOWN_SHOWN)
+        .map(String::as_str)
+        .collect();
+    let more = if unknown.len() > shown.len() {
+        ", ..."
+    } else {
+        ""
+    };
+    check(
+        NAME,
+        CheckStatus::Warn,
+        format!(
+            "{} stored values match no question and are kept as they are: {}{more}",
+            unknown.len(),
+            shown.join(", ")
+        ),
+    )
 }
 
 fn data_dir(ctx: &Context) -> DoctorCheck {
