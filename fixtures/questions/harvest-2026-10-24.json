@@ -1,0 +1,4685 @@
+{
+  "harvested_on": "2026-10-24",
+  "ats": "greenhouse",
+  "boards_sampled": 15,
+  "jobs_sampled": 60,
+  "boards_failed": [],
+  "questions": [
+    {
+      "text": "Email",
+      "normalized": "email",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 15,
+      "jobs": 59,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "First Name",
+      "normalized": "first name",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 15,
+      "jobs": 59,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Last Name",
+      "normalized": "last name",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 15,
+      "jobs": 59,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Phone",
+      "normalized": "phone",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 15,
+      "jobs": 59,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Resume/CV",
+      "normalized": "resume/cv",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_file",
+        "textarea"
+      ],
+      "options": [],
+      "boards": 15,
+      "jobs": 59,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Cover Letter",
+      "normalized": "cover letter",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_file",
+        "textarea"
+      ],
+      "options": [],
+      "boards": 14,
+      "jobs": 48,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Latitude",
+      "normalized": "latitude",
+      "group": "location_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_hidden"
+      ],
+      "options": [],
+      "boards": 13,
+      "jobs": 50,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Longitude",
+      "normalized": "longitude",
+      "group": "location_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_hidden"
+      ],
+      "options": [],
+      "boards": 13,
+      "jobs": 50,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Location",
+      "normalized": "location",
+      "group": "location_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 13,
+      "jobs": 49,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "LinkedIn Profile",
+      "normalized": "linkedin profile",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 12,
+      "jobs": 45,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Preferred First Name",
+      "normalized": "preferred first name",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 11,
+      "jobs": 26,
+      "example": "airbnb/6852954"
+    },
+    {
+      "text": "How did you hear about this job?",
+      "normalized": "how did you hear about this job?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text",
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Airbnb Employee",
+        "Airbnb Open Source",
+        "Airbnb Tech blog post",
+        "Airbnb.io",
+        "BuiltIn",
+        "Career Page",
+        "Coinbase Blog",
+        "Coinbase Event",
+        "Company Website (Airbnb Careers)",
+        "Conference",
+        "Event (Tech Talk, Meetup, conference)",
+        "Family/Friend",
+        "Farcaster",
+        "Friend, family, colleague",
+        "Glassdoor",
+        "Indeed",
+        "Job Board",
+        "LinkedIn",
+        "On Campus Recruiting",
+        "Other",
+        "PompCryptoJobs",
+        "Referral",
+        "Social media (Facebook, LinkedIn, Twitter, Instagram)",
+        "Third-party website or search engine",
+        "Twitter Ad"
+      ],
+      "boards": 8,
+      "jobs": 31,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Gender",
+      "normalized": "gender",
+      "group": "compliance",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Decline To Self Identify",
+        "Female",
+        "Male"
+      ],
+      "boards": 8,
+      "jobs": 24,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "Race",
+      "normalized": "race",
+      "group": "compliance",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "American Indian or Alaskan Native",
+        "Asian",
+        "Black or African American",
+        "Decline To Self Identify",
+        "Hispanic or Latino",
+        "Native Hawaiian or Other Pacific Islander",
+        "Two or More Races",
+        "White"
+      ],
+      "boards": 8,
+      "jobs": 24,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "VeteranStatus",
+      "normalized": "veteranstatus",
+      "group": "compliance",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I am not a protected veteran",
+        "I don't wish to answer",
+        "I identify as one or more of the classifications of a protected veteran"
+      ],
+      "boards": 8,
+      "jobs": 24,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "Website",
+      "normalized": "website",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 6,
+      "jobs": 23,
+      "example": "databricks/4513122002"
+    },
+    {
+      "text": "Gender",
+      "normalized": "gender",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Female",
+        "I don't wish to answer",
+        "Male"
+      ],
+      "boards": 2,
+      "jobs": 8,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Disability Status",
+      "normalized": "disability status",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I am unsure of my disability status",
+        "I don't wish to answer",
+        "No, I do not have a disability and have not had one in the past",
+        "No, I don't have a disability, or a history/record of having a disability",
+        "Yes, I have a disability, or have a history/record of having a disability",
+        "Yes, I have a disability, or have had one in the past"
+      ],
+      "boards": 2,
+      "jobs": 7,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Linkedin Profile URL",
+      "normalized": "linkedin profile url",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 2,
+      "jobs": 6,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Veteran Status",
+      "normalized": "veteran status",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I am not a protected veteran",
+        "I don't wish to answer",
+        "I identify as one or more of the classifications of a protected veteran",
+        "I identify as one or more of the classifications of protected veteran listed above"
+      ],
+      "boards": 2,
+      "jobs": 6,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Are you legally entitled to work in Canada?",
+      "normalized": "are you legally entitled to work in canada?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 2,
+      "jobs": 5,
+      "example": "airbnb/6852954"
+    },
+    {
+      "text": "Additional Information",
+      "normalized": "additional information",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "textarea"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "figma/5415515004"
+    },
+    {
+      "text": "Are you a close relative of a government official (i.e., child/step-child, spouse/partner, parent/guardian, aunt/uncle, first cousin, in-law)?",
+      "normalized": "are you a close relative of a government official (i.e., child/step-child, spouse/partner, parent/guardian, aunt/uncle, first cousin, in-law)?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I am not a relative of a government official.",
+        "Yes, I am a relative of a government official."
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Are you a current government official or were you a government official in the last five years (e.g., employee of a government agency or a government owned/controlled company, holder of public office or a civil service position)?",
+      "normalized": "are you a current government official or were you a government official in the last five years (e.g., employee of a government agency or a government owned/controlled company, holder of public office or a civil service position)?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I am not a current or former Government Official",
+        "Yes, I am a current Government Official",
+        "Yes, I am a former Government Official"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Are you a person of transgender experience?",
+      "normalized": "are you a person of transgender experience?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Are you at least 18 years of age?",
+      "normalized": "are you at least 18 years of age?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Are you authorized to work in the country for which you applied?",
+      "normalized": "are you authorized to work in the country for which you applied?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "figma/5415515004"
+    },
+    {
+      "text": "Are you authorized to work in the location(s) you selected in your previous response?",
+      "normalized": "are you authorized to work in the location(s) you selected in your previous response?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "Are you authorized to work in the United States?",
+      "normalized": "are you authorized to work in the united states?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "instacart/6819435"
+    },
+    {
+      "text": "Are you currently authorized to work for Pinterest in the country in which you are applying for a position?",
+      "normalized": "are you currently authorized to work for pinterest in the country in which you are applying for a position?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "pinterest/5459622"
+    },
+    {
+      "text": "Are you currently or have you ever worked for Airbnb in any capacity? This could include, but is not limited to, a full-time employee, intern, apprentice, or contingent worker.",
+      "normalized": "are you currently or have you ever worked for airbnb in any capacity? this could include, but is not limited to, a full-time employee, intern, apprentice, or contingent worker.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Are you currently subject to any non-compete or non-solicitation agreement that would impact your ability to work at Airbnb or prevent you from accepting a job offer from Airbnb?",
+      "normalized": "are you currently subject to any non-compete or non-solicitation agreement that would impact your ability to work at airbnb or prevent you from accepting a job offer from airbnb?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Are you legally authorised to work full-time in the country where this job is based?",
+      "normalized": "are you legally authorised to work full-time in the country where this job is based?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I need sponsorship now.",
+        "Yes, but I will need sponsorship in the future.",
+        "Yes, no restriction."
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "datadog/1497543"
+    },
+    {
+      "text": "Are you legally authorized to work in the country in which you are applying?",
+      "normalized": "are you legally authorized to work in the country in which you are applying?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "databricks/4513122002"
+    },
+    {
+      "text": "Are you legally authorized to work in the country where the job is located?",
+      "normalized": "are you legally authorized to work in the country where the job is located?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I am not currently legally authorized to work in the country where the job is located.",
+        "Yes, I am currently legally authorized to work in the country where the job is located."
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Are you legally authorized to work in the country where this position is located?",
+      "normalized": "are you legally authorized to work in the country where this position is located?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Are you legally authorized to work in the United States for our Company?",
+      "normalized": "are you legally authorized to work in the united states for our company?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Are you subject to any employment agreements and/or post-employment restrictions with your current employer or a past employer?",
+      "normalized": "are you subject to any employment agreements and/or post-employment restrictions with your current employer or a past employer?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "gitlab/8396674002"
+    },
+    {
+      "text": "By checking this box, I confirm I have read, reviewed and understood the guidelines outlined in the Candidate AI Responsible Use Policy. I affirm that all the information and materials I submit throughout my application and candidacy will reflect my own work and experience.",
+      "normalized": "by checking this box, i confirm i have read, reviewed and understood the guidelines outlined in the candidate ai responsible use policy. i affirm that all the information and materials i submit throughout my application and candidacy will reflect my own work and experience.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Acknowledge"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "twilio/6372770"
+    },
+    {
+      "text": "By clicking the \"Acknowledge\" button, you acknowledge that Twilio processes data in accordance with the Twilio Applicant Privacy Policy.",
+      "normalized": "by clicking the \"acknowledge\" button, you acknowledge that twilio processes data in accordance with the twilio applicant privacy policy.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Acknowledge"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "twilio/6372770"
+    },
+    {
+      "text": "By selecting \"I agree,\" I understand that the information I have provided as part of this job application will be processed in accordance with Reddit's Candidate Privacy Policy.",
+      "normalized": "by selecting \"i agree,\" i understand that the information i have provided as part of this job application will be processed in accordance with reddit's candidate privacy policy.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I agree"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Current Location",
+      "normalized": "current location",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Australia",
+        "Canada - Alberta",
+        "Canada - British Columbia",
+        "Canada - Manitoba",
+        "Canada - New Brunswick",
+        "Canada - Newfoundland and Labrador",
+        "Canada - Northwest Territories",
+        "Canada - Nova Scotia",
+        "Canada - Nunavut",
+        "Canada - Ontario",
+        "Canada - Prince Edward Island",
+        "Canada - Quebec",
+        "Canada - Saskatchewan",
+        "Canada - Yukon",
+        "France",
+        "Germany",
+        "Ireland",
+        "Israel",
+        "Japan",
+        "Mexico",
+        "Netherlands",
+        "Other Location",
+        "Poland",
+        "Singapore",
+        "Sweden",
+        "Switzerland",
+        "Taiwan",
+        "US - Alabama",
+        "US - Alaska",
+        "US - Arizona",
+        "US - Arkansas",
+        "US - California",
+        "US - Colorado",
+        "US - Connecticut",
+        "US - Delaware",
+        "US - Florida",
+        "US - Georgia",
+        "US - Hawaii",
+        "US - Idaho",
+        "US - Illinois",
+        "US - Indiana",
+        "US - Iowa",
+        "US - Kansas",
+        "US - Kentucky",
+        "US - Louisiana",
+        "US - Maine",
+        "US - Maryland",
+        "US - Massachusetts",
+        "US - Michigan",
+        "US - Minnesota",
+        "US - Mississippi",
+        "US - Missouri",
+        "US - Montana",
+        "US - Nebraska",
+        "US - Nevada",
+        "US - New Hampshire",
+        "US - New Jersey",
+        "US - New Mexico",
+        "US - New York",
+        "US - North Carolina",
+        "US - North Dakota",
+        "US - Ohio",
+        "US - Oklahoma",
+        "US - Oregon",
+        "US - Pennsylvania",
+        "US - Rhode Island",
+        "US - South Carolina",
+        "US - South Dakota",
+        "US - Tennessee",
+        "US - Texas",
+        "US - Utah",
+        "US - Vermont",
+        "US - Virginia",
+        "US - Washington",
+        "US - Washington, D.C",
+        "US - West Virginia",
+        "US - Wisconsin",
+        "United Kingdom"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "Do you currently or have you previously worked for Databricks in the past?",
+      "normalized": "do you currently or have you previously worked for databricks in the past?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes - I currently work at Databricks",
+        "Yes - Previous Contractor",
+        "Yes - Previous Full-Time Employee",
+        "Yes - Previous Intern"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "databricks/4513122002"
+    },
+    {
+      "text": "Do you have:\na) any Personal/Familial Relationships (current Robinhood employees or employees of Robinhood’s vendors); \nb) any Outside Business Activities that you wish to continue; \nc) any investment that is greater than 5% of the outstanding shares of a publicly-traded company;\nd) any investment in a private company that has a business relationship or that is a current competitor of Robinhood; or \ne) any Intellectual Property Ownership (patents, trademarks, copyrights) that you wish to retain and/or create/develop while at Robinhood?",
+      "normalized": "do you have: a) any personal/familial relationships (current robinhood employees or employees of robinhood’s vendors); b) any outside business activities that you wish to continue; c) any investment that is greater than 5% of the outstanding shares of a publicly-traded company; d) any investment in a private company that has a business relationship or that is a current competitor of robinhood; or e) any intellectual property ownership (patents, trademarks, copyrights) that you wish to retain and/or create/develop while at robinhood?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "Do you now or will you in the future need sponsorship for employment visa status in the country in which you are applying?",
+      "normalized": "do you now or will you in the future need sponsorship for employment visa status in the country in which you are applying?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "databricks/4513122002"
+    },
+    {
+      "text": "Do you now or will you in the future require immigration sponsorship to work at Cloudflare?",
+      "normalized": "do you now or will you in the future require immigration sponsorship to work at cloudflare?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "Do you now, or will you in the future, require immigration sponsorship to work at Reddit?",
+      "normalized": "do you now, or will you in the future, require immigration sponsorship to work at reddit?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Do you opt-in to receive WhatsApp messages from Stripe Recruiting?",
+      "normalized": "do you opt-in to receive whatsapp messages from stripe recruiting?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "Education: Last University Attended",
+      "normalized": "education: last university attended",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "pinterest/5459622"
+    },
+    {
+      "text": "Fingerprint",
+      "normalized": "fingerprint",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "From where do you intend to work?",
+      "normalized": "from where do you intend to work?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "figma/5415515004"
+    },
+    {
+      "text": "Have you ever been employed by Stripe or a Stripe affiliate?",
+      "normalized": "have you ever been employed by stripe or a stripe affiliate?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "Have you ever worked for Figma before, as an employee or a contractor/consultant?",
+      "normalized": "have you ever worked for figma before, as an employee or a contractor/consultant?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "figma/5415515004"
+    },
+    {
+      "text": "Have you ever worked for Robinhood as an employee, intern or contractor? Note that providing false or misleading information may result in disqualification from the hiring process.",
+      "normalized": "have you ever worked for robinhood as an employee, intern or contractor? note that providing false or misleading information may result in disqualification from the hiring process.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I currently work at Robinhood as a full-time employee or intern",
+        "I currently work at Robinhood in a contractor role",
+        "I have never worked at Robinhood",
+        "I have previously worked at Robinhood as a full-time employee or intern (Hoodie Alumni)",
+        "I have previously worked at Robinhood in a contractor role"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "Have you previously been employed by Coinbase in any capacity?",
+      "normalized": "have you previously been employed by coinbase in any capacity?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Have you previously worked for Dropbox?",
+      "normalized": "have you previously worked for dropbox?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I have not previously worked for Dropbox",
+        "Yes, former contingent worker or vendor",
+        "Yes, former employee"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "Have you used Robinhood?",
+      "normalized": "have you used robinhood?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text",
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "How did you first hear about this opportunity?",
+      "normalized": "how did you first hear about this opportunity?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Current Pinterest Employee",
+        "Glassdoor",
+        "Google Search",
+        "Instagram",
+        "LinkedIn",
+        "Other",
+        "Pinterest-hosted Recruiting Event",
+        "Twitter"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "pinterest/5459622"
+    },
+    {
+      "text": "How did you hear about this opportunity?",
+      "normalized": "how did you hear about this opportunity?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Advisor or Faculty referral",
+        "AfroTech",
+        "Angelist",
+        "Attended a talk or conference",
+        "Blind App",
+        "Break Through Tech",
+        "BuiltIn Boston",
+        "BuiltIn NYC",
+        "Campus Event",
+        "Carnegie Mellon University department or mailing list",
+        "ColorStack",
+        "Datadog Employee",
+        "Datadog's Careers Page",
+        "Event",
+        "Flexjobs",
+        "Girls Who Code",
+        "Github",
+        "Glassdoor",
+        "Hacker News",
+        "Hired",
+        "Hiretual",
+        "I love Datadog's product!",
+        "Instagram",
+        "JobTeaser",
+        "LinkedIn (Datadog Page)",
+        "LinkedIn (Job Posting)",
+        "MLT (Management Leadership for Tomorrow)",
+        "Other",
+        "Rewriting the Code",
+        "SHPE (Society of Hispanic Professional Engineers)",
+        "School job board",
+        "The Muse",
+        "Thrive",
+        "Underdog",
+        "Welcome to the Jungle"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "datadog/1497543"
+    },
+    {
+      "text": "How did you hear about this role? (Please select all that apply)",
+      "normalized": "how did you hear about this role? (please select all that apply)",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "BuiltIn",
+        "Contacted by Recruiter",
+        "Dropbox Career Site",
+        "Dropbox Talent Community",
+        "Facebook",
+        "Glassdoor",
+        "Google Search",
+        "In Person Event",
+        "InHerSight",
+        "Indeed",
+        "Instagram",
+        "LinkedIn",
+        "Referral from Dropboxer",
+        "The Muse"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "How did you hear about Twilio?",
+      "normalized": "how did you hear about twilio?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Careers Website",
+        "Conference or Event",
+        "Content (e.g. videos, ads, billboards etc)",
+        "Glassdoor",
+        "Indeed",
+        "LinkedIn",
+        "Other",
+        "Twilio Blog",
+        "Twitter"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "twilio/6372770"
+    },
+    {
+      "text": "I certify that the information provided in this application is true and correct to the best of my knowledge. I understand that any false statements or omissions may result in disqualification from employment consideration or, if employed, in termination.",
+      "normalized": "i certify that the information provided in this application is true and correct to the best of my knowledge. i understand that any false statements or omissions may result in disqualification from employment consideration or, if employed, in termination.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "datadog/1497543"
+    },
+    {
+      "text": "I understand my application will be processed in accordance with Datadog’s Candidate Privacy Policy.",
+      "normalized": "i understand my application will be processed in accordance with datadog’s candidate privacy policy.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "datadog/1497543"
+    },
+    {
+      "text": "I understand that Coinbase may use AI tools to assist in the application and interview process.",
+      "normalized": "i understand that coinbase may use ai tools to assist in the application and interview process.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "If this role offers the option to work from a remote location, do you plan to work remotely?",
+      "normalized": "if this role offers the option to work from a remote location, do you plan to work remotely?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I intend to work from an office location.",
+        "Yes, I intend to work remotely."
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "If you answered \"Yes\" to the above question, please provide additional information here:",
+      "normalized": "if you answered \"yes\" to the above question, please provide additional information here",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "If you selected a response to the prior question other than “none of the above,” please confirm whether any of the following also applies to you.  Select all that apply.",
+      "normalized": "if you selected a response to the prior question other than “none of the above,” please confirm whether any of the following also applies to you. select all that apply.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Individual granted asylum in the U.S.",
+        "Individual granted citizenship in a country other than Cuba, Iran, North Korea, or Syria",
+        "Individual granted permanent residency in a country other than Cuba, Iran, North Korea, or Syria",
+        "Individual granted refugee status in the U.S.",
+        "None of these apply to me",
+        "Not applicable (i.e., I selected “none of the above” for the prior question)",
+        "U.S. citizen",
+        "U.S. non-citizen national",
+        "U.S. permanent resident (Green Card holder)"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "databricks/4513122002"
+    },
+    {
+      "text": "In what cities are you available to work?",
+      "normalized": "in what cities are you available to work?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Amsterdam",
+        "Atlanta",
+        "Bangalore",
+        "Barcelona",
+        "Barueri São Paulo",
+        "Bordeaux",
+        "Boston",
+        "Chicago",
+        "Copenhagen",
+        "Denver",
+        "Dubai",
+        "Dublin",
+        "Grenoble",
+        "Hamburg",
+        "Jakarta",
+        "Lisbon",
+        "London",
+        "Lyon",
+        "Madrid",
+        "Melbourne",
+        "Mexico City",
+        "Montpellier",
+        "Mumbai",
+        "Nantes",
+        "New York City",
+        "Nice",
+        "Osaka",
+        "Paris",
+        "Pittsburgh",
+        "Remote",
+        "Riyadh",
+        "Salt Lake City",
+        "San Francisco",
+        "San Jose (Campbell)",
+        "San Sebastian",
+        "Seattle",
+        "Seoul",
+        "Singapore",
+        "Sophia Antipolis",
+        "Stockholm",
+        "Sydney",
+        "São Paulo",
+        "Tel Aviv",
+        "Tokyo",
+        "Toronto"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "datadog/1497543"
+    },
+    {
+      "text": "It is important to us to create an accessible and inclusive interview experience. Please let us know if there are any adjustments we can make to assist you during the hiring and interview process.",
+      "normalized": "it is important to us to create an accessible and inclusive interview experience. please let us know if there are any adjustments we can make to assist you during the hiring and interview process.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "gitlab/8396674002"
+    },
+    {
+      "text": "Legal Name (if different than above)",
+      "normalized": "legal name (if different than above)",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "Other Website",
+      "normalized": "other website",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "figma/5415515004"
+    },
+    {
+      "text": "Please confirm whether any of the below applies to you.  Select all that apply.\n\nNote: This information will only be used to ensure compliance with U.S. sanctions and export controls.",
+      "normalized": "please confirm whether any of the below applies to you. select all that apply. note: this information will only be used to ensure compliance with u.s. sanctions and export controls.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Citizen or permanent resident of Cuba, Iran, North Korea, or Syria",
+        "None of the above",
+        "Ordinarily a resident of Cuba, Iran, North Korea, Syria or the Crimea, Donetsk, Luhansk, Zaporizhzhia, or Kherson regions of Ukraine",
+        "Ordinarily a resident of Russia or Belarus and not willing to relocate for a Databricks role"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "databricks/4513122002"
+    },
+    {
+      "text": "Please email me about future job openings",
+      "normalized": "please email me about future job openings",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "Please provide the name of your current (or most recent) company",
+      "normalized": "please provide the name of your current (or most recent) company",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Please review and acknowledge Cloudflare's Candidate Privacy Policy (cloudflare.com/candidate-privacy-notice/).",
+      "normalized": "please review and acknowledge cloudflare's candidate privacy policy (cloudflare.com/candidate-privacy-notice/).",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Acknowledge/Confirm"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "Please select the country or countries you anticipate working in for the role in which you are applying.",
+      "normalized": "please select the country or countries you anticipate working in for the role in which you are applying.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Australia",
+        "Belgium",
+        "Brazil",
+        "Canada",
+        "France",
+        "Germany",
+        "India",
+        "Indonesia",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Japan",
+        "Luxembourg",
+        "Malaysia",
+        "Mexico",
+        "New Zealand",
+        "Poland",
+        "Portugal",
+        "Romania",
+        "Singapore",
+        "South Korea",
+        "Spain",
+        "Sweden",
+        "Switzerland",
+        "Taiwan",
+        "Thailand",
+        "The Netherlands",
+        "UAE",
+        "UK",
+        "US"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "Please select the country where you currently reside.",
+      "normalized": "please select the country where you currently reside.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Australia",
+        "Belgium",
+        "Brazil",
+        "Canada",
+        "Egypt",
+        "France",
+        "Germany",
+        "India",
+        "Indonesia",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Japan",
+        "Malaysia",
+        "Mexico",
+        "New Zealand",
+        "Other",
+        "Poland",
+        "Portugal",
+        "Romania",
+        "Singapore",
+        "South Korea",
+        "Spain",
+        "Sweden",
+        "Switzerland",
+        "Taiwan",
+        "Thailand",
+        "The Netherlands",
+        "UAE",
+        "UK",
+        "US"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "Pronouns",
+      "normalized": "pronouns",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "he/him/his",
+        "self-describe",
+        "she/her/hers",
+        "they/them/theirs"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "figma/5415515004"
+    },
+    {
+      "text": "Race and Ethnicity",
+      "normalized": "race and ethnicity",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select",
+        "multi_value_single_select"
+      ],
+      "options": [
+        "American Indian or Alaska Native",
+        "Asian",
+        "Black or African American",
+        "Black or of African descent",
+        "East Asian",
+        "Hawaiian or Pacific Islander",
+        "Hispanic or Latino",
+        "Hispanic, Latine or of Spanish Origin",
+        "I don't wish to answer",
+        "Indigenous, American Indian or Alaska Native",
+        "Middle Eastern or North African Native",
+        "Native Hawaiian or Other Pacific Islander",
+        "South Asian",
+        "Southeast Asian",
+        "Two or More Races",
+        "White",
+        "White or European"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Robinhood adheres to applicable laws and regulations in relation to government officials given inherent bribery and/or corruption risk. A government official is any person that performs a public function on any level or acts in any official capacity on behalf of a government or government owned entity. \na)  Do you currently hold or have you held, within the last 5 years, a position as a government official?\nb)  Have you been referred or recommended for this position by a government official?\nc)  Are you related to or have a close personal relationship with a government official?",
+      "normalized": "robinhood adheres to applicable laws and regulations in relation to government officials given inherent bribery and/or corruption risk. a government official is any person that performs a public function on any level or acts in any official capacity on behalf of a government or government owned entity. a) do you currently hold or have you held, within the last 5 years, a position as a government official? b) have you been referred or recommended for this position by a government official? c) are you related to or have a close personal relationship with a government official?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "To your knowledge, do you or a close relative currently hold a role, have a significant financial interest in, or maintain a close personal relationship with a senior leader at a company connected to Coinbase that could create an actual or perceived conflict of interest?",
+      "normalized": "to your knowledge, do you or a close relative currently hold a role, have a significant financial interest in, or maintain a close personal relationship with a senior leader at a company connected to coinbase that could create an actual or perceived conflict of interest?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "To your knowledge, were you referred to this position by a senior leader or decision‑maker at a current or prospective institutional client, business partner, or vendor of Coinbase?",
+      "normalized": "to your knowledge, were you referred to this position by a senior leader or decision‑maker at a current or prospective institutional client, business partner, or vendor of coinbase?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Voluntary Self-Identification of Gender",
+      "normalized": "voluntary self-identification of gender",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select",
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Female",
+        "Gender Nonconforming",
+        "I don't wish to answer",
+        "Male",
+        "Transgender"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "twilio/6372770"
+    },
+    {
+      "text": "What gender identity do you most closely identify with?",
+      "normalized": "what gender identity do you most closely identify with?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Agender",
+        "Female",
+        "Gender non-conforming",
+        "Genderfluid",
+        "Genderqueer",
+        "I don't wish to answer",
+        "Male",
+        "Non-binary",
+        "Not listed"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "What is your current or previous job title?",
+      "normalized": "what is your current or previous job title?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "What is your legal first name?",
+      "normalized": "what is your legal first name?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "What sexual orientation do you most closely identify with?",
+      "normalized": "what sexual orientation do you most closely identify with?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Asexual",
+        "Bisexual",
+        "Gay",
+        "Heterosexual",
+        "I don't wish to answer",
+        "Lesbian",
+        "Not listed",
+        "Pansexual",
+        "Queer"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Which state or province do you currently live in?",
+      "normalized": "which state or province do you currently live in?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "(CAN) Alberta",
+        "(CAN) British Columbia",
+        "(CAN) Manitoba",
+        "(CAN) New Brunswick",
+        "(CAN) Newfoundland and Labrador",
+        "(CAN) Nova Scotia",
+        "(CAN) Ontario",
+        "(CAN) Prince Edward Island",
+        "(CAN) Quebec",
+        "(CAN) Saskatchewan",
+        "(US) Alabama",
+        "(US) Alaska",
+        "(US) Arizona",
+        "(US) Arkansas",
+        "(US) California",
+        "(US) Colorado",
+        "(US) Connecticut",
+        "(US) Delaware",
+        "(US) Florida",
+        "(US) Georgia",
+        "(US) Hawaii",
+        "(US) Idaho",
+        "(US) Illinois",
+        "(US) Indiana",
+        "(US) Iowa",
+        "(US) Kansas",
+        "(US) Kentucky",
+        "(US) Louisiana",
+        "(US) Maine",
+        "(US) Maryland",
+        "(US) Massachusetts",
+        "(US) Michigan",
+        "(US) Minnesota",
+        "(US) Mississippi",
+        "(US) Missouri",
+        "(US) Montana",
+        "(US) Nebraska",
+        "(US) Nevada",
+        "(US) New Hampshire",
+        "(US) New Jersey",
+        "(US) New Mexico",
+        "(US) New York",
+        "(US) North Carolina",
+        "(US) North Dakota",
+        "(US) Ohio",
+        "(US) Oklahoma",
+        "(US) Oregon",
+        "(US) Pennsylvania",
+        "(US) Rhode Island",
+        "(US) South Carolina",
+        "(US) South Dakota",
+        "(US) Tennessee",
+        "(US) Texas",
+        "(US) Utah",
+        "(US) Vermont",
+        "(US) Virginia",
+        "(US) Washington",
+        "(US) Washington, D.C.",
+        "(US) West Virginia",
+        "(US) Wisconsin",
+        "(US) Wyoming"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "instacart/6819435"
+    },
+    {
+      "text": "Who is your current or previous employer?",
+      "normalized": "who is your current or previous employer?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "Why do you want to join Figma?",
+      "normalized": "why do you want to join figma?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "textarea"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "figma/5415515004"
+    },
+    {
+      "text": "Why do you want to work at Discord?",
+      "normalized": "why do you want to work at discord?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "textarea"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Will you now or in the future require company sponsorship to retain or extend your work authorization in the country where the job is located?",
+      "normalized": "will you now or in the future require company sponsorship to retain or extend your work authorization in the country where the job is located?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I do not and will not require immigration sponsorship to legally work in the country where the job is located.",
+        "Yes, I will require immigration sponsorship in the future to legally work in the country where the job is located.",
+        "Yes, I will require immigration sponsorship now to legally work in the country where the job is located."
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Will you now or in the future require sponsorship for a visa to remain in your current location?",
+      "normalized": "will you now or in the future require sponsorship for a visa to remain in your current location?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes, EU Blue Card",
+        "Yes, F-1 Visa OPT (USA)",
+        "Yes, Ireland Highly Skilled Worker Visa",
+        "Yes, Netherlands Highly Skilled Migrant Visa",
+        "Yes, USMCA Professional (TN) Visa (USA)",
+        "Yes, but not one of the visas listed here"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "gitlab/8396674002"
+    },
+    {
+      "text": "Will you require our assistance with work authorization now or in the future?",
+      "normalized": "will you require our assistance with work authorization now or in the future?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "pinterest/5459622"
+    },
+    {
+      "text": "Will you require sponsorship for employment visa status now or in the future?",
+      "normalized": "will you require sponsorship for employment visa status now or in the future?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Will you require Stripe to sponsor you for a work permit now or in the future for the location(s) you selected in in your previous response?",
+      "normalized": "will you require stripe to sponsor you for a work permit now or in the future for the location(s) you selected in in your previous response?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 4,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "Work Experience: Current/Previous Employer",
+      "normalized": "work experience: current/previous employer",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "pinterest/5459622"
+    },
+    {
+      "text": "Would you like to include your LinkedIn profile, personal website or blog?",
+      "normalized": "would you like to include your linkedin profile, personal website or blog?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 4,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "Are you currently located in the US?",
+      "normalized": "are you currently located in the us?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Are you currently, or have you previously, worked for Instacart?",
+      "normalized": "are you currently, or have you previously, worked for instacart?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "instacart/6819435"
+    },
+    {
+      "text": "Are you legally work authorized to work in the US?",
+      "normalized": "are you legally work authorized to work in the us?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "Do you identify as part of the LGBTQ+ community?",
+      "normalized": "do you identify as part of the lgbtq+ community?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No",
+        "Questioning",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "Gender Identity (optional)",
+      "normalized": "gender identity (optional)",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Genderqueer",
+        "I don't wish to answer",
+        "Man",
+        "Non-binary or third gender",
+        "Woman"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Have you previously worked at or consulted for GitLab?",
+      "normalized": "have you previously worked at or consulted for gitlab?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "gitlab/8396674002"
+    },
+    {
+      "text": "I consider myself a member of the LGBTQ+ community. (optional)",
+      "normalized": "i consider myself a member of the lgbtq+ community. (optional)",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Location Cost Tier",
+      "normalized": "location cost tier",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "High Cost",
+        "Low Cost",
+        "Mid Cost",
+        "Unknown"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "Race or Ethnicity (optional)",
+      "normalized": "race or ethnicity (optional)",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Black or of African descent",
+        "East Asian",
+        "Hawaiian or Pacific Islander",
+        "Hispanic, Latine or of Spanish Origin",
+        "I don't wish to answer",
+        "Indigenous, American Indian or Alaska Native",
+        "Middle Eastern or North African Native",
+        "South Asian",
+        "Southeast Asian",
+        "White or European"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "What are your personal pronouns?",
+      "normalized": "what are your personal pronouns?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "He / Him / His",
+        "Multiple pronouns - Please ask me",
+        "Other - Please ask me",
+        "Please use my name",
+        "She / Her / Hers",
+        "They / Them / Their",
+        "Zie / Ze / Zir / Hir / Zir"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "dropbox/8067362"
+    },
+    {
+      "text": "What is your current country of residence?",
+      "normalized": "what is your current country of residence?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Afghanistan",
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Antigua and Barbuda",
+        "Argentina",
+        "Armenia",
+        "Australia",
+        "Austria",
+        "Azerbaijan",
+        "Bahamas",
+        "Bahrain",
+        "Bangladesh",
+        "Barbados",
+        "Belarus",
+        "Belgium",
+        "Belize",
+        "Benin",
+        "Bhutan",
+        "Bolivia",
+        "Bosnia and Herzegovina",
+        "Botswana",
+        "Brazil",
+        "Brunei",
+        "Bulgaria",
+        "Burkina Faso",
+        "Burundi",
+        "Cabo Verde",
+        "Cambodia",
+        "Cameroon",
+        "Canada",
+        "Central African Republic",
+        "Chad",
+        "Chile",
+        "China",
+        "Colombia",
+        "Comoros",
+        "Costa Rica",
+        "Cote d'Ivoire",
+        "Crimea",
+        "Croatia",
+        "Cuba",
+        "Cyprus",
+        "Czech Republic",
+        "Democratic Republic of the Congo",
+        "Denmark",
+        "Djibouti",
+        "Dominica",
+        "Dominican Republic",
+        "Ecuador",
+        "Egypt",
+        "El Salvador",
+        "Equatorial Guinea",
+        "Eritrea",
+        "Estonia",
+        "Eswatini",
+        "Ethiopia",
+        "Fiji",
+        "Finland",
+        "France",
+        "Gabon",
+        "Gambia",
+        "Georgia",
+        "Germany",
+        "Ghana",
+        "Greece",
+        "Grenada",
+        "Guatemala",
+        "Guinea",
+        "Guinea-Bissau",
+        "Guyana",
+        "Haiti",
+        "Honduras",
+        "Hungary",
+        "Iceland",
+        "India",
+        "Indonesia",
+        "Iran",
+        "Iraq",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Jamaica",
+        "Japan",
+        "Jordan",
+        "Kazakhstan",
+        "Kenya",
+        "Kiribati",
+        "Kosovo",
+        "Kuwait",
+        "Kyrgyzstan",
+        "Laos",
+        "Latvia",
+        "Lebanon",
+        "Lesotho",
+        "Liberia",
+        "Libya",
+        "Liechtenstein",
+        "Lithuania",
+        "Luxembourg",
+        "Macedonia",
+        "Madagascar",
+        "Malawi",
+        "Malaysia",
+        "Maldives",
+        "Mali",
+        "Malta",
+        "Marshall Islands",
+        "Mauritania",
+        "Mauritius",
+        "Mexico",
+        "Micronesia",
+        "Moldova",
+        "Monaco",
+        "Mongolia",
+        "Montenegro",
+        "Morocco",
+        "Mozambique",
+        "Myanmar",
+        "Namibia",
+        "Nauru",
+        "Nepal",
+        "Netherlands",
+        "New Zealand",
+        "Nicaragua",
+        "Niger",
+        "Nigeria",
+        "Norway",
+        "Oman",
+        "Pakistan",
+        "Palau",
+        "Palestine",
+        "Panama",
+        "Papua New Guinea",
+        "Paraguay",
+        "Peru",
+        "Philippines",
+        "Poland",
+        "Portugal",
+        "Qatar",
+        "Republic of the Congo",
+        "Romania",
+        "Russia",
+        "Rwanda",
+        "Saint Kitts and Nevis",
+        "Saint Lucia",
+        "Saint Vincent and the Grenadines",
+        "Samoa",
+        "San Marino",
+        "Sao Tome and Principe",
+        "Saudi Arabia",
+        "Senegal",
+        "Serbia",
+        "Seychelles",
+        "Sierra Leone",
+        "Singapore",
+        "Slovakia",
+        "Slovenia",
+        "Solomon Islands",
+        "Somalia",
+        "South Africa",
+        "South Korea",
+        "South Sudan",
+        "Spain",
+        "Sri Lanka",
+        "Sudan",
+        "Suriname",
+        "Sweden",
+        "Switzerland",
+        "Syria",
+        "Taiwan",
+        "Tajikistan",
+        "Tanzania",
+        "Thailand",
+        "Timor-Leste",
+        "Togo",
+        "Tonga",
+        "Trinidad and Tobago",
+        "Tunisia",
+        "Turkey",
+        "Turkmenistan",
+        "Tuvalu",
+        "Uganda",
+        "Ukraine",
+        "United Arab Emirates",
+        "United Kingdom",
+        "United States of America",
+        "Uruguay",
+        "Uzbekistan",
+        "Vanuatu",
+        "Vatican City",
+        "Venezuela",
+        "Vietnam",
+        "Yemen",
+        "Zambia",
+        "Zimbabwe"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "gitlab/8478405002"
+    },
+    {
+      "text": "What is your disability status?",
+      "normalized": "what is your disability status?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No, I don't have a disability",
+        "Yes, I have a disability"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "What is your gender or gender identity?",
+      "normalized": "what is your gender or gender identity?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "Man",
+        "Non-Conforming/Non Binary",
+        "Non-Conforming/Non-Binary/Third Gender",
+        "Not Listed",
+        "Woman"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "instacart/6819435"
+    },
+    {
+      "text": "What is your military status?",
+      "normalized": "what is your military status?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I am on active duty",
+        "I am part of the national guard or on reserve",
+        "I don't wish to answer",
+        "I have never served in the military",
+        "I identify as a non-protected veteran",
+        "I identify as a protected veteran",
+        "I identify in multiple military status categories"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "What is your preferred office location?",
+      "normalized": "what is your preferred office location?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Bellevue, WA",
+        "Menlo Park, CA",
+        "New York, NY",
+        "Toronto, Canada"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "What is your race or ethnicity?",
+      "normalized": "what is your race or ethnicity?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "American Indian or Alaskan Native",
+        "Black or African American",
+        "East Asian",
+        "Hispanic or Latino",
+        "I don't wish to answer",
+        "Middle Eastern or North African",
+        "Native Hawaiian or Other Pacific Islander",
+        "South Asian",
+        "Southeast Asian",
+        "Two or More Races",
+        "White"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "Will you now (or in the future) require visa sponsorship in order to work in the US?",
+      "normalized": "will you now (or in the future) require visa sponsorship in order to work in the us?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "robinhood/4738660"
+    },
+    {
+      "text": "Will you now or in the future require immigration sponsorship to work for Instacart?",
+      "normalized": "will you now or in the future require immigration sponsorship to work for instacart?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 3,
+      "example": "instacart/6819435"
+    },
+    {
+      "text": "Airbnb Candidate Privacy Policy",
+      "normalized": "airbnb candidate privacy policy",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I acknowledge that I have read and understood the Airbnb Candidate Privacy Policy."
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "airbnb/6852954"
+    },
+    {
+      "text": "Are you a veteran/have you served in the military?",
+      "normalized": "are you a veteran/have you served in the military?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Active Reserve",
+        "I don't wish to answer",
+        "Inactive Reserve",
+        "No military service",
+        "Other Protected Veteran",
+        "Retired",
+        "Unspecified Veteran",
+        "Vietnam Era Veteran",
+        "Vietnam Veteran and Other Protected Veteran"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Are you currently authorized to work in the Canada?",
+      "normalized": "are you currently authorized to work in the canada?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "reddit/6512458"
+    },
+    {
+      "text": "Are you currently authorized to work in the U.S.?",
+      "normalized": "are you currently authorized to work in the u.s.?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Are you fluent in English?",
+      "normalized": "are you fluent in english?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "Are you legally authorized to work in the country in which this role is located?",
+      "normalized": "are you legally authorized to work in the country in which this role is located?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "twilio/6372770"
+    },
+    {
+      "text": "Are you legally authorized to work in the United States?",
+      "normalized": "are you legally authorized to work in the united states?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "twilio/7481689"
+    },
+    {
+      "text": "Are you willing to work from the office(s) listed on the job description?",
+      "normalized": "are you willing to work from the office(s) listed on the job description?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "robinhood/6494244"
+    },
+    {
+      "text": "Do you have at least 3 years of experience in financial services, crypto, investigations, legal or tech industry?",
+      "normalized": "do you have at least 3 years of experience in financial services, crypto, investigations, legal or tech industry?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "coinbase/7182060"
+    },
+    {
+      "text": "Do you have professional-level proficiency in English, including reading, writing, and speaking?",
+      "normalized": "do you have professional-level proficiency in english, including reading, writing, and speaking?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "coinbase/7182060"
+    },
+    {
+      "text": "Do you identify as a member of the LGBT2QIA+ community?",
+      "normalized": "do you identify as a member of the lgbt2qia+ community?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "instacart/6819435"
+    },
+    {
+      "text": "Do you live with a disability (as outlined by the ADA)?",
+      "normalized": "do you live with a disability (as outlined by the ada)?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No, I do not have a disability, or have a history/record of having a disability",
+        "Yes, I have a disability, or have a history/record of having a disability"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Gender:",
+      "normalized": "gender",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Decline To Self Identify",
+        "Female",
+        "Male",
+        "Other"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "How many years of experience full time, industry do you have as a data analyst? (not counting internships or school work)",
+      "normalized": "how many years of experience full time, industry do you have as a data analyst? (not counting internships or school work)",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "0 - 2 years of experience as a data analyst",
+        "0 - 2 years of experience as a data scientist",
+        "10+ years of experience as a data analyst",
+        "10+ years of experience as a data scientist",
+        "2 - 6 years of experience as a data analyst",
+        "2 - 6 years of experience as a data scientist",
+        "6 - 10 years of experience as a data analyst",
+        "6 - 10 years of experience as a data scientist",
+        "None - I am a new grad."
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "If located in the US, in what city and state do you reside?",
+      "normalized": "if located in the us, in what city and state do you reside?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 2,
+      "example": "stripe/5601879"
+    },
+    {
+      "text": "If you indicated \"yes\" to the prior question, please provide details on any scheduling restrictions.",
+      "normalized": "if you indicated \"yes\" to the prior question, please provide details on any scheduling restrictions.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 2,
+      "example": "airbnb/6852954"
+    },
+    {
+      "text": "Military Veteran Status",
+      "normalized": "military veteran status",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I am a Protected Veteran",
+        "I am an Active Military Person",
+        "I am not a Protected Veteran",
+        "I don't wish to answer",
+        "I identify as One or More of the Classifications of a Protected Veteran"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "instacart/6819435"
+    },
+    {
+      "text": "Please confirm receipt of the above linked Global Data Privacy Notice and US Arbitration Agreement.",
+      "normalized": "please confirm receipt of the above linked global data privacy notice and us arbitration agreement.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Confirmed"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "coinbase/6784618"
+    },
+    {
+      "text": "Please indicate whether you are either a citizen or resident of any of the following countries: Cuba, Iran, North Korea, Syria or Crimea Region of Ukraine.",
+      "normalized": "please indicate whether you are either a citizen or resident of any of the following countries: cuba, iran, north korea, syria or crimea region of ukraine.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "twilio/7481689"
+    },
+    {
+      "text": "Please select all the languages you speak fluently.",
+      "normalized": "please select all the languages you speak fluently.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "Arabic",
+        "Bahasa Indonesia",
+        "Bulgarian",
+        "Cantonese",
+        "Croatian",
+        "Czech",
+        "Danish",
+        "Dutch",
+        "English",
+        "Estonian",
+        "Finnish",
+        "French",
+        "German",
+        "Greek",
+        "Hebrew",
+        "Hindi",
+        "Hungarian",
+        "Italian",
+        "Japanese",
+        "Korean",
+        "Latvian",
+        "Lithuanian",
+        "Malay",
+        "Mandarin",
+        "Norwegian",
+        "Polish",
+        "Portuguese",
+        "Portuguese (Brazilian)",
+        "Romanian",
+        "Russian",
+        "Slovak",
+        "Slovenian",
+        "Spanish",
+        "Swedish",
+        "Tagalog",
+        "Thai",
+        "Turkish",
+        "Ukrainian",
+        "Vietnamese"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "datadog/1497543"
+    },
+    {
+      "text": "Please select up to 2 ethnicities that you most closely identify with.",
+      "normalized": "please select up to 2 ethnicities that you most closely identify with.",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "American Indian or Alaska Native",
+        "Black or African American",
+        "East Asian",
+        "Hispanic or Latinx",
+        "I don't wish to answer",
+        "Middle Eastern or North African",
+        "Native Hawaiian or Other Pacific Islander",
+        "South Asian",
+        "White"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "reddit/6469397"
+    },
+    {
+      "text": "Please select your country of residence from the list below. Pinterest typically requires employees to work and reside in the country of their employment. Certain geographies may also have provincial requirements.",
+      "normalized": "please select your country of residence from the list below. pinterest typically requires employees to work and reside in the country of their employment. certain geographies may also have provincial requirements.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Australia",
+        "Brazil",
+        "Canada",
+        "France",
+        "Germany",
+        "Ireland",
+        "Italy",
+        "Japan",
+        "Mexico",
+        "Netherlands",
+        "Not Listed",
+        "Singapore",
+        "Spain",
+        "Sweden",
+        "Switzerland",
+        "USA",
+        "United Kingdom"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "pinterest/5459622"
+    },
+    {
+      "text": "Protected Veteran Status",
+      "normalized": "protected veteran status",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I am not a protected veteran",
+        "I don't wish to answer",
+        "I identify as a veteran but not a protected veteran",
+        "I identify as one or more of the classifications of a protected veteran"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "twilio/7481689"
+    },
+    {
+      "text": "Race:",
+      "normalized": "race",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "American Indian or Alaskan Native",
+        "Asian",
+        "Black or African American",
+        "Decline to Self Identify",
+        "Hispanic or Latino",
+        "Native Hawaiian or Other Pacific Islander",
+        "Two or More Races",
+        "White"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Race/Ethnicity",
+      "normalized": "race/ethnicity",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "American Indian or Alaskan Native",
+        "Asian",
+        "Black or African American",
+        "Hispanic or Latino",
+        "I don't wish to answer",
+        "Native American or Other Pacific Islander",
+        "White"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "pinterest/5740948"
+    },
+    {
+      "text": "The role requires availability Sunday to Thursday OR Tuesday to Saturday, between 6 AM and 9 PM local time. Do you have any scheduling restrictions or conflicts with this work schedule?",
+      "normalized": "the role requires availability sunday to thursday or tuesday to saturday, between 6 am and 9 pm local time. do you have any scheduling restrictions or conflicts with this work schedule?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "airbnb/6852954"
+    },
+    {
+      "text": "To ensure we can focus fully on our conversation, we use BrightHire to record and transcribe interviews. This helps us get to know you better without the distraction of note-taking. We also use BrightHire to help us analyze interview notes and for internal Stripe interview quality training and assurance purposes. After the recruitment process ends, recordings may be shared internally for recruiter and interviewer training to help us improve our interview processes. Please confirm if you consent to BrightHire being enabled for this interview and for your personal data to be collected and processed for the purposes mentioned above, by responding below",
+      "normalized": "to ensure we can focus fully on our conversation, we use brighthire to record and transcribe interviews. this helps us get to know you better without the distraction of note-taking. we also use brighthire to help us analyze interview notes and for internal stripe interview quality training and assurance purposes. after the recruitment process ends, recordings may be shared internally for recruiter and interviewer training to help us improve our interview processes. please confirm if you consent to brighthire being enabled for this interview and for your personal data to be collected and processed for the purposes mentioned above, by responding below",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "U.S. Equal Opportunity Employment Information (Completion is voluntary)",
+      "normalized": "u.s. equal opportunity employment information (completion is voluntary)",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "I decline to answer the following questions."
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Veteran Status:",
+      "normalized": "veteran status",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Decline to Self Identify",
+        "I am a protected veteran",
+        "I am not a protected veteran"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "airbnb/6757302"
+    },
+    {
+      "text": "Voluntary Self-Identification of Race/Ethnicity",
+      "normalized": "voluntary self-identification of race/ethnicity",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Asian",
+        "Black or African American",
+        "Hispanic or Latino",
+        "I don't wish to answer",
+        "Native American or Alaska Native",
+        "Native Hawaiian or Other Pacific Islander",
+        "Two or More Races",
+        "White"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "twilio/7481689"
+    },
+    {
+      "text": "Voluntary Self-Identification of Sexual Orientation",
+      "normalized": "voluntary self-identification of sexual orientation",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Bisexual",
+        "Heterosexual",
+        "Homosexual",
+        "I don't wish to answer"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "twilio/7481689"
+    },
+    {
+      "text": "What is the source of your right to work where this role is listed?",
+      "normalized": "what is the source of your right to work where this role is listed?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Citizen of a country with an unlimited right to work where this role is listed",
+        "Citizen or permanent resident where this role is listed",
+        "I do not currently have an unlimited right to work where this role is listed and will require sponsorship",
+        "Valid visa with permission to work with any employer where this role is listed"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "twilio/6372770"
+    },
+    {
+      "text": "What is your race and/or ethnicity? Please check all that apply.",
+      "normalized": "what is your race and/or ethnicity? please check all that apply.",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "A race, ethnicity, or origin not shown",
+        "Asian or Asian-American (A person having origins in any of the original peoples of Asia and the Indian subcontinent including all 48 Asian countries - ie. Cambodia, China, India, Japan, Korea, Malaysia, Pakistan, the Philippine Islands, Thailand, Vietnam)",
+        "Black or African-American (A person of African, Caribbean, West Indian descent)",
+        "Hispanic or Latinx (A person of Cuban, Mexican, Puerto Rican, South or Central American or other Spanish culture or origin regardless of race)",
+        "I don't wish to answer",
+        "Indigenous Peoples (A person having origins in any of the original peoples including Aboriginal People, American Indian, Alaska Native, First Nations, Native American, or Alaska Native, Indigenous peoples from non-US countries)",
+        "Native Hawaiian or other Pacific Islander (A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands)",
+        "White / Caucasian (A person having origins in any of the original peoples of Europe, the Middle East, or North Africa)"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "instacart/6819435"
+    },
+    {
+      "text": "What U.S State do you currently reside in?",
+      "normalized": "what u.s state do you currently reside in?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Alaska",
+        "Arizona",
+        "Arkansas",
+        "California",
+        "Colorado",
+        "Connecticut",
+        "Delaware",
+        "District of Columbia",
+        "Florida",
+        "Georgia",
+        "Hawaii",
+        "Idaho",
+        "Illinois",
+        "Indiana",
+        "Iowa",
+        "Kansas",
+        "Kentucky",
+        "Louisiana",
+        "Maine",
+        "Maryland",
+        "Massachusetts",
+        "Michigan",
+        "Minnesota",
+        "Mississippi",
+        "Missouri",
+        "N/A - I do not reside in the above states",
+        "Nebraska",
+        "Nevada",
+        "New Hampshire",
+        "New Jersey",
+        "New Mexico",
+        "New York",
+        "North Carolina",
+        "Ohio",
+        "Oklahoma",
+        "Oregon",
+        "Pennsylvania",
+        "Rhode Island",
+        "South Carolina",
+        "Tennessee",
+        "Texas",
+        "Utah",
+        "Vermont",
+        "Virginia",
+        "Washington",
+        "Wisconsin"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "pinterest/5740948"
+    },
+    {
+      "text": "What's the name you'd prefer us to use throughout the interview process?",
+      "normalized": "what's the name you'd prefer us to use throughout the interview process?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 2,
+      "example": "gitlab/8490477002"
+    },
+    {
+      "text": "Which of the following best describes how you use AI tools today?",
+      "normalized": "which of the following best describes how you use ai tools today?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I am opposed to using AI tools in my workflow and prefer traditional/manual workflows.",
+        "I design or automate workflows with AI tools (e.g., building agents, integrating AI into team processes).",
+        "I do not use AI tools for my work but I am not against it.",
+        "I have experimented with AI tools (professionally and/or personally).",
+        "I regularly use AI tools to speed up existing tasks (e.g., drafting, summarizing, debugging, basic analysis)."
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "coinbase/7182060"
+    },
+    {
+      "text": "Will you now or in the future require sponsorship for employment visa status (e.g., H-1B visa status)?",
+      "normalized": "will you now or in the future require sponsorship for employment visa status (e.g., h-1b visa status)?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "twilio/7481689"
+    },
+    {
+      "text": "Will you now or in the future require sponsorship for work authorization?",
+      "normalized": "will you now or in the future require sponsorship for work authorization?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I can work for any employer in the offer location without sponsorship",
+        "Yes, I require sponsorship for work authorization in the offer location"
+      ],
+      "boards": 1,
+      "jobs": 2,
+      "example": "dropbox/8067367"
+    },
+    {
+      "text": "Adresse e-mail",
+      "normalized": "adresse e-mail",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "Are you a Canadian Armed Forces Veteran/Reservist or the spouse of a Canadian Armed Forces Veteran/Reservist?",
+      "normalized": "are you a canadian armed forces veteran/reservist or the spouse of a canadian armed forces veteran/reservist?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No",
+        "Yes - I am a Canadian Armed Forces Veteran/Reservist",
+        "Yes - I am both the spouse and a Canada Armed Forces Veteran/Reservist",
+        "Yes - I am the spouse of a Canadian Armed Forces Veteran/Reservist",
+        "Yes - I am veteran or spouse of a veteran (non-Canadian Armed Services)"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "instacart/6819437"
+    },
+    {
+      "text": "Are you a US citizen or lawful permanent resident?",
+      "normalized": "are you a us citizen or lawful permanent resident?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "robinhood/6669758"
+    },
+    {
+      "text": "Are you currently authorized to work for any employer in the country outlined for this role?",
+      "normalized": "are you currently authorized to work for any employer in the country outlined for this role?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I am authorized to work for any employer in the specific country outlined for this role (e.g., an EU citizen, permanent resident, etc.)",
+        "My current work authorization requires a renewal or sponsorship now or in the future",
+        "My status to work in the country in this job location is unknown"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "Are you currently based in Canada, or willing to relocate to Canada?",
+      "normalized": "are you currently based in canada, or willing to relocate to canada?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "Are you currently based in or willing to relocate to the Bay Area for this position?",
+      "normalized": "are you currently based in or willing to relocate to the bay area for this position?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "discord/8369347002"
+    },
+    {
+      "text": "Are you currently based in or willing to relocate to the Bay Area or Los Angeles area for this position?",
+      "normalized": "are you currently based in or willing to relocate to the bay area or los angeles area for this position?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "discord/8214127002"
+    },
+    {
+      "text": "Are you currently based in the San Francisco Bay Area?",
+      "normalized": "are you currently based in the san francisco bay area?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "discord/8460791002"
+    },
+    {
+      "text": "Are you currently based in US or willing to relocate to US?",
+      "normalized": "are you currently based in us or willing to relocate to us?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "stripe/5601879"
+    },
+    {
+      "text": "Are you currently located within 50 mi of the Austin, Texas area?",
+      "normalized": "are you currently located within 50 mi of the austin, texas area?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/6557318"
+    },
+    {
+      "text": "Are you currently, or have you previously, worked at Instacart?",
+      "normalized": "are you currently, or have you previously, worked at instacart?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "instacart/7144697"
+    },
+    {
+      "text": "Are you Mexican Citizen?",
+      "normalized": "are you mexican citizen?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/6540163"
+    },
+    {
+      "text": "Are you willing to be in the office 9-4pm on T,W,Th’s?",
+      "normalized": "are you willing to be in the office 9-4pm on t,w,th’s?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/6557318"
+    },
+    {
+      "text": "Are you willing to undertake a minimum of 50 outbound calls daily as part of your responsibilities?",
+      "normalized": "are you willing to undertake a minimum of 50 outbound calls daily as part of your responsibilities?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/6557318"
+    },
+    {
+      "text": "CV",
+      "normalized": "cv",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_file",
+        "textarea"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "Do you have 3+ years of experience officially as an EM, managing backend product engineering teams?",
+      "normalized": "do you have 3+ years of experience officially as an em, managing backend product engineering teams?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8478405002"
+    },
+    {
+      "text": "Do you have at least 5 years of full time relevant working experience?",
+      "normalized": "do you have at least 5 years of full time relevant working experience?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "Do you have at least 8+ years of full time relevant working experience scaling Sales Operations across Europe, supporting a complex, multi-country sales organization with diverse markets, languages, and evolving go-to-market motions?",
+      "normalized": "do you have at least 8+ years of full time relevant working experience scaling sales operations across europe, supporting a complex, multi-country sales organization with diverse markets, languages, and evolving go-to-market motions?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8075216"
+    },
+    {
+      "text": "Do you have experience designing or improving automated testing pipelines in a large-scale engineering environment?",
+      "normalized": "do you have experience designing or improving automated testing pipelines in a large-scale engineering environment?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8490477002"
+    },
+    {
+      "text": "Do you have experience improving developer tooling, testing frameworks, or platform engineering at scale (i.e., supporting 100+ engineers)?",
+      "normalized": "do you have experience improving developer tooling, testing frameworks, or platform engineering at scale (i.e., supporting 100+ engineers)?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8490477002"
+    },
+    {
+      "text": "Do you have experience supporting multiple sales motions—such as direct, channel, self-serve and enterprise—across global or multi-region organisations, including adapting quota design, revenue models, territory planning and pipeline management for direct versus channel sales?",
+      "normalized": "do you have experience supporting multiple sales motions—such as direct, channel, self-serve and enterprise—across global or multi-region organisations, including adapting quota design, revenue models, territory planning and pipeline management for direct versus channel sales?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8075216"
+    },
+    {
+      "text": "Do you have experience translating go-to-market strategy into an executable operating model?",
+      "normalized": "do you have experience translating go-to-market strategy into an executable operating model?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8075216"
+    },
+    {
+      "text": "Do you have hands-on experience leading annual sales planning, including territory design, quota allocation, account segmentation, or book-of-business management?",
+      "normalized": "do you have hands-on experience leading annual sales planning, including territory design, quota allocation, account segmentation, or book-of-business management?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8075216"
+    },
+    {
+      "text": "Do you have professional experience with multithreading and/or concurrency and would be comfortable demonstrating this in an interview setting?",
+      "normalized": "do you have professional experience with multithreading and/or concurrency and would be comfortable demonstrating this in an interview setting?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "Do you have professional experience writing and shipping production-level backend application code in Ruby, Go, or both? (Note: scripting or automation experience alone does not qualify.)",
+      "normalized": "do you have professional experience writing and shipping production-level backend application code in ruby, go, or both? (note: scripting or automation experience alone does not qualify.)",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8490477002"
+    },
+    {
+      "text": "Do you have professional-level proficiency in French, including reading, writing, and speaking?",
+      "normalized": "do you have professional-level proficiency in french, including reading, writing, and speaking?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "coinbase/7182060"
+    },
+    {
+      "text": "Do you have the unrestricted right to work in the country where this role is located?",
+      "normalized": "do you have the unrestricted right to work in the country where this role is located?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "robinhood/5319465"
+    },
+    {
+      "text": "Do you identify as a member of the 2SLGBTQIA+ community?",
+      "normalized": "do you identify as a member of the 2slgbtqia+ community?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "instacart/6819437"
+    },
+    {
+      "text": "Do you identify as a Person of Colour?",
+      "normalized": "do you identify as a person of colour?",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "instacart/6819437"
+    },
+    {
+      "text": "Do you live in or plan to relocate to Poland?",
+      "normalized": "do you live in or plan to relocate to poland?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/6330377"
+    },
+    {
+      "text": "Do you possess a minimum of 1 year of experience in sales, business development, or a related field?",
+      "normalized": "do you possess a minimum of 1 year of experience in sales, business development, or a related field?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/6557318"
+    },
+    {
+      "text": "Do you, now or in the future, require sponsorship to work in the United States?",
+      "normalized": "do you, now or in the future, require sponsorship to work in the united states?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "instacart/7144697"
+    },
+    {
+      "text": "Gender Identity",
+      "normalized": "gender identity",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Genderqueer",
+        "I don't wish to answer",
+        "Man",
+        "Non-binary or third gender",
+        "Woman"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "discord/8369347002"
+    },
+    {
+      "text": "Have you built or managed executive operating cadences such as weekly business reviews (WBRs), forecast calls, pipeline inspections, or QBRs?",
+      "normalized": "have you built or managed executive operating cadences such as weekly business reviews (wbrs), forecast calls, pipeline inspections, or qbrs?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8075216"
+    },
+    {
+      "text": "Have you led a platform-level or engineering transformation initiative that impacted multiple teams or a large engineering organization?",
+      "normalized": "have you led a platform-level or engineering transformation initiative that impacted multiple teams or a large engineering organization?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8490477002"
+    },
+    {
+      "text": "Have you served as the primary Sales Operations business partner to a VP of Sales (or equivalent senior sales leader), owning forecasting, pipeline reviews, business reviews, and operational execution?",
+      "normalized": "have you served as the primary sales operations business partner to a vp of sales (or equivalent senior sales leader), owning forecasting, pipeline reviews, business reviews, and operational execution?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8075216"
+    },
+    {
+      "text": "Have you supported a global or multi-region Sales organization by partnering cross-functionally with Finance, Marketing, HR, Systems, and Sales Leadership to drive operational improvements?",
+      "normalized": "have you supported a global or multi-region sales organization by partnering cross-functionally with finance, marketing, hr, systems, and sales leadership to drive operational improvements?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8075216"
+    },
+    {
+      "text": "How did your hear about this position?",
+      "normalized": "how did your hear about this position?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "I consider myself a member of the LGBTQ+ community",
+      "normalized": "i consider myself a member of the lgbtq+ community",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I don't wish to answer",
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "discord/8369347002"
+    },
+    {
+      "text": "I have a minimum of two years professional experience as a full time software engineer.",
+      "normalized": "i have a minimum of two years professional experience as a full time software engineer.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "I have professional experience operating Software as a Service (SaaS).",
+      "normalized": "i have professional experience operating software as a service (saas).",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "I have written C, C++, or Rust as my primary programming language in a professional setting.",
+      "normalized": "i have written c, c++, or rust as my primary programming language in a professional setting.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/5390243"
+    },
+    {
+      "text": "If not currently in the SF Bay Area, are you willing to relocate to the SF Bay Area for this position?",
+      "normalized": "if not currently in the sf bay area, are you willing to relocate to the sf bay area for this position?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "discord/8460791002"
+    },
+    {
+      "text": "Lettre de motivation",
+      "normalized": "lettre de motivation",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_file",
+        "textarea"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "Lieu",
+      "normalized": "lieu",
+      "group": "location_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "LinkedIn Profile (Required)",
+      "normalized": "linkedin profile (required)",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7107054"
+    },
+    {
+      "text": "Nom",
+      "normalized": "nom",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "Password portfolio?",
+      "normalized": "password portfolio?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "robinhood/6494244"
+    },
+    {
+      "text": "Please choose the country in which you are located.",
+      "normalized": "please choose the country in which you are located.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Afghanistan",
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Antigua and Barbuda",
+        "Argentina",
+        "Armenia",
+        "Australia",
+        "Austria",
+        "Azerbaijan",
+        "Bahamas",
+        "Bahrain",
+        "Bangladesh",
+        "Barbados",
+        "Belarus",
+        "Belgium",
+        "Belize",
+        "Benin",
+        "Bhutan",
+        "Bolivia",
+        "Bosnia and Herzegovina",
+        "Botswana",
+        "Brazil",
+        "Brunei",
+        "Bulgaria",
+        "Burkina Faso",
+        "Burundi",
+        "Cabo Verde",
+        "Cambodia",
+        "Cameroon",
+        "Canada",
+        "Central African Republic",
+        "Chad",
+        "Chile",
+        "China",
+        "Colombia",
+        "Comoros",
+        "Costa Rica",
+        "Cote d'Ivoire",
+        "Crimea",
+        "Croatia",
+        "Cuba",
+        "Cyprus",
+        "Czech Republic",
+        "Democratic Republic of the Congo",
+        "Denmark",
+        "Djibouti",
+        "Dominica",
+        "Dominican Republic",
+        "Ecuador",
+        "Egypt",
+        "El Salvador",
+        "Equatorial Guinea",
+        "Eritrea",
+        "Estonia",
+        "Eswatini",
+        "Ethiopia",
+        "Fiji",
+        "Finland",
+        "France",
+        "Gabon",
+        "Gambia",
+        "Georgia",
+        "Germany",
+        "Ghana",
+        "Greece",
+        "Grenada",
+        "Guatemala",
+        "Guinea",
+        "Guinea-Bissau",
+        "Guyana",
+        "Haiti",
+        "Honduras",
+        "Hungary",
+        "Iceland",
+        "India",
+        "Indonesia",
+        "Iran",
+        "Iraq",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Jamaica",
+        "Japan",
+        "Jordan",
+        "Kazakhstan",
+        "Kenya",
+        "Kiribati",
+        "Kosovo",
+        "Kuwait",
+        "Kyrgyzstan",
+        "Laos",
+        "Latvia",
+        "Lebanon",
+        "Lesotho",
+        "Liberia",
+        "Libya",
+        "Liechtenstein",
+        "Lithuania",
+        "Luxembourg",
+        "Macedonia",
+        "Madagascar",
+        "Malawi",
+        "Malaysia",
+        "Maldives",
+        "Mali",
+        "Malta",
+        "Marshall Islands",
+        "Mauritania",
+        "Mauritius",
+        "Mexico",
+        "Micronesia",
+        "Moldova",
+        "Monaco",
+        "Mongolia",
+        "Montenegro",
+        "Morocco",
+        "Mozambique",
+        "Myanmar",
+        "Namibia",
+        "Nauru",
+        "Nepal",
+        "Netherlands",
+        "New Zealand",
+        "Nicaragua",
+        "Niger",
+        "Nigeria",
+        "North Korea",
+        "Norway",
+        "Oman",
+        "Pakistan",
+        "Palau",
+        "Palestine",
+        "Panama",
+        "Papua New Guinea",
+        "Paraguay",
+        "Peru",
+        "Philippines",
+        "Poland",
+        "Portugal",
+        "Qatar",
+        "Republic of the Congo",
+        "Romania",
+        "Russia",
+        "Rwanda",
+        "Saint Kitts and Nevis",
+        "Saint Lucia",
+        "Saint Vincent and the Grenadines",
+        "Samoa",
+        "San Marino",
+        "Sao Tome and Principe",
+        "Saudi Arabia",
+        "Senegal",
+        "Serbia",
+        "Seychelles",
+        "Sierra Leone",
+        "Singapore",
+        "Slovakia",
+        "Slovenia",
+        "Solomon Islands",
+        "Somalia",
+        "South Africa",
+        "South Korea",
+        "South Sudan",
+        "Spain",
+        "Sri Lanka",
+        "Sudan",
+        "Suriname",
+        "Sweden",
+        "Switzerland",
+        "Syria",
+        "Taiwan",
+        "Tajikistan",
+        "Tanzania",
+        "Thailand",
+        "Timor-Leste",
+        "Togo",
+        "Tonga",
+        "Trinidad and Tobago",
+        "Tunisia",
+        "Turkey",
+        "Turkmenistan",
+        "Tuvalu",
+        "Uganda",
+        "Ukraine",
+        "United Arab Emirates",
+        "United Kingdom",
+        "United States of America",
+        "Uruguay",
+        "Uzbekistan",
+        "Vanuatu",
+        "Vatican City",
+        "Venezuela",
+        "Vietnam",
+        "Yemen",
+        "Zambia",
+        "Zimbabwe"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8512432002"
+    },
+    {
+      "text": "Please choose the country in which you will be located if hired by GitLab.",
+      "normalized": "please choose the country in which you will be located if hired by gitlab.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Australia",
+        "Austria",
+        "Belgium",
+        "Canada",
+        "Chile",
+        "Costa Rica",
+        "Denmark",
+        "Finland",
+        "Germany",
+        "Hungary",
+        "India",
+        "Ireland",
+        "Italy",
+        "Japan",
+        "Kenya",
+        "Latvia",
+        "Mexico",
+        "My country is not listed",
+        "Netherlands",
+        "New Zealand",
+        "Philippines",
+        "Singapore",
+        "South Africa",
+        "South Korea",
+        "Sweden",
+        "Switzerland",
+        "United Kingdom",
+        "United States"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8490477002"
+    },
+    {
+      "text": "Please indicate which best describes your race/ethnicity/national heritage and/or cultural background. Check all that apply.",
+      "normalized": "please indicate which best describes your race/ethnicity/national heritage and/or cultural background. check all that apply.",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_multi_select"
+      ],
+      "options": [
+        "A race, ethnicity, or origin not shown",
+        "Asian or Asian-American (A person having origins in any of the original peoples of Asia and the Indian subcontinent including all 48 Asian countries - ie. Cambodia, China, India, Japan, Korea, Malaysia, Pakistan, the Philippine Islands, Thailand, Vietnam)",
+        "Black or African Heritage (A person of African, Caribbean, West Indian descent)",
+        "Hispanic or Latinx (A person of Cuban, Mexican, Puerto Rican, South or Central American or other Spanish culture or origin regardless of race)",
+        "I don't wish to answer",
+        "Indigenous Peoples (A person having origins in any of the original peoples origin including First Nations, Inuit, Métis)",
+        "Native Hawaiian or other Pacific Islander (A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands)",
+        "Non-Canadian Indigenous Peoples (A person from United States, Australia, Central/South America)",
+        "White / Caucasian (A person having origins in any of the original peoples of Europe, the Middle East, or North Africa)"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "instacart/6819437"
+    },
+    {
+      "text": "Please provide the zip code of your primary residence.",
+      "normalized": "please provide the zip code of your primary residence.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8067362"
+    },
+    {
+      "text": "Please review and acknowledge the specific Robinhood Applicant Privacy Policy applicable to the country where you are applying.",
+      "normalized": "please review and acknowledge the specific robinhood applicant privacy policy applicable to the country where you are applying.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "I acknowledge"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "robinhood/5319465"
+    },
+    {
+      "text": "Please select the location you anticipate working in for the role in which you are applying.",
+      "normalized": "please select the location you anticipate working in for the role in which you are applying.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "stripe/5601879"
+    },
+    {
+      "text": "Portfolio",
+      "normalized": "portfolio",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "robinhood/6494244"
+    },
+    {
+      "text": "Prénom",
+      "normalized": "prénom",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "Prénom préféré",
+      "normalized": "prénom préféré",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "Race or Ethnicity",
+      "normalized": "race or ethnicity",
+      "group": "demographic_questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "American Indian or Alaska Native",
+        "Asian",
+        "Black or African American",
+        "Hispanic or Latino",
+        "I don't wish to answer",
+        "Native Hawaiian or Other Pacific Islander",
+        "Two or More Races",
+        "White"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "discord/8369347002"
+    },
+    {
+      "text": "Tell us about a Data Engineering project you led end to end within the Advertising domain, or in which you partnered closely with ML engineering",
+      "normalized": "tell us about a data engineering project you led end to end within the advertising domain, or in which you partnered closely with ml engineering",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "textarea"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "discord/8299493002"
+    },
+    {
+      "text": "Tell us about a time you were working toward an important goal and hit an unexpected obstacle that put your success at risk. What was the goal, what got in the way, and what specific steps did you take to get back on track? What was the outcome?",
+      "normalized": "tell us about a time you were working toward an important goal and hit an unexpected obstacle that put your success at risk. what was the goal, what got in the way, and what specific steps did you take to get back on track? what was the outcome?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "textarea"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "instacart/7144697"
+    },
+    {
+      "text": "This is a work from home position. Are you able to acquire a quiet and private workspace at home and a high-speed internet connection?",
+      "normalized": "this is a work from home position. are you able to acquire a quiet and private workspace at home and a high-speed internet connection?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/6852954"
+    },
+    {
+      "text": "This position is based in Mexico City, do you live in Mexico CIty or are you willing to relocate?",
+      "normalized": "this position is based in mexico city, do you live in mexico city or are you willing to relocate?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "cloudflare/6540163"
+    },
+    {
+      "text": "This role is only open to candidates in the United States. Please confirm your current country of residence.",
+      "normalized": "this role is only open to candidates in the united states. please confirm your current country of residence.",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Afghanistan",
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Antigua and Barbuda",
+        "Argentina",
+        "Armenia",
+        "Australia",
+        "Austria",
+        "Azerbaijan",
+        "Bahamas",
+        "Bahrain",
+        "Bangladesh",
+        "Barbados",
+        "Belarus",
+        "Belgium",
+        "Belize",
+        "Benin",
+        "Bhutan",
+        "Bolivia",
+        "Bosnia and Herzegovina",
+        "Botswana",
+        "Brazil",
+        "Brunei",
+        "Bulgaria",
+        "Burkina Faso",
+        "Burundi",
+        "Cabo Verde",
+        "Cambodia",
+        "Cameroon",
+        "Canada",
+        "Central African Republic",
+        "Chad",
+        "Chile",
+        "China",
+        "Colombia",
+        "Comoros",
+        "Costa Rica",
+        "Cote d'Ivoire",
+        "Crimea",
+        "Croatia",
+        "Cuba",
+        "Cyprus",
+        "Czech Republic",
+        "Democratic Republic of the Congo",
+        "Denmark",
+        "Djibouti",
+        "Dominica",
+        "Dominican Republic",
+        "Ecuador",
+        "Egypt",
+        "El Salvador",
+        "Equatorial Guinea",
+        "Eritrea",
+        "Estonia",
+        "Eswatini",
+        "Ethiopia",
+        "Fiji",
+        "Finland",
+        "France",
+        "Gabon",
+        "Gambia",
+        "Georgia",
+        "Germany",
+        "Ghana",
+        "Greece",
+        "Grenada",
+        "Guatemala",
+        "Guinea",
+        "Guinea-Bissau",
+        "Guyana",
+        "Haiti",
+        "Honduras",
+        "Hungary",
+        "Iceland",
+        "India",
+        "Indonesia",
+        "Iran",
+        "Iraq",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Jamaica",
+        "Japan",
+        "Jordan",
+        "Kazakhstan",
+        "Kenya",
+        "Kiribati",
+        "Kosovo",
+        "Kuwait",
+        "Kyrgyzstan",
+        "Laos",
+        "Latvia",
+        "Lebanon",
+        "Lesotho",
+        "Liberia",
+        "Libya",
+        "Liechtenstein",
+        "Lithuania",
+        "Luxembourg",
+        "Macedonia",
+        "Madagascar",
+        "Malawi",
+        "Malaysia",
+        "Maldives",
+        "Mali",
+        "Malta",
+        "Marshall Islands",
+        "Mauritania",
+        "Mauritius",
+        "Mexico",
+        "Micronesia",
+        "Moldova",
+        "Monaco",
+        "Mongolia",
+        "Montenegro",
+        "Morocco",
+        "Mozambique",
+        "Myanmar",
+        "Namibia",
+        "Nauru",
+        "Nepal",
+        "Netherlands",
+        "New Zealand",
+        "Nicaragua",
+        "Niger",
+        "Nigeria",
+        "Norway",
+        "Oman",
+        "Pakistan",
+        "Palau",
+        "Palestine",
+        "Panama",
+        "Papua New Guinea",
+        "Paraguay",
+        "Peru",
+        "Philippines",
+        "Poland",
+        "Portugal",
+        "Qatar",
+        "Republic of the Congo",
+        "Romania",
+        "Russia",
+        "Rwanda",
+        "Saint Kitts and Nevis",
+        "Saint Lucia",
+        "Saint Vincent and the Grenadines",
+        "Samoa",
+        "San Marino",
+        "Sao Tome and Principe",
+        "Saudi Arabia",
+        "Senegal",
+        "Serbia",
+        "Seychelles",
+        "Sierra Leone",
+        "Singapore",
+        "Slovakia",
+        "Slovenia",
+        "Solomon Islands",
+        "Somalia",
+        "South Africa",
+        "South Korea",
+        "South Sudan",
+        "Spain",
+        "Sri Lanka",
+        "Sudan",
+        "Suriname",
+        "Sweden",
+        "Switzerland",
+        "Syria",
+        "Taiwan",
+        "Tajikistan",
+        "Tanzania",
+        "Thailand",
+        "Timor-Leste",
+        "Togo",
+        "Tonga",
+        "Trinidad and Tobago",
+        "Tunisia",
+        "Turkey",
+        "Turkmenistan",
+        "Tuvalu",
+        "Uganda",
+        "Ukraine",
+        "United Arab Emirates",
+        "United Kingdom",
+        "United States of America",
+        "Uruguay",
+        "Uzbekistan",
+        "Vanuatu",
+        "Vatican City",
+        "Venezuela",
+        "Vietnam",
+        "Yemen",
+        "Zambia",
+        "Zimbabwe"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8396674002"
+    },
+    {
+      "text": "Téléphone",
+      "normalized": "téléphone",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "airbnb/7230257"
+    },
+    {
+      "text": "What city/town and state do you live in?",
+      "normalized": "what city/town and state do you live in?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8396674002"
+    },
+    {
+      "text": "What is the highest level of education you have completed?",
+      "normalized": "what is the highest level of education you have completed?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "B.A./ B.S.",
+        "M.A./ M.S.",
+        "Ph.D"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "stripe/5601879"
+    },
+    {
+      "text": "What is the most recent degree you obtained?",
+      "normalized": "what is the most recent degree you obtained?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "Associate's Degree",
+        "Bachelor's Degree",
+        "Doctor of Medicine (M.D.)",
+        "Doctor of Philosophy (Ph.D.)",
+        "High School",
+        "Juris Doctor (J.D.)",
+        "Master of Business Administration (M.B.A.)",
+        "Master's Degree",
+        "Other"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "What is the most recent school you attended?",
+      "normalized": "what is the most recent school you attended?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "stripe/5416444"
+    },
+    {
+      "text": "What is your current notice period?",
+      "normalized": "what is your current notice period?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8490477002"
+    },
+    {
+      "text": "Which software supply chain security  concepts or tools have you worked with hands-on?",
+      "normalized": "which software supply chain security concepts or tools have you worked with hands-on?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "input_text"
+      ],
+      "options": [],
+      "boards": 1,
+      "jobs": 1,
+      "example": "gitlab/8478405002"
+    },
+    {
+      "text": "Will you now or in the future require sponsorship or a visa transfer for employment visa status (ie: H-1B visa)?",
+      "normalized": "will you now or in the future require sponsorship or a visa transfer for employment visa status (ie: h-1b visa)?",
+      "group": "questions",
+      "ats": "greenhouse",
+      "field_types": [
+        "multi_value_single_select"
+      ],
+      "options": [
+        "No, I can work for any US employer without sponsorship (eg: US citizen, permanent resident, EAD, etc.)",
+        "Yes, I require sponsorship or a visa transfer (eg: J-1, F-1 CPT/OPT, H-1B, TN, etc.)"
+      ],
+      "boards": 1,
+      "jobs": 1,
+      "example": "dropbox/8067362"
+    }
+  ]
+}
