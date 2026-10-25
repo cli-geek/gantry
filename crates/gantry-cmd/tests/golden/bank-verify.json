@@ -1,0 +1,24 @@
+{
+  "already": [
+    "legal.authorization.us_citizen"
+  ],
+  "derived": [
+    {
+      "from": "profile.education.highest_level",
+      "id": "profile.education.has_bachelors",
+      "redacted": false,
+      "value": true
+    }
+  ],
+  "nothing_stored": [
+    "profile.contact.phone"
+  ],
+  "unknown": [
+    "no.such.id"
+  ],
+  "verified": [
+    "legal.authorization.authorized_us",
+    "profile.education.highest_level",
+    "profile.contact.email"
+  ]
+}

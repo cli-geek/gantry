@@ -1,0 +1,342 @@
+{
+  "always_ask": [
+    {
+      "id": "availability.driving.clean_record",
+      "label": "Do you have a clean driving record?",
+      "section": "F"
+    },
+    {
+      "id": "availability.functions.essential",
+      "label": "Can you perform the essential functions of the job, with or without reasonable accommodation?",
+      "section": "F"
+    },
+    {
+      "id": "availability.interview.accommodations",
+      "label": "Accommodations you need for the interview process",
+      "section": "F"
+    },
+    {
+      "id": "availability.pay.current_annual",
+      "label": "Current or most recent annual pay",
+      "section": "F"
+    },
+    {
+      "id": "availability.physical.requirements",
+      "label": "Can you meet the physical requirements of the job (lifting, standing)?",
+      "section": "F"
+    },
+    {
+      "id": "availability.references.list",
+      "label": "Professional references",
+      "section": "F"
+    },
+    {
+      "id": "experience.license_discipline",
+      "label": "Discipline history on any license",
+      "section": "G"
+    },
+    {
+      "id": "experience.pay_history",
+      "label": "Starting and ending pay for each experience",
+      "section": "G"
+    },
+    {
+      "id": "legal.criminal.convicted",
+      "label": "Have you ever been convicted of a crime?",
+      "section": "C"
+    },
+    {
+      "id": "legal.criminal.details",
+      "label": "Explanation of any conviction or pending charge",
+      "section": "C"
+    },
+    {
+      "id": "legal.criminal.pending_charges",
+      "label": "Do you have criminal charges pending?",
+      "section": "C"
+    },
+    {
+      "id": "legal.military.served",
+      "label": "Have you served in the military?",
+      "section": "C"
+    },
+    {
+      "id": "legal.military.service",
+      "label": "Military service periods: branch, dates and type of discharge",
+      "section": "C"
+    }
+  ],
+  "report": {
+    "overall": {
+      "always_ask": 10,
+      "answered": 3,
+      "composable": 1,
+      "covered": 15,
+      "declined": 11,
+      "denominator": 130,
+      "missing": 114,
+      "not_applicable": 0,
+      "ratio": 0.11538461538461539,
+      "suggested": 1,
+      "weighted_covered": 20,
+      "weighted_denominator": 148,
+      "weighted_ratio": 0.13513513513513514
+    },
+    "packs": {
+      "core": {
+        "always_ask": 10,
+        "answered": 3,
+        "composable": 1,
+        "covered": 15,
+        "declined": 11,
+        "denominator": 130,
+        "missing": 114,
+        "not_applicable": 0,
+        "ratio": 0.11538461538461539,
+        "suggested": 1,
+        "weighted_covered": 20,
+        "weighted_denominator": 148,
+        "weighted_ratio": 0.13513513513513514
+      }
+    },
+    "sections": {
+      "A": {
+        "always_ask": 0,
+        "answered": 2,
+        "composable": 0,
+        "covered": 2,
+        "declined": 0,
+        "denominator": 14,
+        "missing": 12,
+        "not_applicable": 0,
+        "ratio": 0.14285714285714285,
+        "suggested": 0,
+        "weighted_covered": 4,
+        "weighted_denominator": 24,
+        "weighted_ratio": 0.16666666666666666
+      },
+      "B": {
+        "always_ask": 0,
+        "answered": 0,
+        "composable": 0,
+        "covered": 0,
+        "declined": 0,
+        "denominator": 3,
+        "missing": 2,
+        "not_applicable": 0,
+        "ratio": 0.0,
+        "suggested": 1,
+        "weighted_covered": 0,
+        "weighted_denominator": 3,
+        "weighted_ratio": 0.0
+      },
+      "C": {
+        "always_ask": 3,
+        "answered": 0,
+        "composable": 0,
+        "covered": 0,
+        "declined": 0,
+        "denominator": 24,
+        "missing": 24,
+        "not_applicable": 0,
+        "ratio": 0.0,
+        "suggested": 0,
+        "weighted_covered": 0,
+        "weighted_denominator": 28,
+        "weighted_ratio": 0.0
+      },
+      "D": {
+        "always_ask": 0,
+        "answered": 0,
+        "composable": 0,
+        "covered": 0,
+        "declined": 0,
+        "denominator": 4,
+        "missing": 4,
+        "not_applicable": 0,
+        "ratio": 0.0,
+        "suggested": 0,
+        "weighted_covered": 0,
+        "weighted_denominator": 4,
+        "weighted_ratio": 0.0
+      },
+      "E": {
+        "always_ask": 0,
+        "answered": 0,
+        "composable": 0,
+        "covered": 11,
+        "declined": 11,
+        "denominator": 11,
+        "missing": 0,
+        "not_applicable": 0,
+        "ratio": 1.0,
+        "suggested": 0,
+        "weighted_covered": 14,
+        "weighted_denominator": 14,
+        "weighted_ratio": 1.0
+      },
+      "F": {
+        "always_ask": 5,
+        "answered": 0,
+        "composable": 0,
+        "covered": 0,
+        "declined": 0,
+        "denominator": 18,
+        "missing": 18,
+        "not_applicable": 0,
+        "ratio": 0.0,
+        "suggested": 0,
+        "weighted_covered": 0,
+        "weighted_denominator": 18,
+        "weighted_ratio": 0.0
+      },
+      "G": {
+        "always_ask": 2,
+        "answered": 0,
+        "composable": 0,
+        "covered": 0,
+        "declined": 0,
+        "denominator": 14,
+        "missing": 14,
+        "not_applicable": 0,
+        "ratio": 0.0,
+        "suggested": 0,
+        "weighted_covered": 0,
+        "weighted_denominator": 14,
+        "weighted_ratio": 0.0
+      },
+      "H": {
+        "always_ask": 0,
+        "answered": 0,
+        "composable": 0,
+        "covered": 0,
+        "declined": 0,
+        "denominator": 20,
+        "missing": 20,
+        "not_applicable": 0,
+        "ratio": 0.0,
+        "suggested": 0,
+        "weighted_covered": 0,
+        "weighted_denominator": 20,
+        "weighted_ratio": 0.0
+      },
+      "I": {
+        "always_ask": 0,
+        "answered": 0,
+        "composable": 0,
+        "covered": 0,
+        "declined": 0,
+        "denominator": 4,
+        "missing": 4,
+        "not_applicable": 0,
+        "ratio": 0.0,
+        "suggested": 0,
+        "weighted_covered": 0,
+        "weighted_denominator": 4,
+        "weighted_ratio": 0.0
+      },
+      "J": {
+        "always_ask": 0,
+        "answered": 1,
+        "composable": 1,
+        "covered": 2,
+        "declined": 0,
+        "denominator": 16,
+        "missing": 14,
+        "not_applicable": 0,
+        "ratio": 0.125,
+        "suggested": 0,
+        "weighted_covered": 2,
+        "weighted_denominator": 17,
+        "weighted_ratio": 0.11764705882352941
+      },
+      "K": {
+        "always_ask": 0,
+        "answered": 0,
+        "composable": 0,
+        "covered": 0,
+        "declined": 0,
+        "denominator": 2,
+        "missing": 2,
+        "not_applicable": 0,
+        "ratio": 0.0,
+        "suggested": 0,
+        "weighted_covered": 0,
+        "weighted_denominator": 2,
+        "weighted_ratio": 0.0
+      }
+    },
+    "top_missing": [
+      {
+        "id": "legal.authorization.authorized_us",
+        "label": "Are you legally authorized to work in the United States?",
+        "section": "C",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "legal.authorization.require_sponsorship_future",
+        "label": "Will you require visa sponsorship to work in the future?",
+        "section": "C",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "legal.authorization.require_sponsorship_now",
+        "label": "Do you currently require visa sponsorship to work?",
+        "section": "C",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "legal.employment.prior_at_company",
+        "label": "Companies you have worked for before, with dates and employee ID",
+        "section": "C",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "motivation.cover_letter_stance",
+        "label": "Default cover-letter stance",
+        "section": "J",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "profile.address.city",
+        "label": "City",
+        "section": "A",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "profile.address.country",
+        "label": "Country of residence",
+        "section": "A",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "profile.address.region",
+        "label": "State or province",
+        "section": "A",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "profile.contact.phone",
+        "label": "Phone number (E.164)",
+        "section": "A",
+        "state": "missing",
+        "weight": 2
+      },
+      {
+        "id": "profile.links.linkedin",
+        "label": "LinkedIn profile URL",
+        "section": "A",
+        "state": "missing",
+        "weight": 2
+      }
+    ]
+  }
+}
