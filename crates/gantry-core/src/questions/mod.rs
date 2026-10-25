@@ -18,6 +18,7 @@ use crate::ats::Ats;
 pub mod catalog;
 pub mod coverage;
 pub mod derive;
+pub mod docs;
 pub mod options;
 pub mod value;
 
@@ -26,6 +27,7 @@ pub use coverage::{
     AnswerState, CoverageReport, MissingEntry, Stored, Tally, composable, coverage, state_of,
 };
 pub use derive::{Derived, derive};
+pub use docs::{stored_at, unknown_paths};
 pub use options::{OptionError, Resolved, resolve_option};
 pub use value::{ValueError, ValueWarning, validate_value};
 

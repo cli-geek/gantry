@@ -7,7 +7,8 @@
 use std::path::{Path, PathBuf};
 
 use gantry_core::Ats;
-use gantry_core::bank::{Banks, ExperienceBank, LegalBank, ProfileBank};
+use gantry_core::bank::{Banks, ExperienceBank, Item, LegalBank, ProfileBank};
+use gantry_core::questions::PolicyMode;
 use gantry_core::search::SearchProfile;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
@@ -99,16 +100,28 @@ pub enum ConfigFile {
     Legal,
     Experience,
     Companies,
+    Eeo,
+    Availability,
+    Stories,
+    Approach,
+    Motivation,
+    Answers,
 }
 
 impl ConfigFile {
-    pub const ALL: [Self; 6] = [
+    pub const ALL: [Self; 12] = [
         Self::Search,
         Self::Settings,
         Self::Profile,
         Self::Legal,
         Self::Experience,
         Self::Companies,
+        Self::Eeo,
+        Self::Availability,
+        Self::Stories,
+        Self::Approach,
+        Self::Motivation,
+        Self::Answers,
     ];
 
     pub const fn file_name(self) -> &'static str {
@@ -119,6 +132,12 @@ impl ConfigFile {
             Self::Legal => "legal.toml",
             Self::Experience => "experience.toml",
             Self::Companies => "companies.toml",
+            Self::Eeo => "eeo.toml",
+            Self::Availability => "availability.toml",
+            Self::Stories => "stories.toml",
+            Self::Approach => "approach.toml",
+            Self::Motivation => "motivation.toml",
+            Self::Answers => "answers.toml",
         }
     }
 }
@@ -130,14 +149,14 @@ pub enum FileState {
     Invalid(String),
 }
 
-fn toml_error(path: &Path, e: &toml::de::Error) -> StoreError {
+pub(crate) fn toml_error(path: &Path, e: &toml::de::Error) -> StoreError {
     StoreError::Toml {
         path: path.to_path_buf(),
         message: e.to_string(),
     }
 }
 
-fn read_optional(path: &Path) -> Result<Option<String>, StoreError> {
+pub(crate) fn read_optional(path: &Path) -> Result<Option<String>, StoreError> {
     match std::fs::read_to_string(path) {
         Ok(text) => Ok(Some(text)),
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(None),
@@ -195,6 +214,12 @@ pub fn check_files(config_dir: &Path) -> Vec<(PathBuf, FileState)> {
                         ConfigFile::Companies => CompanyList::parse(&text, &path)
                             .map(drop)
                             .map_err(|e| e.to_string()),
+                        ConfigFile::Eeo
+                        | ConfigFile::Availability
+                        | ConfigFile::Stories
+                        | ConfigFile::Approach
+                        | ConfigFile::Motivation => parses::<toml::Table>(&text),
+                        ConfigFile::Answers => check_answers(&text),
                     };
                     match parsed {
                         Ok(()) => FileState::Valid,
@@ -205,6 +230,23 @@ pub fn check_files(config_dir: &Path) -> Vec<(PathBuf, FileState)> {
             (path, state)
         })
         .collect()
+}
+
+/// `answers.toml` is a table whose `policy` rows are `Item<PolicyMode>`.
+fn check_answers(text: &str) -> Result<(), String> {
+    let table: toml::Table = text.parse().map_err(|e: toml::de::Error| e.to_string())?;
+    let Some(policy) = table.get("policy") else {
+        return Ok(());
+    };
+    let rows = policy
+        .as_table()
+        .ok_or_else(|| "policy must be a table of items".to_owned())?;
+    for (id, row) in rows {
+        row.clone()
+            .try_into::<Item<PolicyMode>>()
+            .map_err(|e| format!("policy.\"{id}\": {e}"))?;
+    }
+    Ok(())
 }
 
 fn parses<T: DeserializeOwned>(text: &str) -> Result<(), String> {
@@ -269,5 +311,32 @@ mod tests {
         assert_eq!(states[2], FileState::Missing);
         assert!(matches!(states[5], FileState::Invalid(ref m) if m.contains("board API")));
         assert!(load_snapshot(dir.path()).is_err());
+    }
+
+    #[test]
+    fn bank_files_are_checked_as_tables_and_policy_rows() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(dir.path().join("eeo.toml"), "autofill = true\n").unwrap();
+        std::fs::write(dir.path().join("stories.toml"), "= nope").unwrap();
+        std::fs::write(
+            dir.path().join("answers.toml"),
+            "[policy.\"eeo.gender\"]\nvalue = \"sometimes\"\n",
+        )
+        .unwrap();
+        let states = check_files(dir.path());
+        assert_eq!(states.len(), 12);
+        let state = |name: &str| {
+            states
+                .iter()
+                .find(|(p, _)| p.ends_with(name))
+                .map(|(_, s)| s.clone())
+                .unwrap()
+        };
+        assert_eq!(state("eeo.toml"), FileState::Valid);
+        assert_eq!(state("approach.toml"), FileState::Missing);
+        assert!(matches!(state("stories.toml"), FileState::Invalid(_)));
+        assert!(
+            matches!(state("answers.toml"), FileState::Invalid(ref m) if m.contains("eeo.gender"))
+        );
     }
 }
