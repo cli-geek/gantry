@@ -53,6 +53,35 @@ fn every_m1_field_has_a_question_of_the_same_type() {
     }
 }
 
+/// Fails to compile when an M1 enum gains a variant, so the lists in
+/// `enum_options_equal_the_serde_names` cannot fall behind.
+#[allow(dead_code)]
+fn variant_lists_are_exhaustive(e: EducationLevel, l: ClearanceLevel, s: ClearanceStatus) {
+    use EducationLevel as E;
+    match e {
+        E::None
+        | E::HighSchool
+        | E::SomeCollege
+        | E::Certificate
+        | E::Associate
+        | E::Bachelors
+        | E::Masters
+        | E::Professional
+        | E::Doctorate => {}
+    }
+    match l {
+        ClearanceLevel::None
+        | ClearanceLevel::PublicTrust
+        | ClearanceLevel::Confidential
+        | ClearanceLevel::Secret
+        | ClearanceLevel::TopSecret
+        | ClearanceLevel::TsSci => {}
+    }
+    match s {
+        ClearanceStatus::Active | ClearanceStatus::Current | ClearanceStatus::Expired => {}
+    }
+}
+
 #[test]
 fn enum_options_equal_the_serde_names() {
     use EducationLevel as E;
