@@ -32,6 +32,8 @@ pub enum CatalogError {
         pack: String,
         stem: String,
     },
+    #[error("{file}: pack name \"core\" is reserved for the core bank")]
+    PackNameReserved { file: String },
     #[error("{file}: pack {pack:?} is also defined in {first_file}")]
     DuplicatePack {
         file: String,
@@ -389,6 +391,12 @@ fn check_pack_header(
         });
         return;
     };
+    // Coverage reports core questions under this key.
+    if name == "core" {
+        errs.push(CatalogError::PackNameReserved {
+            file: file.to_owned(),
+        });
+    }
     if name != stem {
         errs.push(CatalogError::PackNameMismatch {
             file: file.to_owned(),
@@ -874,6 +882,16 @@ mod tests {
             format!("{}{body}", pack_header("tech")),
             format!("{}{body}", pack_header("other")),
             CatalogError::PackNameMismatch { .. }
+        );
+        let core_body = q("approach.core.a", "I", "free_text", "text", "");
+        let errs = errors(
+            "packs/core.toml",
+            &format!("{}{core_body}", pack_header("core")),
+        );
+        assert!(
+            errs.iter()
+                .any(|e| matches!(e, CatalogError::PackNameReserved { .. })),
+            "{errs:?}"
         );
     }
 

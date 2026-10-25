@@ -16,10 +16,14 @@ use serde::{Deserialize, Serialize};
 use crate::ats::Ats;
 
 pub mod catalog;
+pub mod coverage;
 pub mod options;
+pub mod value;
 
 pub use catalog::{Catalog, CatalogError, CatalogErrors};
+pub use coverage::{AnswerState, CoverageReport, MissingEntry, Stored, Tally, coverage, state_of};
 pub use options::{OptionError, Resolved, resolve_option};
+pub use value::{ValueError, ValueWarning, validate_value};
 
 /// Question section A..K (design §1). Each section lives in one bank file.
 #[derive(
