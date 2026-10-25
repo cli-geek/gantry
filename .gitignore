@@ -1,1 +1,5 @@
 /target
+
+# Prose and design docs are local only; docs/schema/ stays tracked
+/docs/*.md
+/docs/design/

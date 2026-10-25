@@ -50,9 +50,6 @@ Indeed, Glassdoor, ZipRecruiter and Wellfound. Gantry never sends them a
 request. Their postings get every answer prepared for you to paste in
 yourself (manual paste mode, M6).
 
-The full plan, with decisions and the reasons for them, is in
-[`docs/plan.md`](docs/plan.md).
-
 ## Build
 
 Requires Rust 1.95 or newer and a C compiler (for the bundled SQLite).
@@ -86,9 +83,7 @@ that other users can read.
 
 ## Documentation
 
-- [`docs/plan.md`](docs/plan.md): plan of record, milestones, decisions
-- [`docs/cli.md`](docs/cli.md): commands, JSON output, exit codes
-- [`docs/architecture.md`](docs/architecture.md): crates and the discovery run
+- [`docs/schema/`](docs/schema/): JSON Schemas for every `--json` output
 - [`fixtures/profiles/README.md`](fixtures/profiles/README.md): fictional test profiles
 
 ## License
