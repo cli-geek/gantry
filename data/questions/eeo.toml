@@ -1,0 +1,222 @@
+# Core question bank, section E (voluntary self-identification).
+# Every question defaults to decline; real answers are used only when set
+# explicitly and eeo.autofill is true. Format and rules: docs/question-bank.md.
+
+[[question]]
+id = "eeo.gender"
+section = "E"
+label = "Gender"
+sensitivity = "eeo"
+answer_type = "enum"
+options = ["female", "male", "non_binary", "other"]
+weight = 2
+default_policy = "decline"
+variants = [
+  { text = "Gender", ats = "greenhouse" },
+  { text = "Voluntary Self-Identification of Gender", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+female = ["Female"]
+male = ["Male"]
+non_binary = ["Gender Nonconforming"]
+other = ["Other"]
+
+[[question]]
+id = "eeo.gender_identity"
+section = "E"
+label = "Gender identity"
+sensitivity = "eeo"
+answer_type = "enum"
+options = ["woman", "man", "non_binary", "genderqueer", "agender", "genderfluid", "other"]
+default_policy = "decline"
+variants = [
+  { text = "Gender Identity", ats = "greenhouse" },
+  { text = "Gender Identity (optional)", ats = "greenhouse" },
+  { text = "What gender identity do you most closely identify with?", ats = "greenhouse" },
+  { text = "What is your gender or gender identity?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+woman = ["Woman", "Female"]
+man = ["Man", "Male"]
+non_binary = ["Non-binary", "Non-Conforming/Non Binary", "Non-Conforming/Non-Binary/Third Gender", "Non-binary or third gender", "Gender non-conforming"]
+genderqueer = ["Genderqueer"]
+agender = ["Agender"]
+genderfluid = ["Genderfluid"]
+other = ["Not listed", "Not Listed"]
+
+[[question]]
+id = "eeo.transgender"
+section = "E"
+label = "Are you transgender?"
+sensitivity = "eeo"
+answer_type = "bool"
+default_policy = "decline"
+variants = [
+  { text = "Are you a person of transgender experience?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+decline = ["I don't wish to answer"]
+
+[[question]]
+id = "eeo.sexual_orientation"
+section = "E"
+label = "Sexual orientation"
+sensitivity = "eeo"
+answer_type = "enum"
+options = ["heterosexual", "gay_or_lesbian", "bisexual", "pansexual", "asexual", "queer", "other"]
+default_policy = "decline"
+variants = [
+  { text = "Voluntary Self-Identification of Sexual Orientation", ats = "greenhouse" },
+  { text = "What sexual orientation do you most closely identify with?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+heterosexual = ["Heterosexual"]
+gay_or_lesbian = ["Gay", "Lesbian", "Homosexual"]
+bisexual = ["Bisexual"]
+pansexual = ["Pansexual"]
+asexual = ["Asexual"]
+queer = ["Queer"]
+other = ["Not listed"]
+
+[[question]]
+id = "eeo.lgbtq_member"
+section = "E"
+label = "Do you identify as a member of the LGBTQ+ community?"
+sensitivity = "eeo"
+answer_type = "bool"
+default_policy = "decline"
+variants = [
+  { text = "Do you identify as part of the LGBTQ+ community?", ats = "greenhouse" },
+  { text = "Do you identify as a member of the 2SLGBTQIA+ community?", ats = "greenhouse" },
+  { text = "Do you identify as a member of the LGBT2QIA+ community?", ats = "greenhouse" },
+  { text = "I consider myself a member of the LGBTQ+ community", ats = "greenhouse" },
+  { text = "I consider myself a member of the LGBTQ+ community. (optional)", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+decline = ["I don't wish to answer"]
+
+[[question]]
+id = "eeo.hispanic_latino"
+section = "E"
+label = "Are you Hispanic or Latino?"
+sensitivity = "eeo"
+answer_type = "bool"
+default_policy = "decline"
+jurisdiction_note = "US OMB wording. Forms that list it inside the race question are answered from this."
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+decline = ["I don't wish to answer"]
+
+[[question]]
+id = "eeo.race"
+section = "E"
+label = "Race or ethnicity (OMB category)"
+sensitivity = "eeo"
+answer_type = "enum"
+options = ["american_indian_alaska_native", "asian", "black", "native_hawaiian_pacific_islander", "white", "middle_eastern_north_african", "two_or_more"]
+weight = 2
+default_policy = "decline"
+jurisdiction_note = "US OMB categories. A multi-select form is answered with the single category here, or two_or_more."
+variants = [
+  { text = "Race", ats = "greenhouse" },
+  { text = "Race/Ethnicity", ats = "greenhouse" },
+  { text = "Race or Ethnicity", ats = "greenhouse" },
+  { text = "Race and Ethnicity", ats = "greenhouse" },
+  { text = "Voluntary Self-Identification of Race/Ethnicity", ats = "greenhouse" },
+  { text = "What is your race or ethnicity?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+american_indian_alaska_native = ["American Indian or Alaskan Native", "American Indian or Alaska Native", "Native American or Alaska Native", "Indigenous, American Indian or Alaska Native"]
+asian = ["Asian", "East Asian", "South Asian", "Southeast Asian"]
+black = ["Black or African American", "Black or of African descent"]
+native_hawaiian_pacific_islander = ["Native Hawaiian or Other Pacific Islander", "Hawaiian or Pacific Islander"]
+white = ["White", "White or European"]
+middle_eastern_north_african = ["Middle Eastern or North African", "Middle Eastern or North African Native"]
+two_or_more = ["Two or More Races"]
+
+[[question]]
+id = "eeo.veteran_status"
+section = "E"
+label = "Veteran status (VEVRAA)"
+sensitivity = "eeo"
+answer_type = "enum"
+options = ["protected_veteran", "not_protected_veteran", "active_duty", "reserve_or_guard", "never_served"]
+weight = 2
+default_policy = "decline"
+jurisdiction_note = "US VEVRAA categories."
+variants = [
+  { text = "VeteranStatus", ats = "greenhouse" },
+  { text = "Veteran Status", ats = "greenhouse" },
+  { text = "Protected Veteran Status", ats = "greenhouse" },
+  { text = "Military Veteran Status", ats = "greenhouse" },
+  { text = "What is your military status?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+protected_veteran = ["I identify as one or more of the classifications of a protected veteran", "I am a protected veteran", "I am a Protected Veteran", "I identify as a protected veteran"]
+not_protected_veteran = ["I am not a protected veteran", "I am not a Protected Veteran", "I identify as a veteran but not a protected veteran", "I identify as a non-protected veteran"]
+active_duty = ["I am on active duty", "I am an Active Military Person"]
+reserve_or_guard = ["I am part of the national guard or on reserve"]
+never_served = ["I have never served in the military", "No military service"]
+
+[[question]]
+id = "eeo.disability_status"
+section = "E"
+label = "Disability status (OFCCP CC-305)"
+sensitivity = "eeo"
+answer_type = "bool"
+default_policy = "decline"
+jurisdiction_note = "US OFCCP Form CC-305. Name and date fields on the form come from the profile."
+variants = [
+  { text = "Disability Status", ats = "greenhouse" },
+  { text = "What is your disability status?", ats = "greenhouse" },
+  { text = "Do you live with a disability (as outlined by the ADA)?", ats = "greenhouse" },
+]
+
+[question.options_normalization]
+yes = ["Yes", "Yes, I have a disability, or have a history/record of having a disability", "Yes, I have a disability, or have had one in the past", "Yes, I have a disability"]
+no = ["No", "No, I do not have a disability and have not had one in the past", "No, I don't have a disability, or a history/record of having a disability", "No, I do not have a disability, or have a history/record of having a disability", "No, I don't have a disability"]
+decline = ["I don't wish to answer"]
+
+[[question]]
+id = "eeo.first_generation"
+section = "E"
+label = "Are you a first-generation college student?"
+sensitivity = "eeo"
+answer_type = "bool"
+default_policy = "decline"
+
+[question.options_normalization]
+yes = ["Yes"]
+no = ["No"]
+decline = ["I don't wish to answer"]
+
+[[question]]
+id = "eeo.age_range"
+section = "E"
+label = "Age range"
+sensitivity = "eeo"
+answer_type = "enum"
+options = ["under_18", "18_24", "25_34", "35_44", "45_54", "55_64", "65_plus"]
+default_policy = "decline"
+
+[question.options_normalization]
+under_18 = ["Under 18"]
+18_24 = ["18-24"]
+25_34 = ["25-34"]
+35_44 = ["35-44"]
+45_54 = ["45-54"]
+55_64 = ["55-64"]
+65_plus = ["65 and over", "65+"]
