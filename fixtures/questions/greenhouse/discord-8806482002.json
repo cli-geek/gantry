@@ -1,0 +1,670 @@
+{
+  "absolute_url": "https://job-boards.greenhouse.io/discord/jobs/8806482002",
+  "data_compliance": [
+    {
+      "type": "gdpr",
+      "requires_consent": false,
+      "requires_processing_consent": false,
+      "requires_retention_consent": false,
+      "retention_period": null,
+      "demographic_data_consent_applies": true
+    }
+  ],
+  "internal_job_id": 6524134002,
+  "location": {
+    "name": "San Francisco Bay Area"
+  },
+  "metadata": [
+    {
+      "id": 4105571002,
+      "name": "Featured on Website",
+      "value": [],
+      "value_type": "multi_select"
+    },
+    {
+      "id": 96196709002,
+      "name": "Careers Site Department",
+      "value": null,
+      "value_type": "single_select"
+    }
+  ],
+  "id": 8806482002,
+  "updated_at": "2026-10-20T20:27:20-04:00",
+  "requisition_id": "R-107406",
+  "title": "Commercial Policy Lead",
+  "company_name": "Discord",
+  "first_published": "2026-09-15T12:52:11-04:00",
+  "language": "en",
+  "application_deadline": null,
+  "departments": [
+    {
+      "id": 4054683002,
+      "name": "Policy",
+      "child_ids": [],
+      "parent_id": 4094263002
+    }
+  ],
+  "offices": [
+    {
+      "id": 4082816002,
+      "name": "Remote (US)",
+      "location": null,
+      "child_ids": [],
+      "parent_id": null
+    }
+  ],
+  "ai_disclaimer": null,
+  "include_ai_disclaimer": false,
+  "ai_opt_out_request_url": "http://app2.greenhouse.io/ai_opt_out_request/job_post/8806482002/ai_opt_out",
+  "compliance": [
+    {
+      "type": "eeoc",
+      "questions": [
+        {
+          "required": true,
+          "label": "VeteranStatus",
+          "fields": [
+            {
+              "name": "veteran_status",
+              "type": "multi_value_single_select",
+              "values": [
+                {
+                  "label": "I don't wish to answer",
+                  "value": "3"
+                },
+                {
+                  "label": "I identify as one or more of the classifications of a protected veteran",
+                  "value": "2"
+                },
+                {
+                  "label": "I am not a protected veteran",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "description": "&lt;p&gt;\n  If you believe you belong to any of the categories of protected veterans listed below, please indicate by making the appropriate selection.\n  As a government contractor subject to the Vietnam Era Veterans&#39; Readjustment Assistance Act (VEVRAA), we request this information in order to measure\n  the effectiveness of the outreach and positive recruitment efforts we undertake pursuant to VEVRAA. Classification of protected categories\n  is as follows:\n&lt;/p&gt;\n&lt;p&gt;A &quot;disabled veteran&quot; is one of the following: a veteran of the U.S. military, ground, naval or air service who is entitled to compensation (or who but for the receipt of military retired pay would be entitled to compensation) under laws administered by the Secretary of Veterans Affairs; or a person who was discharged or released from active duty because of a service-connected disability.&lt;/p&gt;\n&lt;p&gt;A &quot;recently separated veteran&quot; means any veteran during the three-year period beginning on the date of such veteran&#39;s discharge or release from active duty in the U.S. military, ground, naval, or air service.&lt;/p&gt;\n&lt;p&gt;An &quot;active duty wartime or campaign badge veteran&quot; means a veteran who served on active duty in the U.S. military, ground, naval or air service during a war, or in a campaign or expedition for which a campaign badge has been authorized under the laws administered by the Department of Defense.&lt;/p&gt;\n&lt;p&gt;An &quot;Armed forces service medal veteran&quot; means a veteran who, while serving on active duty in the U.S. military, ground, naval or air service, participated in a United States military operation for which an Armed Forces service medal was awarded pursuant to Executive Order 12985.&lt;/p&gt;\n"
+    },
+    {
+      "type": "eeoc",
+      "questions": [
+        {
+          "required": true,
+          "label": "Race",
+          "fields": [
+            {
+              "name": "race",
+              "type": "multi_value_single_select",
+              "values": [
+                {
+                  "label": "Decline To Self Identify",
+                  "value": "8"
+                },
+                {
+                  "label": "Two or More Races",
+                  "value": "7"
+                },
+                {
+                  "label": "Native Hawaiian or Other Pacific Islander",
+                  "value": "6"
+                },
+                {
+                  "label": "White",
+                  "value": "5"
+                },
+                {
+                  "label": "Hispanic or Latino",
+                  "value": "4"
+                },
+                {
+                  "label": "Black or African American",
+                  "value": "3"
+                },
+                {
+                  "label": "Asian",
+                  "value": "2"
+                },
+                {
+                  "label": "American Indian or Alaskan Native",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "required": true,
+          "label": "Gender",
+          "fields": [
+            {
+              "name": "gender",
+              "type": "multi_value_single_select",
+              "values": [
+                {
+                  "label": "Decline To Self Identify",
+                  "value": "3"
+                },
+                {
+                  "label": "Female",
+                  "value": "2"
+                },
+                {
+                  "label": "Male",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "description": "&lt;h3&gt;&lt;strong&gt;Voluntary Self-Identification&lt;/strong&gt;&lt;/h3&gt;&lt;br/&gt;&lt;p&gt;For government reporting purposes, we ask candidates to respond to the below self-identification survey.\nCompletion of the form is entirely voluntary. Whatever your decision, it will not be considered in the hiring\nprocess or thereafter. Any information that you do provide will be recorded and maintained in a\nconfidential file.&lt;/p&gt;\n\n&lt;p&gt;As set forth in Discord’s Equal Employment Opportunity policy,\nwe do not discriminate on the basis of any protected group status under any applicable law.&lt;/p&gt;\n"
+    }
+  ],
+  "demographic_questions": {
+    "header": "Voluntary Self Identification",
+    "description": "<p>For government reporting purposes (EEO-1), we ask candidates to respond to the below self-identification survey. Discord is required to file annual demographic reports with the Equal Employment Opportunity Commission. Your responses help us meet this obligation. Each question below includes an &ldquo;I don&rsquo;t wish to answer&rdquo; option.&nbsp; Whatever your decision, it will not be considered in the hiring process or thereafter. Any information that you do provide will be recorded and maintained in a confidential file.</p>\n<p>Additionally, we also have [optional] questions. These help us understand the composition of our broader applicant pool and have no impact on your application or hiring decisions. Your answers are kept secure, pseudonymized, and separate from your application and personal data. By answering, you consent to our use of your responses for the reasons above. If you change your mind later about sharing this information, you can withdraw consent anytime by reaching out to us at privacy@discordapp.com.</p>\n<p>Discord is an Equal Employment Opportunity employer. We do not discriminate on the basis of race, color, religion, sex (including pregnancy, childbirth, and related medical conditions), gender identity, gender expression, sexual orientation, national origin, ancestry, age, marital status, disability, medical condition, genetic information, military or veteran status, citizenship status, or any other characteristic protected by applicable federal, state, or local law.&nbsp; This policy applies to all aspects of employment, including hiring, promotion, compensation, discipline, termination, and access to benefits and training.</p>",
+    "questions": [
+      {
+        "id": 4033064002,
+        "label": "Gender",
+        "required": true,
+        "type": "multi_value_single_select",
+        "answer_options": [
+          {
+            "id": 4196776002,
+            "label": "Male",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196777002,
+            "label": "Female",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196778002,
+            "label": "I don't wish to answer",
+            "free_form": false,
+            "decline_to_answer": true
+          }
+        ]
+      },
+      {
+        "id": 4033065002,
+        "label": "Race and Ethnicity",
+        "required": true,
+        "type": "multi_value_single_select",
+        "answer_options": [
+          {
+            "id": 4196779002,
+            "label": "American Indian or Alaska Native",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196780002,
+            "label": "I don't wish to answer",
+            "free_form": false,
+            "decline_to_answer": true
+          },
+          {
+            "id": 4196781002,
+            "label": "Asian",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196782002,
+            "label": "Black or African American",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196783002,
+            "label": "Hispanic or Latino",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196784002,
+            "label": "Native Hawaiian or Other Pacific Islander",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196785002,
+            "label": "Two or More Races",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196786002,
+            "label": "White",
+            "free_form": false,
+            "decline_to_answer": false
+          }
+        ]
+      },
+      {
+        "id": 4033066002,
+        "label": "Veteran Status",
+        "required": true,
+        "type": "multi_value_single_select",
+        "answer_options": [
+          {
+            "id": 4196787002,
+            "label": "I am not a protected veteran",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196788002,
+            "label": "I identify as one or more of the classifications of a protected veteran",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196789002,
+            "label": "I don't wish to answer",
+            "free_form": false,
+            "decline_to_answer": true
+          }
+        ]
+      },
+      {
+        "id": 4033067002,
+        "label": "Disability Status",
+        "required": true,
+        "type": "multi_value_single_select",
+        "answer_options": [
+          {
+            "id": 4196790002,
+            "label": "Yes, I have a disability, or have had one in the past",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196791002,
+            "label": "No, I do not have a disability and have not had one in the past",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196792002,
+            "label": "I don't wish to answer",
+            "free_form": false,
+            "decline_to_answer": true
+          }
+        ]
+      },
+      {
+        "id": 4033068002,
+        "label": "Gender Identity (optional)",
+        "required": false,
+        "type": "multi_value_single_select",
+        "answer_options": [
+          {
+            "id": 4196793002,
+            "label": "Man",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196794002,
+            "label": "Woman",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196795002,
+            "label": "Non-binary or third gender",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196796002,
+            "label": "Genderqueer",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196797002,
+            "label": "I don't wish to answer",
+            "free_form": false,
+            "decline_to_answer": false
+          }
+        ]
+      },
+      {
+        "id": 4033069002,
+        "label": "Race or Ethnicity (optional)",
+        "required": false,
+        "type": "multi_value_multi_select",
+        "answer_options": [
+          {
+            "id": 4196798002,
+            "label": "Black or of African descent",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196799002,
+            "label": "East Asian",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196800002,
+            "label": "Hispanic, Latine or of Spanish Origin",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196801002,
+            "label": "Indigenous, American Indian or Alaska Native",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196802002,
+            "label": "Middle Eastern or North African Native",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196803002,
+            "label": "Hawaiian or Pacific Islander",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196804002,
+            "label": "South Asian",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196805002,
+            "label": "Southeast Asian",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196806002,
+            "label": "White or European",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196807002,
+            "label": "I don't wish to answer",
+            "free_form": false,
+            "decline_to_answer": false
+          }
+        ]
+      },
+      {
+        "id": 4033070002,
+        "label": "I consider myself a member of the LGBTQ+ community. (optional)",
+        "required": false,
+        "type": "multi_value_single_select",
+        "answer_options": [
+          {
+            "id": 4196808002,
+            "label": "Yes",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196809002,
+            "label": "No",
+            "free_form": false,
+            "decline_to_answer": false
+          },
+          {
+            "id": 4196810002,
+            "label": "I don't wish to answer",
+            "free_form": false,
+            "decline_to_answer": false
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "description": null,
+      "label": "First Name",
+      "required": true,
+      "fields": [
+        {
+          "name": "first_name",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Last Name",
+      "required": true,
+      "fields": [
+        {
+          "name": "last_name",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Preferred First Name",
+      "required": false,
+      "fields": [
+        {
+          "name": "preferred_name",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Email",
+      "required": true,
+      "fields": [
+        {
+          "name": "email",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Phone",
+      "required": true,
+      "fields": [
+        {
+          "name": "phone",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Resume/CV",
+      "required": true,
+      "fields": [
+        {
+          "name": "resume",
+          "type": "input_file",
+          "values": []
+        },
+        {
+          "name": "resume_text",
+          "type": "textarea",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Cover Letter",
+      "required": false,
+      "fields": [
+        {
+          "name": "cover_letter",
+          "type": "input_file",
+          "values": []
+        },
+        {
+          "name": "cover_letter_text",
+          "type": "textarea",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Why do you want to work at Discord?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_38318888002",
+          "type": "textarea",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "LinkedIn Profile",
+      "required": false,
+      "fields": [
+        {
+          "name": "question_38318889002",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "How did you hear about this job?",
+      "required": false,
+      "fields": [
+        {
+          "name": "question_38318891002",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you legally authorized to work in the United States for our Company?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_38318892002",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you currently located in the US?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_38318893002",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you currently based in or willing to relocate to the Bay Area for this position? ",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_38318894002",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "location_questions": [
+    {
+      "description": null,
+      "label": "Longitude",
+      "required": true,
+      "fields": [
+        {
+          "name": "longitude",
+          "type": "input_hidden",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Latitude",
+      "required": true,
+      "fields": [
+        {
+          "name": "latitude",
+          "type": "input_hidden",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Location",
+      "required": true,
+      "fields": [
+        {
+          "name": "location",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    }
+  ]
+}

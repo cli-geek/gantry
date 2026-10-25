@@ -1,0 +1,674 @@
+{
+  "absolute_url": "https://www.coinbase.com/careers/positions/8175363?gh_jid=8175363",
+  "data_compliance": [
+    {
+      "type": "gdpr",
+      "requires_consent": false,
+      "requires_processing_consent": false,
+      "requires_retention_consent": false,
+      "retention_period": null,
+      "demographic_data_consent_applies": false
+    }
+  ],
+  "education": "education_required",
+  "employment": "employment_required",
+  "internal_job_id": 3538143,
+  "location": {
+    "name": "Hybrid - New York, NY"
+  },
+  "metadata": [
+    {
+      "id": 166433,
+      "name": "Team",
+      "value": "People Success",
+      "value_type": "single_select"
+    },
+    {
+      "id": 11090754,
+      "name": "HM Employee ID (WD)",
+      "value": "211479",
+      "value_type": "short_text"
+    },
+    {
+      "id": 3174030,
+      "name": "Careersite Department (for job postings)",
+      "value": "Internships & Emerging Talent Positions",
+      "value_type": "single_select"
+    },
+    {
+      "id": 13234829,
+      "name": "mule_sourcers_counter_custom",
+      "value": "0.0",
+      "value_type": "number"
+    },
+    {
+      "id": 13234830,
+      "name": "mule_recruiters_counter_custom",
+      "value": "0.0",
+      "value_type": "number"
+    }
+  ],
+  "id": 8175363,
+  "updated_at": "2026-10-13T19:50:16-04:00",
+  "requisition_id": "P78056",
+  "title": "Accelerations Programs Intern",
+  "company_name": "Coinbase",
+  "first_published": "2026-09-08T18:53:27-04:00",
+  "language": "en",
+  "application_deadline": null,
+  "departments": [
+    {
+      "id": 60542,
+      "name": "Internships & Emerging Talent Positions",
+      "child_ids": [],
+      "parent_id": null
+    }
+  ],
+  "offices": [
+    {
+      "id": 76481,
+      "name": "US - Remote Zone 1 (Job Requisitions Only)",
+      "location": null,
+      "child_ids": [],
+      "parent_id": null
+    }
+  ],
+  "ai_disclaimer": null,
+  "include_ai_disclaimer": null,
+  "ai_opt_out_request_url": null,
+  "compliance": [
+    {
+      "type": "eeoc",
+      "questions": [
+        {
+          "required": false,
+          "label": "VeteranStatus",
+          "fields": [
+            {
+              "name": "veteran_status",
+              "type": "multi_value_single_select",
+              "values": [
+                {
+                  "label": "I don't wish to answer",
+                  "value": "3"
+                },
+                {
+                  "label": "I identify as one or more of the classifications of a protected veteran",
+                  "value": "2"
+                },
+                {
+                  "label": "I am not a protected veteran",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "description": "&lt;p&gt;\n  If you believe you belong to any of the categories of protected veterans listed below, please indicate by making the appropriate selection.\n  As a government contractor subject to the Vietnam Era Veterans&#39; Readjustment Assistance Act (VEVRAA), we request this information in order to measure\n  the effectiveness of the outreach and positive recruitment efforts we undertake pursuant to VEVRAA. Classification of protected categories\n  is as follows:\n&lt;/p&gt;\n&lt;p&gt;A &quot;disabled veteran&quot; is one of the following: a veteran of the U.S. military, ground, naval or air service who is entitled to compensation (or who but for the receipt of military retired pay would be entitled to compensation) under laws administered by the Secretary of Veterans Affairs; or a person who was discharged or released from active duty because of a service-connected disability.&lt;/p&gt;\n&lt;p&gt;A &quot;recently separated veteran&quot; means any veteran during the three-year period beginning on the date of such veteran&#39;s discharge or release from active duty in the U.S. military, ground, naval, or air service.&lt;/p&gt;\n&lt;p&gt;An &quot;active duty wartime or campaign badge veteran&quot; means a veteran who served on active duty in the U.S. military, ground, naval or air service during a war, or in a campaign or expedition for which a campaign badge has been authorized under the laws administered by the Department of Defense.&lt;/p&gt;\n&lt;p&gt;An &quot;Armed forces service medal veteran&quot; means a veteran who, while serving on active duty in the U.S. military, ground, naval or air service, participated in a United States military operation for which an Armed Forces service medal was awarded pursuant to Executive Order 12985.&lt;/p&gt;\n"
+    },
+    {
+      "type": "eeoc",
+      "questions": [
+        {
+          "required": false,
+          "label": "Race",
+          "fields": [
+            {
+              "name": "race",
+              "type": "multi_value_single_select",
+              "values": [
+                {
+                  "label": "Decline To Self Identify",
+                  "value": "8"
+                },
+                {
+                  "label": "Two or More Races",
+                  "value": "7"
+                },
+                {
+                  "label": "Native Hawaiian or Other Pacific Islander",
+                  "value": "6"
+                },
+                {
+                  "label": "White",
+                  "value": "5"
+                },
+                {
+                  "label": "Hispanic or Latino",
+                  "value": "4"
+                },
+                {
+                  "label": "Black or African American",
+                  "value": "3"
+                },
+                {
+                  "label": "Asian",
+                  "value": "2"
+                },
+                {
+                  "label": "American Indian or Alaskan Native",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "required": false,
+          "label": "Gender",
+          "fields": [
+            {
+              "name": "gender",
+              "type": "multi_value_single_select",
+              "values": [
+                {
+                  "label": "Decline To Self Identify",
+                  "value": "3"
+                },
+                {
+                  "label": "Female",
+                  "value": "2"
+                },
+                {
+                  "label": "Male",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "description": "&lt;h3&gt;&lt;strong&gt;Voluntary Self-Identification&lt;/strong&gt;&lt;/h3&gt;&lt;br/&gt;&lt;p&gt;For government reporting purposes, we ask candidates to respond to the below self-identification survey.\nCompletion of the form is entirely voluntary. Whatever your decision, it will not be considered in the hiring\nprocess or thereafter. Any information that you do provide will be recorded and maintained in a\nconfidential file.&lt;/p&gt;\n\n&lt;p&gt;As set forth in Coinbase’s Equal Employment Opportunity policy,\nwe do not discriminate on the basis of any protected group status under any applicable law.&lt;/p&gt;\n"
+    }
+  ],
+  "demographic_questions": null,
+  "questions": [
+    {
+      "description": null,
+      "label": "First Name",
+      "required": true,
+      "fields": [
+        {
+          "name": "first_name",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Last Name",
+      "required": true,
+      "fields": [
+        {
+          "name": "last_name",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Email",
+      "required": true,
+      "fields": [
+        {
+          "name": "email",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Phone",
+      "required": true,
+      "fields": [
+        {
+          "name": "phone",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Resume/CV",
+      "required": true,
+      "fields": [
+        {
+          "name": "resume",
+          "type": "input_file",
+          "values": []
+        },
+        {
+          "name": "resume_text",
+          "type": "textarea",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Cover Letter",
+      "required": false,
+      "fields": [
+        {
+          "name": "cover_letter",
+          "type": "input_file",
+          "values": []
+        },
+        {
+          "name": "cover_letter_text",
+          "type": "textarea",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Linkedin Profile URL",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957450",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "I am available to begin a potential full-time role before September 2028.",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_69050588",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Do you have any prior internship experience?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_69050589",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you at least 18 years of age?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957451",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Have you previously been employed by Coinbase in any capacity?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957452",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "How did you hear about this job?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957453",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Career Page",
+              "value": 750094068
+            },
+            {
+              "label": "LinkedIn",
+              "value": 750094069
+            },
+            {
+              "label": "Indeed",
+              "value": 750094070
+            },
+            {
+              "label": "BuiltIn",
+              "value": 750094071
+            },
+            {
+              "label": "Job Board",
+              "value": 750094072
+            },
+            {
+              "label": "PompCryptoJobs",
+              "value": 750094073
+            },
+            {
+              "label": "Glassdoor",
+              "value": 750094074
+            },
+            {
+              "label": "Coinbase Event",
+              "value": 750094075
+            },
+            {
+              "label": "On Campus Recruiting",
+              "value": 750094076
+            },
+            {
+              "label": "Conference",
+              "value": 750094077
+            },
+            {
+              "label": "Referral",
+              "value": 750094078
+            },
+            {
+              "label": "Family/Friend",
+              "value": 750094079
+            },
+            {
+              "label": "Coinbase Blog",
+              "value": 750094080
+            },
+            {
+              "label": "Twitter Ad",
+              "value": 750094081
+            },
+            {
+              "label": "Farcaster",
+              "value": 750094082
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Please confirm receipt of the above linked Global Data Privacy Notice and US Arbitration Agreement.",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957454",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Confirmed",
+              "value": 750094083
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "I understand that Coinbase may use AI tools to assist in the application and interview process.  \n",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957455",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 750094084
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Which of the following best describes how you use AI tools today?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957456",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "I am opposed to using AI tools in my workflow and prefer traditional/manual workflows.",
+              "value": 750094085
+            },
+            {
+              "label": "I do not use AI tools for my work but I am not against it.",
+              "value": 750094086
+            },
+            {
+              "label": "I have experimented with AI tools (professionally and/or personally).",
+              "value": 750094087
+            },
+            {
+              "label": "I regularly use AI tools to speed up existing tasks (e.g., drafting, summarizing, debugging, basic analysis).",
+              "value": 750094088
+            },
+            {
+              "label": "I design or automate workflows with AI tools (e.g., building agents, integrating AI into team processes).",
+              "value": 750094089
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you legally authorized to work in the country where this position is located?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957457",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Will you require sponsorship for employment visa status now or in the future?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957458",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you a current government official or were you a government official in the last five years (e.g., employee of a government agency or a government owned/controlled company, holder of public office or a civil service position)?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957459",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "No, I am not a current or former Government Official",
+              "value": 750094090
+            },
+            {
+              "label": "Yes, I am a current Government Official",
+              "value": 750094091
+            },
+            {
+              "label": "Yes, I am a former Government Official",
+              "value": 750094092
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you a close relative of a government official (i.e., child/step-child, spouse/partner, parent/guardian, aunt/uncle, first cousin, in-law)?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957460",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes, I am a relative of a government official.",
+              "value": 750094093
+            },
+            {
+              "label": "No, I am not a relative of a government official.",
+              "value": 750094094
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "To your knowledge, do you or a close relative currently hold a role, have a significant financial interest in, or maintain a close personal relationship with a senior leader at a company connected to Coinbase that could create an actual or perceived conflict of interest?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957461",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "<p>(<em>Note: Personal use of the Coinbase or Base app as a regular retail customer does not qualify as a client relationship for this question)&nbsp;</em></p>\n<div id=\"fortidlp-input-element-parent\"></div>",
+      "label": "To your knowledge, were you referred to this position by a senior leader or decision‑maker at a current or prospective institutional client, business partner, or vendor of Coinbase?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_68957462",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "location_questions": [
+    {
+      "description": null,
+      "label": "Longitude",
+      "required": true,
+      "fields": [
+        {
+          "name": "longitude",
+          "type": "input_hidden",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Latitude",
+      "required": true,
+      "fields": [
+        {
+          "name": "latitude",
+          "type": "input_hidden",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Location",
+      "required": true,
+      "fields": [
+        {
+          "name": "location",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    }
+  ]
+}

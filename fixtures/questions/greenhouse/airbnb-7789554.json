@@ -1,0 +1,382 @@
+{
+  "absolute_url": "https://careers.airbnb.com/positions/7789554?gh_jid=7789554",
+  "data_compliance": [
+    {
+      "type": "gdpr",
+      "requires_consent": false,
+      "requires_processing_consent": false,
+      "requires_retention_consent": false,
+      "retention_period": null,
+      "demographic_data_consent_applies": false
+    }
+  ],
+  "internal_job_id": 3407102,
+  "location": {
+    "name": "Tokyo, Japan"
+  },
+  "metadata": [
+    {
+      "id": 9245691,
+      "name": "Is this job part of ACC?",
+      "value": false,
+      "value_type": "yes_no"
+    },
+    {
+      "id": 10216612,
+      "name": "Workplace Type",
+      "value": "Hybrid",
+      "value_type": "single_select"
+    }
+  ],
+  "id": 7789554,
+  "updated_at": "2026-09-29T20:00:54-04:00",
+  "requisition_id": "ONE",
+  "title": "Associate Legal Counsel, Japan",
+  "company_name": "Airbnb",
+  "first_published": "2026-04-13T04:49:05-04:00",
+  "language": "en",
+  "application_deadline": null,
+  "departments": [
+    {
+      "id": 253,
+      "name": "Legal",
+      "child_ids": [],
+      "parent_id": 73696
+    }
+  ],
+  "offices": [
+    {
+      "id": 625,
+      "name": "Tokyo, Japan",
+      "location": "Tokyo, Japan",
+      "child_ids": [],
+      "parent_id": 64274
+    }
+  ],
+  "ai_disclaimer": null,
+  "include_ai_disclaimer": null,
+  "ai_opt_out_request_url": null,
+  "compliance": null,
+  "demographic_questions": null,
+  "questions": [
+    {
+      "description": null,
+      "label": "First Name",
+      "required": true,
+      "fields": [
+        {
+          "name": "first_name",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Last Name",
+      "required": true,
+      "fields": [
+        {
+          "name": "last_name",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Preferred First Name",
+      "required": false,
+      "fields": [
+        {
+          "name": "preferred_name",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Email",
+      "required": true,
+      "fields": [
+        {
+          "name": "email",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Phone",
+      "required": true,
+      "fields": [
+        {
+          "name": "phone",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Resume/CV",
+      "required": true,
+      "fields": [
+        {
+          "name": "resume",
+          "type": "input_file",
+          "values": []
+        },
+        {
+          "name": "resume_text",
+          "type": "textarea",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Cover Letter",
+      "required": false,
+      "fields": [
+        {
+          "name": "cover_letter",
+          "type": "input_file",
+          "values": []
+        },
+        {
+          "name": "cover_letter_text",
+          "type": "textarea",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "LinkedIn Profile",
+      "required": false,
+      "fields": [
+        {
+          "name": "question_65340745",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Why have you chosen to apply to Airbnb?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_65340746",
+          "type": "textarea",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you based in Japan?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_65340747",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes, I am based in Tokyo.",
+              "value": 751153138
+            },
+            {
+              "label": "Yes, I am based in Kanto region.",
+              "value": 751153139
+            },
+            {
+              "label": "Yes, I am based in Japan outside of Tokyo/Kanto region",
+              "value": 751153140
+            },
+            {
+              "label": "No, I am based outside of Japan",
+              "value": 751153141
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you legally authorized to work in the country where the job is located?\n",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_65340762",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes, I am currently legally authorized to work in the country where the job is located.",
+              "value": 678955137
+            },
+            {
+              "label": "No, I am not currently legally authorized to work in the country where the job is located.",
+              "value": 678955138
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "<p><span style=\"font-weight: 400;\">I acknowledge that I am applying for employment by Airbnb Japan K.K. (the &ldquo;Company&rdquo;), and I hereby consent to the Company collecting, processing and using my personal information for the following purposes:</span></p>\n<ul>\n<li style=\"font-weight: 400;\" aria-level=\"1\"><span style=\"font-weight: 400;\">To contact and communicate with me in connection with my application;</span></li>\n<li style=\"font-weight: 400;\" aria-level=\"1\"><span style=\"font-weight: 400;\">To discuss and evaluate my application;</span></li>\n<li style=\"font-weight: 400;\" aria-level=\"1\"><span style=\"font-weight: 400;\">To conduct any background checks or similar activities; and</span></li>\n<li style=\"font-weight: 400;\" aria-level=\"1\"><span style=\"font-weight: 400;\">To conduct, or to comply with any lawful order or request made in connection with, any investigation or proceeding, or to otherwise deal with any grievance, by, against or otherwise involving me.&nbsp;</span></li>\n</ul>\n<p><span style=\"font-weight: 400;\">I also consent to the Company and its affiliated entities, including those in the United States, the United Kingdom, Ireland, Singapore and China (</span><strong>Affiliated Entities</strong><span style=\"font-weight: 400;\">):</span></p>\n<ul>\n<li style=\"font-weight: 400;\" aria-level=\"1\"><span style=\"font-weight: 400;\">In conjunction with the above, disclosing or transferring any part or all of my personal information to any of its Affiliated Entities and/or to any of the Company&rsquo;s or its Affiliated Entities&rsquo; vendors or service providers, and to transfer or store the same to or in any part of the world;</span></li>\n<li style=\"font-weight: 400;\" aria-level=\"1\"><span style=\"font-weight: 400;\">Retaining any or all of my personal information for such period as it may determine to be appropriate, including for audit or compliance purposes anywhere in the world;</span></li>\n<li style=\"font-weight: 400;\" aria-level=\"1\"><span style=\"font-weight: 400;\">Disclosing and using any or all of my personal information where reasonably required for purposes of evaluating my application; and</span></li>\n<li style=\"font-weight: 400;\" aria-level=\"1\"><span style=\"font-weight: 400;\">Permitting or authorizing any of its Affiliated Entities to do any of the things that the Company is permitted to do under this document, including for the purposes specified above.&nbsp;</span></li>\n</ul>\n<p><span style=\"font-weight: 400;\">In this document, &ldquo;my personal information&rdquo; includes but is not limited to my name; address; passport number; birth date; blood type; photograph(s); contact information such as telephone number(s) and email address(es); family information; educational, professional and employment history, records, certifications and information; information on memberships in organizations; health and disability information; bank account and other payment information; criminal records, if any; and performance information.</span></p>",
+      "label": "Consent to Privacy Notice (Japan)",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_65340750",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "I have read and consent to the Privacy Notice.",
+              "value": 678955110
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "<p>I consent to the collection, use and disclosure of personal data relating to my gender by Airbnb in order for Airbnb to measure its efforts to create a diverse workplace. I understand that it is entirely voluntary for me to provide this information, and declining to provide Airbnb with consent to collect this information will not subject me to adverse treatment. I further understand that all individuals seeking employment or secondment at Airbnb are considered based on individual merit, without regard to such information; that this data will not be shared with any personnel who can influence the hiring process; and that I am being given the opportunity to provide such information in order to help Airbnb measure Airbnb's own diversity and inclusion efforts.</p>",
+      "label": "Gender:",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_65340758",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Male",
+              "value": 678955121
+            },
+            {
+              "label": "Female",
+              "value": 678955122
+            },
+            {
+              "label": "Other",
+              "value": 678955123
+            },
+            {
+              "label": "Decline to Self Identify",
+              "value": 678955124
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Will you now or in the future require company sponsorship to retain or extend your work authorization in the country where the job is located?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_65340763",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes, I will require immigration sponsorship now to legally work in the country where the job is located.",
+              "value": 678955139
+            },
+            {
+              "label": "Yes, I will require immigration sponsorship in the future to legally work in the country where the job is located.",
+              "value": 678955140
+            },
+            {
+              "label": "No, I do not and will not require immigration sponsorship to legally work in the country where the job is located.",
+              "value": 678955141
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you currently subject to any non-compete or non-solicitation agreement that would impact your ability to work at Airbnb or prevent you from accepting a job offer from Airbnb?",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_65340764",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Are you currently or have you ever worked for Airbnb in any capacity? This could include, but is not limited to, a full-time employee, intern, apprentice, or contingent worker.",
+      "required": true,
+      "fields": [
+        {
+          "name": "question_65340765",
+          "type": "multi_value_single_select",
+          "values": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "location_questions": [
+    {
+      "description": null,
+      "label": "Longitude",
+      "required": true,
+      "fields": [
+        {
+          "name": "longitude",
+          "type": "input_hidden",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Latitude",
+      "required": true,
+      "fields": [
+        {
+          "name": "latitude",
+          "type": "input_hidden",
+          "values": []
+        }
+      ]
+    },
+    {
+      "description": null,
+      "label": "Location",
+      "required": true,
+      "fields": [
+        {
+          "name": "location",
+          "type": "input_text",
+          "values": []
+        }
+      ]
+    }
+  ]
+}

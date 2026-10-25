@@ -9,6 +9,7 @@ pub mod bundled;
 #[cfg(feature = "fixtures")]
 pub mod fixture;
 pub mod geocode;
+pub mod harvest;
 pub mod html;
 pub mod http;
 pub mod pipeline;
