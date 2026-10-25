@@ -936,6 +936,7 @@ dependencies = [
  "regex",
  "schemars",
  "serde",
+ "thiserror",
  "toml",
 ]
 

@@ -33,6 +33,19 @@ pub fn contains_phrase(haystack_normalized: &str, phrase: &str) -> bool {
     padded.contains(&format!(" {needle} "))
 }
 
+/// Lowercase, collapse whitespace (including NBSP) to single spaces, trim,
+/// and strip trailing `*`, `:` and whitespace.
+pub fn normalize_label(label: &str) -> String {
+    let collapsed = label
+        .to_lowercase()
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
+    collapsed
+        .trim_end_matches(|c: char| c == '*' || c == ':' || c.is_whitespace())
+        .to_owned()
+}
+
 pub fn fnv1a64(bytes: &[u8]) -> u64 {
     let mut hash: u64 = 0xcbf2_9ce4_8422_2325;
     for b in bytes {
@@ -120,5 +133,18 @@ mod tests {
         assert!(hamming(simhash(base), simhash(&repost)) <= 12);
         assert!(hamming(simhash(base), simhash(other)) > REPOST_SIMHASH_BITS * 4);
         assert_eq!(simhash(base), simhash(base));
+    }
+
+    #[test]
+    fn normalize_label_cases() {
+        assert_eq!(normalize_label("Email *"), "email");
+        assert_eq!(normalize_label("Gender:"), "gender");
+        assert_eq!(normalize_label("Gender :  *"), "gender");
+        assert_eq!(
+            normalize_label("  Are  you\u{a0}18\u{a0}or\nolder? "),
+            "are you 18 or older?"
+        );
+        assert_eq!(normalize_label("LinkedIn PROFILE"), "linkedin profile");
+        assert_eq!(normalize_label("*:"), "");
     }
 }

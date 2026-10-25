@@ -12,6 +12,7 @@ pub mod filter;
 pub mod geo;
 pub mod location;
 pub mod posting;
+pub mod questions;
 pub mod search;
 pub mod text;
 

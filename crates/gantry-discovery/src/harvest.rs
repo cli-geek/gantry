@@ -25,6 +25,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::{Deserialize, Serialize};
 
+use gantry_core::text::normalize_label;
+
 use crate::sources::ParseError;
 
 const SOURCE: &str = "greenhouse questions";
@@ -178,19 +180,6 @@ pub fn pick_job_ids(body: &[u8], count: usize) -> Result<Vec<u64>, ParseError> {
     ids.dedup();
     ids.truncate(count);
     Ok(ids)
-}
-
-/// Lowercase, collapse whitespace (including NBSP) to single spaces, trim,
-/// and strip trailing `*`, `:` and whitespace.
-pub fn normalize_label(label: &str) -> String {
-    let collapsed = label
-        .to_lowercase()
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .join(" ");
-    collapsed
-        .trim_end_matches(|c: char| c == '*' || c == ':' || c.is_whitespace())
-        .to_owned()
 }
 
 /// The questions one job presented.
@@ -435,19 +424,6 @@ mod tests {
         assert!(parse_job_questions(b"{not json").is_err());
         assert!(parse_job_questions(br#"{"questions": "nope"}"#).is_err());
         assert!(pick_job_ids(b"[]", 3).is_err());
-    }
-
-    #[test]
-    fn normalize_label_cases() {
-        assert_eq!(normalize_label("Email *"), "email");
-        assert_eq!(normalize_label("Gender:"), "gender");
-        assert_eq!(normalize_label("Gender :  *"), "gender");
-        assert_eq!(
-            normalize_label("  Are  you\u{a0}18\u{a0}or\nolder? "),
-            "are you 18 or older?"
-        );
-        assert_eq!(normalize_label("LinkedIn PROFILE"), "linkedin profile");
-        assert_eq!(normalize_label("*:"), "");
     }
 
     #[test]
